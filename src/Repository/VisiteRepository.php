@@ -13,10 +13,20 @@ class VisiteRepository extends ServiceEntityRepository
         parent::__construct($registry, Visite::class);
     }
 
-    /**
-     * Retourne les statistiques de visites par année.
-     * Chaque date (dateVisite + prochaineDateVisite) compte comme 1 visite.
-     */
+    public function findProchainesVisites(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->join('v.dates', 'd')
+            ->where('d.type = :type')
+            ->andWhere('d.date IS NOT NULL')
+            ->andWhere('d.date != :empty')
+            ->setParameter('type', 'prochaine')
+            ->setParameter('empty', '')
+            ->orderBy('d.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getStatsByAnnee(?string $annee = null): array
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -26,11 +36,10 @@ class VisiteRepository extends ServiceEntityRepository
         $sql = "
             SELECT annee, agent, pole_service, COUNT(*) as nb_visites
             FROM (
-                SELECT SUBSTRING(date_visite, 7, 4) as annee, agent_visite as agent, pole_service_visite as pole_service
-                FROM visite WHERE date_visite IS NOT NULL AND date_visite != ''
-                UNION ALL
-                SELECT SUBSTRING(prochaine_date_visite, 7, 4) as annee, agent_visite as agent, pole_service_visite as pole_service
-                FROM visite WHERE prochaine_date_visite IS NOT NULL AND prochaine_date_visite != ''
+                SELECT SUBSTRING(vd.date, 7, 4) as annee, v.agent_visite as agent, v.pole_service_visite as pole_service
+                FROM visite_date vd
+                JOIN visite v ON vd.visite_id = v.id
+                WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
             ) as toutes_dates
             $where
             GROUP BY annee, agent, pole_service
@@ -54,11 +63,9 @@ class VisiteRepository extends ServiceEntityRepository
         $sql = "
             SELECT annee, COUNT(*) as nb_visites
             FROM (
-                SELECT SUBSTRING(date_visite, 7, 4) as annee
-                FROM visite WHERE date_visite IS NOT NULL AND date_visite != ''
-                UNION ALL
-                SELECT SUBSTRING(prochaine_date_visite, 7, 4) as annee
-                FROM visite WHERE prochaine_date_visite IS NOT NULL AND prochaine_date_visite != ''
+                SELECT SUBSTRING(vd.date, 7, 4) as annee
+                FROM visite_date vd
+                WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
             ) as toutes_dates
             $where
             GROUP BY annee
@@ -77,11 +84,10 @@ class VisiteRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "
-            SELECT DISTINCT annee FROM (
-                SELECT SUBSTRING(date_visite, 7, 4) as annee FROM visite WHERE date_visite IS NOT NULL AND date_visite != ''
-                UNION
-                SELECT SUBSTRING(prochaine_date_visite, 7, 4) as annee FROM visite WHERE prochaine_date_visite IS NOT NULL AND prochaine_date_visite != ''
-            ) a WHERE annee IS NOT NULL AND annee != '' ORDER BY annee DESC
+            SELECT DISTINCT SUBSTRING(vd.date, 7, 4) as annee
+            FROM visite_date vd
+            WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
+            ORDER BY annee DESC
         ";
         return $conn->fetchFirstColumn($sql);
     }

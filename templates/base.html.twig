@@ -54,6 +54,11 @@
                         <i class="bi bi-bar-chart-line"></i> Visites
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_calendrier' ? 'active' }}" href="{{ path('app_calendrier_visites') }}">
+                        <i class="bi bi-calendar3"></i> Calendrier
+                    </a>
+                </li>
 
                 <div class="nav-section">Prévention</div>
                 <li class="nav-item">

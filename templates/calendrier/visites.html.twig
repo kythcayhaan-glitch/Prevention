@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% block title %}Calendrier des visites{% endblock %}
+
+{% block stylesheets %}
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css' rel='stylesheet' />
+<style>
+    #calendar { max-width: 1100px; }
+    .fc-event { cursor: pointer; font-size: .82rem; }
+    .fc-daygrid-event { white-space: normal; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-calendar3"></i> Calendrier des prochaines visites</h2>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex gap-3 mb-3 small">
+            <span><span class="badge" style="background:#0d6efd">●</span> Réalisée</span>
+            <span><span class="badge" style="background:#198754">●</span> Prévue</span>
+        </div>
+        <div id="calendar"></div>
+    </div>
+</div>
+
+{# Event detail modal #}
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h6 class="modal-title"><i class="bi bi-person-check"></i> Visite prévue</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-1"><strong>Agent :</strong> <span id="modalAgent"></span></p>
+                <p class="mb-1"><strong>Pôle / Service :</strong> <span id="modalPole"></span></p>
+                <p class="mb-1"><strong>Date :</strong> <span id="modalDate"></span></p>
+                <p class="mb-0"><strong>Type :</strong> <span id="modalType"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.global.min.js'></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+
+    const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        locale: 'fr',
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listMonth'
+        },
+        buttonText: { today: "Aujourd'hui", month: 'Mois', list: 'Liste' },
+        events: '{{ path('app_calendrier_visites_events') }}',
+        eventColor: '#0d6efd',
+        eventClick: function (info) {
+            document.getElementById('modalAgent').textContent = info.event.extendedProps.agent || 'Non renseigné';
+            document.getElementById('modalPole').textContent = info.event.extendedProps.pole || '—';
+            document.getElementById('modalDate').textContent = info.event.startStr;
+            document.getElementById('modalType').textContent = info.event.extendedProps.type || '—';
+            modal.show();
+        },
+        noEventsContent: 'Aucune visite prévue.'
+    });
+
+    calendar.render();
+});
+</script>
+{% endblock %}

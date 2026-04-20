@@ -3,9 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Visite;
+use App\Form\VisiteDateType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,8 +20,13 @@ class VisiteType extends AbstractType
             ->add('agentVisite', TextType::class, ['label' => 'Agent', 'required' => false])
             ->add('poleServiceVisite', TextType::class, ['label' => 'Pôle / Service', 'required' => false])
             ->add('emploiVisite', TextType::class, ['label' => 'Emploi', 'required' => false])
-            ->add('dateVisite', TextType::class, ['label' => 'Date de visite', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
-            ->add('prochaineDateVisite', TextType::class, ['label' => 'Prochaine date de visite', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
+            ->add('dates', CollectionType::class, [
+                'entry_type' => VisiteDateType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+            ])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type de visite',
                 'required' => false,

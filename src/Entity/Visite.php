@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VisiteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VisiteRepository::class)]
@@ -20,11 +22,8 @@ class Visite
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $poleServiceVisite = null;
 
-    #[ORM\Column(length: 10, nullable: true)]
-    private ?string $dateVisite = null;
-
-    #[ORM\Column(length: 10, nullable: true)]
-    private ?string $prochaineDateVisite = null;
+    #[ORM\OneToMany(mappedBy: 'visite', targetEntity: VisiteDate::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $dates;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $observation = null;
@@ -125,7 +124,29 @@ class Visite
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $epiDetail = null;
 
+    public function __construct()
+    {
+        $this->dates = new ArrayCollection();
+    }
+
     public function getId(): ?int { return $this->id; }
+
+    public function getDates(): Collection { return $this->dates; }
+
+    public function addDate(VisiteDate $date): static
+    {
+        if (!$this->dates->contains($date)) {
+            $this->dates->add($date);
+            $date->setVisite($this);
+        }
+        return $this;
+    }
+
+    public function removeDate(VisiteDate $date): static
+    {
+        $this->dates->removeElement($date);
+        return $this;
+    }
 
     public function getAgentVisite(): ?string { return $this->agentVisite; }
     public function setAgentVisite(?string $agentVisite): static { $this->agentVisite = $agentVisite; return $this; }
@@ -133,15 +154,9 @@ class Visite
     public function getPoleServiceVisite(): ?string { return $this->poleServiceVisite; }
     public function setPoleServiceVisite(?string $poleServiceVisite): static { $this->poleServiceVisite = $poleServiceVisite; return $this; }
 
-    public function getDateVisite(): ?string { return $this->dateVisite; }
-    public function setDateVisite(?string $dateVisite): static { $this->dateVisite = $dateVisite; return $this; }
-
-    public function getProchaineDateVisite(): ?string { return $this->prochaineDateVisite; }
-    public function setProchaineDateVisite(?string $prochaineDateVisite): static { $this->prochaineDateVisite = $prochaineDateVisite; return $this; }
-
     public function getNombreDates(): int
     {
-        return ($this->dateVisite ? 1 : 0) + ($this->prochaineDateVisite ? 1 : 0);
+        return $this->dates->count();
     }
 
     public function getObservation(): ?string { return $this->observation; }

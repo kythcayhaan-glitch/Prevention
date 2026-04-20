@@ -30,7 +30,7 @@
             <div class="card-body py-4">
                 <div class="display-4 fw-bold">{{ annee_selectionnee ? total_annee : total_by_annee|map(r => r['nb_visites'])|reduce((carry, v) => carry + v, 0) }}</div>
                 <div class="fs-5">visite{{ total_annee > 1 ? 's' }} au total{% if annee_selectionnee %} en {{ annee_selectionnee }}{% endif %}</div>
-                <small class="opacity-75">(dates de visite + prochaines dates)</small>
+                <small class="opacity-75">(dates réalisées uniquement)</small>
             </div>
         </div>
     </div>

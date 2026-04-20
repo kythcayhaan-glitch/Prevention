@@ -19,8 +19,8 @@
                         <th>Agent</th>
                         <th>Pôle / Service</th>
                         <th>Emploi</th>
-                        <th>Date visite</th>
-                        <th>Prochaine visite</th>
+                        <th>Dates réalisées</th>
+                        <th>Prochaines visites</th>
                         <th>Type</th>
                         <th>RQTH</th>
                         <th>Actions</th>
@@ -33,8 +33,18 @@
                         <td>{{ visite.agentVisite }}</td>
                         <td>{{ visite.poleServiceVisite }}</td>
                         <td>{{ visite.emploiVisite }}</td>
-                        <td>{{ visite.dateVisite }}</td>
-                        <td>{% if visite.prochaineDateVisite %}<span class="badge bg-info text-dark">{{ visite.prochaineDateVisite }}</span>{% else %}-{% endif %}</td>
+                        <td>
+                            {% set realisees = visite.dates|filter(d => d.type == 'realisee') %}
+                            {% if realisees|length %}
+                                {% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}</span>{% endfor %}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% set prochaines = visite.dates|filter(d => d.type == 'prochaine') %}
+                            {% if prochaines|length %}
+                                {% for d in prochaines %}<span class="badge bg-success me-1">{{ d.date }}</span>{% endfor %}
+                            {% else %}-{% endif %}
+                        </td>
                         <td><span class="badge bg-secondary">{{ visite.type }}</span></td>
                         <td>
                             {% if visite.rqthVisite == 'oui' %}
