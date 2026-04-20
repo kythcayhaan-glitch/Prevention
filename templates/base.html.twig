@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Prévention{% endblock %} - CELINE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { min-height: calc(100vh - 56px); background: #343a40; }
+        .sidebar .nav-link { color: #adb5bd; padding: .4rem 1rem; font-size: .9rem; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,.1); border-radius: 4px; }
+        .sidebar .nav-section { color: #6c757d; font-size: .72rem; text-transform: uppercase; padding: .5rem 1rem .2rem; margin-top: .5rem; letter-spacing: .05em; }
+        .main-content { padding: 1.5rem; }
+        .card { box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); }
+        .flash-messages { position: fixed; top: 70px; right: 20px; z-index: 9999; min-width: 300px; }
+        .table th { background: #495057; color: #fff; }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary navbar-expand-lg py-2">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{{ path('app_dashboard') }}">
+            <i class="bi bi-shield-check"></i> Gestion Prévention
+        </a>
+        {% if app.user %}
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <span class="text-white small"><i class="bi bi-person-circle"></i> {{ app.user.nom }}</span>
+            <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right"></i> Déconnexion
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        {% if app.user %}
+        <nav class="col-md-2 d-none d-md-block sidebar py-3">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') == 'app_dashboard' ? 'active' }}" href="{{ path('app_dashboard') }}">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                </li>
+
+                <div class="nav-section">Prévention</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_visite' ? 'active' }}" href="{{ path('app_visite_index') }}">
+                        <i class="bi bi-clipboard-heart"></i> Visites
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_rqth' ? 'active' }}" href="{{ path('app_rqth_index') }}">
+                        <i class="bi bi-person-badge"></i> RQTH
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_fiphfp' ? 'active' }}" href="{{ path('app_fiphfp_index') }}">
+                        <i class="bi bi-cash-coin"></i> FIPHFP
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_inter' ? 'active' }}" href="{{ path('app_inter_index') }}">
+                        <i class="bi bi-tools"></i> Interventions
+                    </a>
+                </li>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                <div class="nav-section">Administration</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_intervenant' ? 'active' }}" href="{{ path('app_intervenant_index') }}">
+                        <i class="bi bi-people"></i> Intervenants
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_batiment' ? 'active' }}" href="{{ path('app_batiment_index') }}">
+                        <i class="bi bi-building"></i> Bâtiments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_service' ? 'active' }}" href="{{ path('app_service_index') }}">
+                        <i class="bi bi-diagram-3"></i> Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_stock' ? 'active' }}" href="{{ path('app_stock_index') }}">
+                        <i class="bi bi-box-seam"></i> Stock
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                <div class="nav-section">Utilisateurs</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_user' ? 'active' }}" href="{{ path('app_user_index') }}">
+                        <i class="bi bi-person-gear"></i> Utilisateurs
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        <main class="{{ app.user ? 'col-md-10' : 'col-12' }} main-content">
+            <div class="flash-messages">
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'success' ? 'success' : (type == 'error' ? 'danger' : type) }} alert-dismissible fade show shadow" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

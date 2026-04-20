@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block title %}Visites de prévention{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-clipboard-heart"></i> Visites de prévention</h2>
+    <a href="{{ path('app_visite_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouvelle visite</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="p-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher (agent, service, type...)">
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="mainTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Agent</th>
+                        <th>Pôle / Service</th>
+                        <th>Emploi</th>
+                        <th>Date visite</th>
+                        <th>Type</th>
+                        <th>RQTH</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for visite in visites %}
+                    <tr>
+                        <td>{{ visite.id }}</td>
+                        <td>{{ visite.agentVisite }}</td>
+                        <td>{{ visite.poleServiceVisite }}</td>
+                        <td>{{ visite.emploiVisite }}</td>
+                        <td>{{ visite.dateVisite }}</td>
+                        <td><span class="badge bg-secondary">{{ visite.type }}</span></td>
+                        <td>
+                            {% if visite.rqthVisite == 'oui' %}
+                                <span class="badge bg-warning text-dark">Oui</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">Non</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
+                            <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                            <form method="post" action="{{ path('app_visite_delete', {id: visite.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ visite.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="8" class="text-center text-muted py-4">Aucune visite enregistrée.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const filter = this.value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

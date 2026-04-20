@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+{% block title %}Visite #{{ visite.id }}{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-clipboard-heart"></i> Visite de prévention #{{ visite.id }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Modifier</a>
+        <a href="{{ path('app_visite_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">Informations générales</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Agent</dt><dd class="col-sm-7">{{ visite.agentVisite }}</dd>
+                    <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ visite.poleServiceVisite }}</dd>
+                    <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ visite.emploiVisite }}</dd>
+                    <dt class="col-sm-5">Date visite</dt><dd class="col-sm-7">{{ visite.dateVisite }}</dd>
+                    <dt class="col-sm-5">Type</dt><dd class="col-sm-7"><span class="badge bg-secondary">{{ visite.type }}</span></dd>
+                    <dt class="col-sm-5">RQTH</dt><dd class="col-sm-7">
+                        {% if visite.rqthVisite == 'oui' %}<span class="badge bg-warning text-dark">Oui</span>{% else %}<span class="badge bg-light text-dark">Non</span>{% endif %}
+                    </dd>
+                    <dt class="col-sm-5">Saisi par</dt><dd class="col-sm-7">{{ visite.userVisite }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white">Restrictions / Recommandations</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Restrictions</dt><dd class="col-sm-8">{{ visite.restrictionVisite|nl2br }}</dd>
+                    <dt class="col-sm-4">Recommandations</dt><dd class="col-sm-8">{{ visite.recommandationVisite|nl2br }}</dd>
+                    <dt class="col-sm-4">Limitations</dt><dd class="col-sm-8">{{ visite.limitationVisite|nl2br }}</dd>
+                    <dt class="col-sm-4">Observation</dt><dd class="col-sm-8">{{ visite.observation }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">Conditions de travail</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-7">Travail penché</dt><dd class="col-sm-5">{{ visite.travailPencheVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Debout prolongé</dt><dd class="col-sm-5">{{ visite.deboutVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Conduite</dt><dd class="col-sm-5">{{ visite.conduiteVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Ecran</dt><dd class="col-sm-5">{{ visite.utilisationVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Travail en hauteur</dt><dd class="col-sm-5">{{ visite.travailHautVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Travail isolé</dt><dd class="col-sm-5">{{ visite.travailIsoVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Travail en position basse</dt><dd class="col-sm-5">{{ visite.travailBasVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Effort / Force</dt><dd class="col-sm-5">{{ visite.effortVisite ? 'Oui' : 'Non' }}</dd>
+                    <dt class="col-sm-7">Port de charges</dt><dd class="col-sm-5">{{ visite.port }}</dd>
+                    <dt class="col-sm-7">EPI</dt><dd class="col-sm-5">{{ visite.epi }} {% if visite.epiDetail %}<br><small class="text-muted">{{ visite.epiDetail }}</small>{% endif %}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    {% if visite.tempsPartielVisite == 'oui' %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">Temps partiel thérapeutique</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    {% if visite.tpt1Du %}<dt class="col-sm-5">Période 1</dt><dd class="col-sm-7">du {{ visite.tpt1Du }} au {{ visite.tpt1Au }}</dd>{% endif %}
+                    {% if visite.tpt2Du %}<dt class="col-sm-5">Période 2</dt><dd class="col-sm-7">du {{ visite.tpt2Du }} au {{ visite.tpt2Au }}</dd>{% endif %}
+                    {% if visite.tpt3Du %}<dt class="col-sm-5">Période 3</dt><dd class="col-sm-7">du {{ visite.tpt3Du }} au {{ visite.tpt3Au }}</dd>{% endif %}
+                    {% if visite.tpt4Du %}<dt class="col-sm-5">Période 4</dt><dd class="col-sm-7">du {{ visite.tpt4Du }} au {{ visite.tpt4Au }}</dd>{% endif %}
+                </dl>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block title %}FIPHFP #{{ fiphfp.id }}{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-cash-coin"></i> Demande FIPHFP #{{ fiphfp.id }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{{ path('app_fiphfp_edit', {id: fiphfp.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Modifier</a>
+        <a href="{{ path('app_fiphfp_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">Demande</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Agent</dt><dd class="col-sm-7">{{ fiphfp.agentFiphfp }}</dd>
+                    <dt class="col-sm-5">Pôle</dt><dd class="col-sm-7">{{ fiphfp.poleFiphfp }}</dd>
+                    <dt class="col-sm-5">N° Demande</dt><dd class="col-sm-7">{{ fiphfp.demandeFiphfp }}</dd>
+                    <dt class="col-sm-5">Date</dt><dd class="col-sm-7">{{ fiphfp.dateDemandeFiphfp }}</dd>
+                    <dt class="col-sm-5">Objet</dt><dd class="col-sm-7">{{ fiphfp.objetFiphfp }}</dd>
+                    <dt class="col-sm-5">État</dt><dd class="col-sm-7"><span class="badge bg-{{ fiphfp.etatDemandeFiphfp == 'Accordé' ? 'success' : 'secondary' }}">{{ fiphfp.etatDemandeFiphfp }}</span></dd>
+                    <dt class="col-sm-5">Urgence</dt><dd class="col-sm-7">{% if fiphfp.urgenceFiphfp %}<span class="badge bg-danger">Oui</span>{% else %}Non{% endif %}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">Montants</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">Montant dépensé</dt><dd class="col-sm-6">{{ fiphfp.montantDepenseFiphfp }} €</dd>
+                    <dt class="col-sm-6">Montant demandé</dt><dd class="col-sm-6">{{ fiphfp.montantDemandeFiphfp }} €</dd>
+                    <dt class="col-sm-6">Montant accordé</dt><dd class="col-sm-6"><strong>{{ fiphfp.montantAccordeFiphfp }} €</strong></dd>
+                    <dt class="col-sm-6">Accord payé le</dt><dd class="col-sm-6">{{ fiphfp.accordPayeLe }}</dd>
+                    <dt class="col-sm-6">Reste à charge</dt><dd class="col-sm-6">
+                        {% if fiphfp.montantDepenseFiphfp and fiphfp.montantAccordeFiphfp %}
+                            {{ fiphfp.montantDepenseFiphfp - fiphfp.montantAccordeFiphfp }} €
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        {% if fiphfp.detailDemandeFiphfp %}
+        <div class="card mt-3">
+            <div class="card-header">Détail</div>
+            <div class="card-body">{{ fiphfp.detailDemandeFiphfp|nl2br }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

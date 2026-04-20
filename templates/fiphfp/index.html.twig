@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}FIPHFP{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-cash-coin"></i> Demandes FIPHFP</h2>
+    <a href="{{ path('app_fiphfp_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouvelle demande</a>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="p-3"><input type="text" id="searchInput" class="form-control" placeholder="Rechercher..."></div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="mainTable">
+                <thead><tr><th>#</th><th>Agent</th><th>Pôle</th><th>Objet</th><th>État</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th></tr></thead>
+                <tbody>
+                {% for f in fiphfps %}
+                <tr>
+                    <td>{{ f.id }}</td>
+                    <td>{{ f.agentFiphfp }}</td>
+                    <td>{{ f.poleFiphfp }}</td>
+                    <td>{{ f.objetFiphfp }}</td>
+                    <td><span class="badge bg-{{ f.etatDemandeFiphfp == 'Accordé' ? 'success' : (f.etatDemandeFiphfp == 'Refusé' ? 'danger' : 'secondary') }}">{{ f.etatDemandeFiphfp }}</span></td>
+                    <td>{{ f.dateDemandeFiphfp }}</td>
+                    <td>{{ f.montantAccordeFiphfp ? f.montantAccordeFiphfp ~ ' €' : '' }}</td>
+                    <td>{% if f.urgenceFiphfp %}<span class="badge bg-danger">Urgent</span>{% endif %}</td>
+                    <td>
+                        <a href="{{ path('app_fiphfp_show', {id: f.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                        <a href="{{ path('app_fiphfp_edit', {id: f.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{{ path('app_fiphfp_delete', {id: f.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ f.id) }}">
+                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}<tr><td colspan="9" class="text-center text-muted py-4">Aucune demande FIPHFP.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const f = this.value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(f) ? '' : 'none');
+});
+</script>{% endblock %}
