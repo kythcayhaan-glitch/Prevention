@@ -36,7 +36,7 @@
                         <td>
                             {% set realisees = visite.dates|filter(d => d.type == 'realisee') %}
                             {% if realisees|length %}
-                                {% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}
+                                {% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}</span>{% endfor %}
                             {% else %}-{% endif %}
                         </td>
                         <td>
