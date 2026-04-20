@@ -282,32 +282,6 @@ INSERT INTO `service` VALUES (1,'INFORMATIQUE'),(2,'SPORTS'),(3,'TECHNIQUE');
 UNLOCK TABLES;
 
 --
--- Table structure for table `stock`
---
-
-DROP TABLE IF EXISTS `stock`;
-CREATE TABLE `stock` (
-  `id` int(11) NOT NULL auto_increment,
-  `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `prix` decimal(10,2) default NULL,
-  `stock_mini` int(11) default NULL,
-  `stock_reel` int(11) default NULL,
-  `donnee` int(11) default NULL,
-  `ref` varchar(60) collate utf8_unicode_ci default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `stock`
---
-
-LOCK TABLES `stock` WRITE;
-/*!40000 ALTER TABLE `stock` DISABLE KEYS */;
-INSERT INTO `stock` VALUES (1,'AGENT TECHNIQUE CATERGORIE C','10.00',0,0,0,'CAT C'),(2,'AGENT TECHNIQUE CATERGORIE B','15.00',0,0,0,'CAT B');
-/*!40000 ALTER TABLE `stock` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user`
 --
 
@@ -397,4 +371,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-20  8:39:09
+-- Dump completed on 2026-04-20  9:02:06

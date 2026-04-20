@@ -46,16 +46,6 @@ final class Version20260420000001 extends AbstractMigration
             PRIMARY KEY(id)
         ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
 
-        $this->addSql('CREATE TABLE stock (
-            id INT AUTO_INCREMENT NOT NULL,
-            designation VARCHAR(255) DEFAULT NULL,
-            prix DECIMAL(10,2) DEFAULT NULL,
-            stock_mini INT DEFAULT NULL,
-            stock_reel INT DEFAULT NULL,
-            donnee INT DEFAULT NULL,
-            ref VARCHAR(60) DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE visite (
             id INT AUTO_INCREMENT NOT NULL,
@@ -206,8 +196,7 @@ final class Version20260420000001 extends AbstractMigration
         $this->addSql('DROP TABLE IF EXISTS fiphfp');
         $this->addSql('DROP TABLE IF EXISTS rqth');
         $this->addSql('DROP TABLE IF EXISTS visite');
-        $this->addSql('DROP TABLE IF EXISTS stock');
-        $this->addSql('DROP TABLE IF EXISTS intervenant');
+$this->addSql('DROP TABLE IF EXISTS intervenant');
         $this->addSql('DROP TABLE IF EXISTS service');
         $this->addSql('DROP TABLE IF EXISTS batiments');
         $this->addSql('DROP TABLE IF EXISTS `user`');

@@ -46,7 +46,13 @@
       "Bash(\"/d/wamp/mysql/bin/mysql.exe\" -u root -e \"USE celine_symfony; UPDATE user SET login='Celine' WHERE login='Céline';\")",
       "Bash(git init *)",
       "Bash(git remote *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git config *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(\"/d/wamp/mysql/bin/mysqldump.exe\" -u root --default-character-set=utf8 celine_symfony)",
+      "Bash(\"/d/wamp/mysql/bin/mysql.exe\" -u root -e \"USE celine_symfony; DROP TABLE stock;\")"
     ]
   }
 }
