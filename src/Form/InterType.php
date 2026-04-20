@@ -16,7 +16,7 @@ class InterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date', TextType::class, ['label' => 'Date', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
+            ->add('date', TextType::class, ['label' => 'Date', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type',
                 'required' => false,
@@ -44,7 +44,7 @@ class InterType extends AbstractType
             ->add('observation', TextareaType::class, ['label' => 'Observation', 'required' => false])
             ->add('agentVisite', TextType::class, ['label' => 'Agent visité', 'required' => false])
             ->add('poleServiceVisite', TextType::class, ['label' => 'Pôle/Service', 'required' => false])
-            ->add('dateVisite', TextType::class, ['label' => 'Date visite', 'required' => false])
+            ->add('dateVisite', TextType::class, ['label' => 'Date visite', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('rqthVisite', ChoiceType::class, ['label' => 'RQTH', 'required' => false, 'choices' => ['Oui' => 'oui', 'Non' => 'non'], 'placeholder' => '--'])
             ->add('restrictionVisite', TextareaType::class, ['label' => 'Restrictions', 'required' => false])
             ->add('recommandationVisite', TextareaType::class, ['label' => 'Recommandations', 'required' => false])

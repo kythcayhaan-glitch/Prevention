@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Visite;
 use App\Form\VisiteDateType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -14,10 +16,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VisiteType extends AbstractType
 {
+    private static array $conditionFields = [
+        'travailPencheVisite' => 'Travail penché',
+        'deboutVisite'        => 'Debout prolongé',
+        'conduiteVisite'      => 'Conduite',
+        'utilisationVisite'   => 'Écran',
+        'travailHautVisite'   => 'Travail en hauteur',
+        'travailIsoVisite'    => 'Travail isolé',
+        'travailBasVisite'    => 'Travail en position basse',
+        'effortVisite'        => 'Effort / Force',
+    ];
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('agentVisite', TextType::class, ['label' => 'Agent', 'required' => false])
+            ->add('agentVisite', TextType::class, ['label' => 'Nom', 'required' => false, 'attr' => ['placeholder' => 'NOM', 'style' => 'text-transform:uppercase']])
+            ->add('prenomVisite', TextType::class, ['label' => 'Prénom', 'required' => false])
             ->add('poleServiceVisite', TextType::class, ['label' => 'Pôle / Service', 'required' => false])
             ->add('emploiVisite', TextType::class, ['label' => 'Emploi', 'required' => false])
             ->add('dates', CollectionType::class, [
@@ -32,9 +46,9 @@ class VisiteType extends AbstractType
                 'required' => false,
                 'choices' => [
                     'Visite de prévention' => 'Visite de prévention',
-                    'Visite de reprise' => 'Visite de reprise',
-                    'Visite spontanée' => 'Visite spontanée',
-                    'Visite périodique' => 'Visite périodique',
+                    'Visite de reprise'    => 'Visite de reprise',
+                    'Visite spontanée'     => 'Visite spontanée',
+                    'Visite périodique'    => 'Visite périodique',
                 ],
                 'placeholder' => '-- Choisir --',
             ])
@@ -54,26 +68,30 @@ class VisiteType extends AbstractType
                 'choices' => ['Oui' => 'oui', 'Non' => 'non'],
                 'placeholder' => '-- Choisir --',
             ])
-            ->add('tpt1Du', TextType::class, ['label' => 'TPT 1 du', 'required' => false])
-            ->add('tpt1Au', TextType::class, ['label' => 'TPT 1 au', 'required' => false])
-            ->add('tpt2Du', TextType::class, ['label' => 'TPT 2 du', 'required' => false])
-            ->add('tpt2Au', TextType::class, ['label' => 'TPT 2 au', 'required' => false])
-            ->add('tpt3Du', TextType::class, ['label' => 'TPT 3 du', 'required' => false])
-            ->add('tpt3Au', TextType::class, ['label' => 'TPT 3 au', 'required' => false])
-            ->add('tpt4Du', TextType::class, ['label' => 'TPT 4 du', 'required' => false])
-            ->add('tpt4Au', TextType::class, ['label' => 'TPT 4 au', 'required' => false])
-            ->add('travailPencheVisite', ChoiceType::class, ['label' => 'Travail penché', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('deboutVisite', ChoiceType::class, ['label' => 'Debout prolongé', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('conduiteVisite', ChoiceType::class, ['label' => 'Conduite', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('utilisationVisite', ChoiceType::class, ['label' => 'Ecran', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('travailHautVisite', ChoiceType::class, ['label' => 'Travail en hauteur', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('travailIsoVisite', ChoiceType::class, ['label' => 'Travail isolé', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('travailBasVisite', ChoiceType::class, ['label' => 'Travail en position basse', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
-            ->add('effortVisite', ChoiceType::class, ['label' => 'Effort / Force', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
+            ->add('tpt1Du', TextType::class, ['label' => 'TPT 1 du', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt1Au', TextType::class, ['label' => 'TPT 1 au', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt2Du', TextType::class, ['label' => 'TPT 2 du', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt2Au', TextType::class, ['label' => 'TPT 2 au', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt3Du', TextType::class, ['label' => 'TPT 3 du', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt3Au', TextType::class, ['label' => 'TPT 3 au', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt4Du', TextType::class, ['label' => 'TPT 4 du', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('tpt4Au', TextType::class, ['label' => 'TPT 4 au', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('port', TextType::class, ['label' => 'Port de charges', 'required' => false])
             ->add('epi', ChoiceType::class, ['label' => 'EPI', 'required' => false, 'choices' => ['Oui' => 'oui', 'Non' => 'non'], 'placeholder' => '--'])
             ->add('epiDetail', TextareaType::class, ['label' => 'Détail EPI', 'required' => false])
         ;
+
+        foreach (self::$conditionFields as $field => $label) {
+            $builder->add($field, CheckboxType::class, [
+                'label'    => $label,
+                'required' => false,
+                'attr'     => ['class' => 'form-check-input'],
+            ]);
+            $builder->get($field)->addModelTransformer(new CallbackTransformer(
+                fn($v) => (bool)$v,
+                fn($v) => $v ? 1 : 0
+            ));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

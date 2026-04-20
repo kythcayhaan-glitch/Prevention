@@ -29,8 +29,8 @@ class RqthType extends AbstractType
                 ],
                 'placeholder' => '-- Choisir --',
             ])
-            ->add('dateAttributionRqth', TextType::class, ['label' => 'Date d\'attribution', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
-            ->add('dateFinAttributionRqth', TextType::class, ['label' => 'Date de fin', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
+            ->add('dateAttributionRqth', TextType::class, ['label' => 'Date d\'attribution', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
+            ->add('dateFinAttributionRqth', TextType::class, ['label' => 'Date de fin', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
         ;
     }
 

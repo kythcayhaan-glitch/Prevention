@@ -1,0 +1,249 @@
+{% extends 'base.html.twig' %}
+{% block title %}Fiche de suivi — {{ visite.agentVisite }} {{ visite.prenomVisite }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    @media print {
+        .no-print { display: none !important; }
+        .card { break-inside: avoid; }
+        body { background: white !important; }
+        .sidebar, nav.navbar { display: none !important; }
+        main.main-content { padding: 0 !important; }
+        .col-md-10 { width: 100% !important; max-width: 100% !important; flex: 0 0 100% !important; }
+        select, textarea, input { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+    }
+    .section-title { background: #0d6efd; color: white; padding: .35rem .75rem; border-radius: 4px; font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .75rem; }
+    .section-title.bg-secondary { background: #6c757d !important; }
+    .section-title.bg-info    { background: #0dcaf0 !important; color: #000 !important; }
+    .section-title.bg-warning { background: #ffc107 !important; color: #000 !important; }
+    .agent-banner { background: #f8f9fa; border-left: 4px solid #0d6efd; padding: .75rem 1rem; border-radius: 4px; }
+    .btn-check:checked + .btn-outline-primary {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        color: #fff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 0 0 4px rgba(13,110,253,.4) !important;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <h2><i class="bi bi-file-medical"></i> Fiche de suivi</h2>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-outline-primary btn-sm"><i class="bi bi-printer"></i> Imprimer</button>
+        <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+</div>
+
+{# Bandeau agent + dates — lecture seule #}
+<div class="agent-banner mb-4 d-flex flex-wrap gap-4 align-items-center">
+    <div>
+        <div class="text-muted small">Agent</div>
+        <strong class="fs-5">{{ visite.agentVisite }} {{ visite.prenomVisite }}</strong>
+    </div>
+    <div>
+        <div class="text-muted small">Pôle / Service</div>
+        <span>{{ visite.poleServiceVisite ?: '—' }}</span>
+    </div>
+    <div>
+        <div class="text-muted small">Emploi</div>
+        <span>{{ visite.emploiVisite ?: '—' }}</span>
+    </div>
+    <div>
+        <div class="text-muted small">Visite(s) réalisée(s)</div>
+        {% for d in realisees %}
+            <span class="badge bg-primary me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endfor %}
+    </div>
+    <div>
+        <div class="text-muted small">Réf.</div>
+        <span class="text-muted">#{{ visite.id }}</span>
+    </div>
+</div>
+
+{{ form_start(form) }}
+
+<div class="row g-3">
+
+    {# Historique des visites #}
+    <div class="col-12">
+        <div class="section-title" style="background:#343a40"><i class="bi bi-calendar3"></i> Historique des visites</div>
+        <table class="table table-sm table-bordered mb-0">
+            <thead class="table-dark">
+                <tr><th>Date</th><th>Type</th><th>Catégorie</th></tr>
+            </thead>
+            <tbody>
+            {% set toutes = visite.dates|sort((a, b) => a.date <=> b.date) %}
+            {% for d in toutes %}
+                <tr class="{{ d.type == 'prochaine' ? 'table-success' : '' }}">
+                    <td>{{ d.date }}</td>
+                    <td>
+                        {% if d.type == 'prochaine' %}
+                            <span class="badge bg-success">Prévue</span>
+                        {% else %}
+                            <span class="badge bg-primary">Réalisée</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ d.categorie ?: '—' }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3" class="text-muted text-center">Aucune date enregistrée.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Prochaine visite #}
+    <div class="col-12">
+        <div class="section-title" style="background:#198754"><i class="bi bi-calendar-plus"></i> Prochaine visite prévue</div>
+        {% if derniere_realisee %}
+        <p class="text-muted small mb-2">Dernière visite réalisée le <strong>{{ derniere_realisee.date }}</strong>{% if derniere_realisee.categorie %} ({{ derniere_realisee.categorie }}){% endif %}.</p>
+        {% endif %}
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4 pb-2">
+                <label class="form-label text-muted small d-block">A revoir dans :</label>
+                <div class="btn-group btn-group-sm" role="group">
+                    <input type="radio" class="btn-check delai-radio" name="delai_visite" id="delai3"  value="3"  autocomplete="off">
+                    <label class="btn btn-outline-primary" for="delai3">3 mois</label>
+
+                    <input type="radio" class="btn-check delai-radio" name="delai_visite" id="delai6"  value="6"  autocomplete="off">
+                    <label class="btn btn-outline-primary" for="delai6">6 mois</label>
+
+                    <input type="radio" class="btn-check delai-radio" name="delai_visite" id="delai12" value="12" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="delai12">1 an</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.prochaineDate, {attr: {class: 'form-control date-picker prochaine-date-field'}}) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.prochaineCategorie, {attr: {class: 'form-select'}}) }}
+            </div>
+        </div>
+    </div>
+
+    {# Prescriptions #}
+    <div class="col-12">
+        <div class="section-title bg-secondary"><i class="bi bi-clipboard2-pulse"></i> Prescriptions médicales</div>
+        <div class="row g-3">
+            <div class="col-md-4">{{ form_row(form.restrictionVisite, {attr: {class: 'form-control'}}) }}</div>
+            <div class="col-md-4">{{ form_row(form.recommandationVisite, {attr: {class: 'form-control'}}) }}</div>
+            <div class="col-md-4">{{ form_row(form.limitationVisite, {attr: {class: 'form-control'}}) }}</div>
+            <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control'}}) }}</div>
+        </div>
+    </div>
+
+    {# Conditions de travail #}
+    <div class="col-12">
+        <div class="section-title bg-info"><i class="bi bi-tools"></i> Conditions de travail</div>
+        <div class="row g-2 mb-2">
+            {% for field in ['travailPencheVisite','deboutVisite','conduiteVisite','utilisationVisite','travailHautVisite','travailIsoVisite','travailBasVisite','effortVisite'] %}
+            <div class="col-md-3 col-6">
+                <div class="form-check">
+                    {{ form_widget(form[field]) }}
+                    {{ form_label(form[field], null, {label_attr: {class: 'form-check-label'}}) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row g-2">
+            <div class="col-md-3 col-6">{{ form_row(form.port, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+            <div class="col-md-2 col-6">{{ form_row(form.epi, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+            <div class="col-md-5">{{ form_row(form.epiDetail, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+        </div>
+    </div>
+
+    {# TPT #}
+    <div class="col-12">
+        <div class="section-title bg-warning"><i class="bi bi-clock-history"></i> Temps partiel thérapeutique</div>
+        <div class="row g-2 align-items-end">
+            <div class="col-md-2">{{ form_row(form.tempsPartielVisite, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+            <div class="col-md-10">
+                <div class="row g-2" id="tpt-fields">
+                    <div class="col-md-3 d-flex gap-1 align-items-end">
+                        <div class="flex-fill">{{ form_row(form.tpt1Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="flex-fill">{{ form_row(form.tpt1Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                    </div>
+                    <div class="col-md-3 d-flex gap-1 align-items-end">
+                        <div class="flex-fill">{{ form_row(form.tpt2Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="flex-fill">{{ form_row(form.tpt2Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                    </div>
+                    <div class="col-md-3 d-flex gap-1 align-items-end">
+                        <div class="flex-fill">{{ form_row(form.tpt3Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="flex-fill">{{ form_row(form.tpt3Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                    </div>
+                    <div class="col-md-3 d-flex gap-1 align-items-end">
+                        <div class="flex-fill">{{ form_row(form.tpt4Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="flex-fill">{{ form_row(form.tpt4Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-4 no-print">
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
+    <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-outline-secondary ms-2">Annuler</a>
+</div>
+
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+(function () {
+    const refDate = '{{ derniere_realisee ? derniere_realisee.date : '' }}';
+
+    function parseDD(str) {
+        if (!str) return new Date();
+        const p = str.split('/');
+        if (p.length !== 3) return new Date();
+        return new Date(parseInt(p[2]), parseInt(p[1]) - 1, parseInt(p[0]));
+    }
+
+    function formatDD(d) {
+        return String(d.getDate()).padStart(2,'0') + '/' +
+               String(d.getMonth()+1).padStart(2,'0') + '/' +
+               d.getFullYear();
+    }
+
+    function applyDelai(mois) {
+        const base = parseDD(refDate);
+        base.setMonth(base.getMonth() + mois);
+        const formatted = formatDD(base);
+
+        const input = document.querySelector('.prochaine-date-field');
+        if (!input) return;
+
+        // flatpickr attache l'instance sur l'input original
+        const fp = input._flatpickr;
+        if (fp) {
+            fp.setDate(formatted, true, 'd/m/Y');
+        } else {
+            input.value = formatted;
+        }
+    }
+
+    document.querySelectorAll('.delai-radio').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            if (this.checked) applyDelai(parseInt(this.value));
+        });
+    });
+
+    // Décocher les radios si l'utilisateur saisit la date manuellement (pas si c'est applyDelai qui écrit)
+    const dateInput = document.querySelector('.prochaine-date-field');
+    if (dateInput) {
+        dateInput.addEventListener('input', function (e) {
+            if (e.isTrusted) {
+                document.querySelectorAll('.delai-radio').forEach(r => r.checked = false);
+            }
+        });
+    }
+})();
+</script>
+{% endblock %}

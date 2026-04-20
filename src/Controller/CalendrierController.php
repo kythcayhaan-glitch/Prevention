@@ -38,13 +38,15 @@ class CalendrierController extends AbstractController
 
             $events[] = [
                 'id' => $vd->getId(),
-                'title' => $visite?->getAgentVisite() ?: 'Agent inconnu',
+                'title' => $visite ? trim(($visite->getAgentVisite() ?? '') . ' ' . ($visite->getPrenomVisite() ?? '')) ?: 'Agent inconnu' : 'Agent inconnu',
                 'start' => $iso,
                 'color' => $type === 'prochaine' ? '#198754' : '#0d6efd',
                 'extendedProps' => [
-                    'agent' => $visite?->getAgentVisite(),
+                    'agent' => $visite ? trim(($visite->getAgentVisite() ?? '') . ' ' . ($visite->getPrenomVisite() ?? '')) : null,
                     'pole' => $visite?->getPoleServiceVisite(),
                     'type' => $type === 'prochaine' ? 'Prévue' : 'Réalisée',
+                    'categorie' => $vd->getCategorie(),
+                    'visite_id' => $visite?->getId(),
                 ],
             ];
         }

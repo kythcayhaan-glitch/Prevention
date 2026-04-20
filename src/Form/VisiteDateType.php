@@ -17,7 +17,7 @@ class VisiteDateType extends AbstractType
             ->add('date', TextType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'JJ/MM/AAAA', 'class' => 'form-control date-input'],
+                'attr' => ['placeholder' => 'JJ/MM/AAAA', 'class' => 'form-control date-picker'],
             ])
             ->add('type', ChoiceType::class, [
                 'label' => false,
@@ -27,6 +27,17 @@ class VisiteDateType extends AbstractType
                     'Prévue' => 'prochaine',
                 ],
                 'placeholder' => '-- Type --',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('categorie', ChoiceType::class, [
+                'label' => false,
+                'required' => false,
+                'choices' => [
+                    'Entretien Infirmier' => 'ESTI',
+                    'Visite à la demande du médecin de prévention' => 'MDP',
+                    'Visite périodique' => 'VP',
+                ],
+                'placeholder' => '-- Catégorie --',
                 'attr' => ['class' => 'form-select'],
             ])
         ;

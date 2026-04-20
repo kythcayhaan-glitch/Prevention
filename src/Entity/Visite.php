@@ -20,6 +20,9 @@ class Visite
     private ?string $agentVisite = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prenomVisite = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $poleServiceVisite = null;
 
     #[ORM\OneToMany(mappedBy: 'visite', targetEntity: VisiteDate::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -149,7 +152,12 @@ class Visite
     }
 
     public function getAgentVisite(): ?string { return $this->agentVisite; }
-    public function setAgentVisite(?string $agentVisite): static { $this->agentVisite = $agentVisite; return $this; }
+    public function setAgentVisite(?string $agentVisite): static { $this->agentVisite = $agentVisite ? mb_strtoupper($agentVisite) : null; return $this; }
+
+    public function getPrenomVisite(): ?string { return $this->prenomVisite; }
+    public function setPrenomVisite(?string $prenomVisite): static { $this->prenomVisite = $prenomVisite; return $this; }
+
+    public function getNomComplet(): string { return trim(($this->agentVisite ?? '') . ' ' . ($this->prenomVisite ?? '')); }
 
     public function getPoleServiceVisite(): ?string { return $this->poleServiceVisite; }
     public function setPoleServiceVisite(?string $poleServiceVisite): static { $this->poleServiceVisite = $poleServiceVisite; return $this; }

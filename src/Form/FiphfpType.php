@@ -19,7 +19,7 @@ class FiphfpType extends AbstractType
             ->add('agentFiphfp', TextType::class, ['label' => 'Agent', 'required' => false])
             ->add('poleFiphfp', TextType::class, ['label' => 'Pôle / Service', 'required' => false])
             ->add('demandeFiphfp', TextType::class, ['label' => 'N° Demande', 'required' => false])
-            ->add('dateDemandeFiphfp', TextType::class, ['label' => 'Date de demande', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
+            ->add('dateDemandeFiphfp', TextType::class, ['label' => 'Date de demande', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('objetFiphfp', TextType::class, ['label' => 'Objet', 'required' => false])
             ->add('etatDemandeFiphfp', ChoiceType::class, [
                 'label' => 'État',
@@ -36,7 +36,7 @@ class FiphfpType extends AbstractType
             ->add('montantDepenseFiphfp', IntegerType::class, ['label' => 'Montant dépensé (€)', 'required' => false])
             ->add('montantDemandeFiphfp', IntegerType::class, ['label' => 'Montant demandé (€)', 'required' => false])
             ->add('montantAccordeFiphfp', IntegerType::class, ['label' => 'Montant accordé (€)', 'required' => false])
-            ->add('accordPayeLe', TextType::class, ['label' => 'Accord payé le', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
+            ->add('accordPayeLe', TextType::class, ['label' => 'Accord payé le', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('urgenceFiphfp', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
         ;
     }

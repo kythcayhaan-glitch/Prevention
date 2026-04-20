@@ -5,6 +5,9 @@
     <h2><i class="bi bi-clipboard-heart"></i> Visite de prévention #{{ visite.id }}</h2>
     <div class="d-flex gap-2">
         <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Modifier</a>
+        {% if visite.dates|filter(d => d.type == 'realisee')|length > 0 %}
+        <a href="{{ path('app_visite_fiche_suivi', {id: visite.id}) }}" class="btn btn-success"><i class="bi bi-file-medical"></i> Fiche de suivi</a>
+        {% endif %}
         <a href="{{ path('app_visite_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
     </div>
 </div>
@@ -15,16 +18,16 @@
             <div class="card-header bg-primary text-white">Informations générales</div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">Agent</dt><dd class="col-sm-7">{{ visite.agentVisite }}</dd>
+                    <dt class="col-sm-5">Agent</dt><dd class="col-sm-7"><strong>{{ visite.agentVisite }}</strong> {{ visite.prenomVisite }}</dd>
                     <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ visite.poleServiceVisite }}</dd>
                     <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ visite.emploiVisite }}</dd>
                     <dt class="col-sm-5">Dates réalisées</dt><dd class="col-sm-7">
                         {% set realisees = visite.dates|filter(d => d.type == 'realisee') %}
-                        {% if realisees|length %}{% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}</span>{% endfor %}{% else %}-{% endif %}
+                        {% if realisees|length %}{% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}{% else %}-{% endif %}
                     </dd>
                     <dt class="col-sm-5">Prochaines visites</dt><dd class="col-sm-7">
                         {% set prochaines = visite.dates|filter(d => d.type == 'prochaine') %}
-                        {% if prochaines|length %}{% for d in prochaines %}<span class="badge bg-success me-1">{{ d.date }}</span>{% endfor %}{% else %}-{% endif %}
+                        {% if prochaines|length %}{% for d in prochaines %}<span class="badge bg-success me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}{% else %}-{% endif %}
                     </dd>
                     <dt class="col-sm-5">Type</dt><dd class="col-sm-7"><span class="badge bg-secondary">{{ visite.type }}</span></dd>
                     <dt class="col-sm-5">RQTH</dt><dd class="col-sm-7">
