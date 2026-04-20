@@ -18,7 +18,12 @@
                     <dt class="col-sm-5">Agent</dt><dd class="col-sm-7">{{ visite.agentVisite }}</dd>
                     <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ visite.poleServiceVisite }}</dd>
                     <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ visite.emploiVisite }}</dd>
-                    <dt class="col-sm-5">Date visite</dt><dd class="col-sm-7">{{ visite.dateVisite }}</dd>
+                    <dt class="col-sm-5">Date de visite</dt><dd class="col-sm-7">{{ visite.dateVisite }}</dd>
+                    <dt class="col-sm-5">Prochaine visite</dt><dd class="col-sm-7">
+                        {% if visite.prochaineDateVisite %}
+                            <span class="badge bg-info text-dark">{{ visite.prochaineDateVisite }}</span>
+                        {% else %}-{% endif %}
+                    </dd>
                     <dt class="col-sm-5">Type</dt><dd class="col-sm-7"><span class="badge bg-secondary">{{ visite.type }}</span></dd>
                     <dt class="col-sm-5">RQTH</dt><dd class="col-sm-7">
                         {% if visite.rqthVisite == 'oui' %}<span class="badge bg-warning text-dark">Oui</span>{% else %}<span class="badge bg-light text-dark">Non</span>{% endif %}

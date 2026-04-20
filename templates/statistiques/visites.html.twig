@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+{% block title %}Statistiques des visites{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-bar-chart-line"></i> Statistiques des visites</h2>
+</div>
+
+{# Filtre par année #}
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="d-flex align-items-center gap-3">
+            <label class="fw-bold mb-0">Année :</label>
+            <select name="annee" class="form-select" style="width:120px" onchange="this.form.submit()">
+                <option value="">Toutes</option>
+                {% for annee in annees %}
+                    <option value="{{ annee }}" {{ annee == annee_selectionnee ? 'selected' }}>{{ annee }}</option>
+                {% endfor %}
+            </select>
+            {% if annee_selectionnee %}
+                <a href="{{ path('app_stats_visites') }}" class="btn btn-outline-secondary btn-sm">Réinitialiser</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{# Total global #}
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary text-white text-center">
+            <div class="card-body py-4">
+                <div class="display-4 fw-bold">{{ annee_selectionnee ? total_annee : total_by_annee|map(r => r['nb_visites'])|reduce((carry, v) => carry + v, 0) }}</div>
+                <div class="fs-5">visite{{ total_annee > 1 ? 's' }} au total{% if annee_selectionnee %} en {{ annee_selectionnee }}{% endif %}</div>
+                <small class="opacity-75">(dates de visite + prochaines dates)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-success text-white text-center">
+            <div class="card-body py-4">
+                <div class="display-4 fw-bold">{{ par_agent|length }}</div>
+                <div class="fs-5">agent{{ par_agent|length > 1 ? 's' }} suivi{{ par_agent|length > 1 ? 's' }}{% if annee_selectionnee %} en {{ annee_selectionnee }}{% endif %}</div>
+            </div>
+        </div>
+    </div>
+    {% if not annee_selectionnee %}
+    <div class="col-md-4">
+        <div class="card border-0 bg-info text-white text-center">
+            <div class="card-body py-4">
+                <div class="display-4 fw-bold">{{ total_by_annee|length }}</div>
+                <div class="fs-5">année{{ total_by_annee|length > 1 ? 's' }} de données</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{# Totaux par année (si pas de filtre) #}
+{% if not annee_selectionnee and total_by_annee|length > 1 %}
+<div class="card mb-4">
+    <div class="card-header fw-bold"><i class="bi bi-calendar3"></i> Visites par année</div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>Année</th><th>Nombre de visites</th><th>Progression</th></tr></thead>
+            <tbody>
+            {% set max_annee = max(total_by_annee|map(r => r['nb_visites'])) %}
+            {% for row in total_by_annee %}
+            <tr>
+                <td><a href="{{ path('app_stats_visites', {annee: row.annee}) }}">{{ row.annee }}</a></td>
+                <td><strong>{{ row.nb_visites }}</strong></td>
+                <td style="width:40%">
+                    <div class="progress" style="height:20px">
+                        <div class="progress-bar bg-primary" style="width:{{ max_annee > 0 ? (row.nb_visites / max_annee * 100)|round : 0 }}%">
+                            {{ row.nb_visites }}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{# Détail par agent #}
+<div class="card">
+    <div class="card-header fw-bold">
+        <i class="bi bi-people"></i> Visites par agent{% if annee_selectionnee %} — {{ annee_selectionnee }}{% endif %}
+    </div>
+    <div class="card-body p-0">
+        <div class="p-3"><input type="text" id="searchInput" class="form-control" placeholder="Rechercher un agent..."></div>
+        <table class="table table-hover mb-0" id="mainTable">
+            <thead><tr><th>Agent</th><th>Pôle / Service</th><th>Nombre de visites</th><th>Répartition</th></tr></thead>
+            <tbody>
+            {% set total = par_agent|map(a => a.nb_visites)|reduce((carry, v) => carry + v, 0) %}
+            {% set max_val = max(par_agent|map(a => a['nb_visites'])) %}
+            {% for row in par_agent %}
+            <tr>
+                <td><strong>{{ row.agent }}</strong></td>
+                <td><span class="text-muted">{{ row.pole_service }}</span></td>
+                <td><span class="badge bg-primary fs-6">{{ row.nb_visites }}</span></td>
+                <td style="width:35%">
+                    <div class="progress" style="height:18px">
+                        <div class="progress-bar" style="width:{{ max_val > 0 ? (row.nb_visites / max_val * 100)|round : 0 }}%">
+                            {{ total > 0 ? (row.nb_visites / total * 100)|round }}%
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-muted py-4">Aucune donnée pour cette période.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const f = this.value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(f) ? '' : 'none');
+});
+</script>
+{% endblock %}

@@ -20,6 +20,7 @@
                         <th>Pôle / Service</th>
                         <th>Emploi</th>
                         <th>Date visite</th>
+                        <th>Prochaine visite</th>
                         <th>Type</th>
                         <th>RQTH</th>
                         <th>Actions</th>
@@ -33,6 +34,7 @@
                         <td>{{ visite.poleServiceVisite }}</td>
                         <td>{{ visite.emploiVisite }}</td>
                         <td>{{ visite.dateVisite }}</td>
+                        <td>{% if visite.prochaineDateVisite %}<span class="badge bg-info text-dark">{{ visite.prochaineDateVisite }}</span>{% else %}-{% endif %}</td>
                         <td><span class="badge bg-secondary">{{ visite.type }}</span></td>
                         <td>
                             {% if visite.rqthVisite == 'oui' %}

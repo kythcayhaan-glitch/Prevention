@@ -52,7 +52,8 @@
       "Bash(git branch *)",
       "Bash(git push *)",
       "Bash(\"/d/wamp/mysql/bin/mysqldump.exe\" -u root --default-character-set=utf8 celine_symfony)",
-      "Bash(\"/d/wamp/mysql/bin/mysql.exe\" -u root -e \"USE celine_symfony; DROP TABLE stock;\")"
+      "Bash(\"/d/wamp/mysql/bin/mysql.exe\" -u root -e \"USE celine_symfony; DROP TABLE stock;\")",
+      "Bash(\"/d/wamp/mysql/bin/mysql.exe\" -u root -e \"USE celine_symfony; ALTER TABLE visite ADD prochaine_date_visite VARCHAR\\(10\\) DEFAULT NULL;\")"
     ]
   }
 }

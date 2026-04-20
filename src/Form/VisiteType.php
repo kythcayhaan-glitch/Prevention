@@ -20,6 +20,7 @@ class VisiteType extends AbstractType
             ->add('poleServiceVisite', TextType::class, ['label' => 'Pôle / Service', 'required' => false])
             ->add('emploiVisite', TextType::class, ['label' => 'Emploi', 'required' => false])
             ->add('dateVisite', TextType::class, ['label' => 'Date de visite', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
+            ->add('prochaineDateVisite', TextType::class, ['label' => 'Prochaine date de visite', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY']])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type de visite',
                 'required' => false,

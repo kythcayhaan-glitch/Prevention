@@ -23,6 +23,9 @@ class Visite
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $dateVisite = null;
 
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $prochaineDateVisite = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $observation = null;
 
@@ -132,6 +135,14 @@ class Visite
 
     public function getDateVisite(): ?string { return $this->dateVisite; }
     public function setDateVisite(?string $dateVisite): static { $this->dateVisite = $dateVisite; return $this; }
+
+    public function getProchaineDateVisite(): ?string { return $this->prochaineDateVisite; }
+    public function setProchaineDateVisite(?string $prochaineDateVisite): static { $this->prochaineDateVisite = $prochaineDateVisite; return $this; }
+
+    public function getNombreDates(): int
+    {
+        return ($this->dateVisite ? 1 : 0) + ($this->prochaineDateVisite ? 1 : 0);
+    }
 
     public function getObservation(): ?string { return $this->observation; }
     public function setObservation(?string $observation): static { $this->observation = $observation; return $this; }
