@@ -16,7 +16,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Agent</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
                         <th>Pôle / Service</th>
                         <th>Emploi</th>
                         <th>Dates réalisées</th>
@@ -30,7 +31,8 @@
                 {% for visite in visites %}
                     <tr data-href="{{ path('app_visite_show', {id: visite.id}) }}">
                         <td>{{ visite.id }}</td>
-                        <td><strong>{{ visite.agentVisite }}</strong> {{ visite.prenomVisite }}</td>
+                        <td><strong>{{ visite.agentVisite }}</strong></td>
+                        <td>{{ visite.prenomVisite }}</td>
                         <td>{{ visite.poleServiceVisite }}</td>
                         <td>{{ visite.emploiVisite }}</td>
                         <td>
