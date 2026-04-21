@@ -125,59 +125,68 @@
         </div>
     </div>
 
-    {# Prescriptions #}
+    {# Prescriptions + EPI #}
     <div class="col-12">
-        <div class="section-title bg-secondary"><i class="bi bi-clipboard2-pulse"></i> Prescriptions médicales</div>
-        <div class="row g-3">
-            <div class="col-md-4">{{ form_row(form.restrictionVisite, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.recommandationVisite, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.limitationVisite, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control'}}) }}</div>
-        </div>
-    </div>
-
-    {# Conditions de travail #}
-    <div class="col-12">
-        <div class="section-title bg-info"><i class="bi bi-tools"></i> Conditions de travail</div>
-        <div class="row g-2 mb-2">
-            {% for field in ['travailPencheVisite','deboutVisite','conduiteVisite','utilisationVisite','travailHautVisite','travailIsoVisite','travailBasVisite','effortVisite'] %}
-            <div class="col-md-3 col-6">
-                <div class="form-check">
-                    {{ form_widget(form[field]) }}
-                    {{ form_label(form[field], null, {label_attr: {class: 'form-check-label'}}) }}
+        <div class="row g-3 mb-0">
+            <div class="col-md-9">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white"><i class="bi bi-clipboard2-pulse"></i> Restrictions / Recommandations</div>
+                    <div class="card-body row g-2">
+                        <div class="col-md-4">{{ form_row(form.restrictionVisite, {attr: {class: 'form-control form-control-sm', rows: 5}}) }}</div>
+                        <div class="col-md-4">{{ form_row(form.recommandationVisite, {attr: {class: 'form-control form-control-sm', rows: 5}}) }}</div>
+                        <div class="col-md-4">{{ form_row(form.limitationVisite, {attr: {class: 'form-control form-control-sm', rows: 5}}) }}</div>
+                        <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
+                    </div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        <div class="row g-2">
-            <div class="col-md-3 col-6">{{ form_row(form.port, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-            <div class="col-md-2 col-6">{{ form_row(form.epi, {attr: {class: 'form-select form-select-sm'}}) }}</div>
-            <div class="col-md-5">{{ form_row(form.epiDetail, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-header bg-dark text-white"><i class="bi bi-shield-check"></i> EPI</div>
+                    <div class="card-body row g-2">
+                        <div class="col-12">{{ form_row(form.epi, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+                        <div class="col-12">{{ form_row(form.epiDetail, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    {# TPT #}
+    {# Conditions de travail + TPT #}
     <div class="col-12">
-        <div class="section-title bg-warning"><i class="bi bi-clock-history"></i> Temps partiel thérapeutique</div>
-        <div class="row g-2 align-items-end">
-            <div class="col-md-2">{{ form_row(form.tempsPartielVisite, {attr: {class: 'form-select form-select-sm'}}) }}</div>
-            <div class="col-md-10">
-                <div class="row g-2" id="tpt-fields">
-                    <div class="col-md-3 d-flex gap-1 align-items-end">
-                        <div class="flex-fill">{{ form_row(form.tpt1Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="flex-fill">{{ form_row(form.tpt1Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+        <div class="row g-3 mb-0">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white"><i class="bi bi-tools"></i> Conditions de travail</div>
+                    <div class="card-body">
+                        <div class="row g-2 mb-2">
+                            {% for field in ['travailPencheVisite','deboutVisite','conduiteVisite','utilisationVisite','travailHautVisite','travailIsoVisite','travailBasVisite','effortVisite'] %}
+                            <div class="col-6">
+                                <div class="form-check">
+                                    {{ form_widget(form[field]) }}
+                                    {{ form_label(form[field], null, {label_attr: {class: 'form-check-label'}}) }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-12">{{ form_row(form.port, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        </div>
                     </div>
-                    <div class="col-md-3 d-flex gap-1 align-items-end">
-                        <div class="flex-fill">{{ form_row(form.tpt2Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="flex-fill">{{ form_row(form.tpt2Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                    </div>
-                    <div class="col-md-3 d-flex gap-1 align-items-end">
-                        <div class="flex-fill">{{ form_row(form.tpt3Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="flex-fill">{{ form_row(form.tpt3Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                    </div>
-                    <div class="col-md-3 d-flex gap-1 align-items-end">
-                        <div class="flex-fill">{{ form_row(form.tpt4Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="flex-fill">{{ form_row(form.tpt4Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark"><i class="bi bi-clock-history"></i> Temps partiel thérapeutique</div>
+                    <div class="card-body row g-2">
+                        <div class="col-12">{{ form_row(form.tempsPartielVisite, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt1Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt1Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt2Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt2Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt3Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt3Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt4Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+                        <div class="col-6">{{ form_row(form.tpt4Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
                     </div>
                 </div>
             </div>

@@ -7,31 +7,38 @@
 </div>
 <div class="card">
     <div class="card-body p-0">
-        <div class="p-3"><input type="text" id="searchInput" class="form-control" placeholder="Rechercher..."></div>
+        <div class="px-3 pt-3 pb-2">
+            <input type="text" id="searchInput" class="form-control table-search" placeholder="&#xF52A;  Rechercher (agent, objet, état...)">
+        </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
-                <thead><tr><th>#</th><th>Agent</th><th>Pôle</th><th>Objet</th><th>État</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th></tr></thead>
+                <thead><tr>
+                    <th>#</th><th>Agent</th><th>Pôle</th><th>Objet</th>
+                    <th>État</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th>
+                </tr></thead>
                 <tbody>
                 {% for f in fiphfps %}
-                <tr>
-                    <td>{{ f.id }}</td>
-                    <td>{{ f.agentFiphfp }}</td>
+                <tr data-href="{{ path('app_fiphfp_show', {id: f.id}) }}">
+                    <td class="text-muted">{{ f.id }}</td>
+                    <td><strong>{{ f.agentFiphfp }}</strong></td>
                     <td>{{ f.poleFiphfp }}</td>
                     <td>{{ f.objetFiphfp }}</td>
                     <td><span class="badge bg-{{ f.etatDemandeFiphfp == 'Accordé' ? 'success' : (f.etatDemandeFiphfp == 'Refusé' ? 'danger' : 'secondary') }}">{{ f.etatDemandeFiphfp }}</span></td>
                     <td>{{ f.dateDemandeFiphfp }}</td>
-                    <td>{{ f.montantAccordeFiphfp ? f.montantAccordeFiphfp ~ ' €' : '' }}</td>
-                    <td>{% if f.urgenceFiphfp %}<span class="badge bg-danger">Urgent</span>{% endif %}</td>
-                    <td>
-                        <a href="{{ path('app_fiphfp_show', {id: f.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
-                        <a href="{{ path('app_fiphfp_edit', {id: f.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                        <form method="post" action="{{ path('app_fiphfp_delete', {id: f.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer ?')">
+                    <td>{{ f.montantAccordeFiphfp ? f.montantAccordeFiphfp ~ ' €' : '—' }}</td>
+                    <td>{% if f.urgenceFiphfp %}<span class="badge bg-danger">Urgent</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                    <td class="text-nowrap" onclick="event.stopPropagation()">
+                        <a href="{{ path('app_fiphfp_show', {id: f.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
+                        <a href="{{ path('app_fiphfp_edit', {id: f.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{{ path('app_fiphfp_delete', {id: f.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ f.id) }}">
-                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>
                     </td>
                 </tr>
-                {% else %}<tr><td colspan="9" class="text-center text-muted py-4">Aucune demande FIPHFP.</td></tr>{% endfor %}
+                {% else %}
+                <tr><td colspan="9" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune demande FIPHFP.</td></tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

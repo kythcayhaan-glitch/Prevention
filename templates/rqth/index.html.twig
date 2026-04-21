@@ -7,30 +7,37 @@
 </div>
 <div class="card">
     <div class="card-body p-0">
-        <div class="p-3"><input type="text" id="searchInput" class="form-control" placeholder="Rechercher..."></div>
+        <div class="px-3 pt-3 pb-2">
+            <input type="text" id="searchInput" class="form-control table-search" placeholder="&#xF52A;  Rechercher (agent, service, état...)">
+        </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
-                <thead><tr><th>#</th><th>Agent</th><th>Pôle / Service</th><th>Emploi</th><th>État</th><th>Date attribution</th><th>Date fin</th><th>Actions</th></tr></thead>
+                <thead><tr>
+                    <th>#</th><th>Agent</th><th>Pôle / Service</th><th>Emploi</th>
+                    <th>État</th><th>Attribution</th><th>Fin</th><th>Actions</th>
+                </tr></thead>
                 <tbody>
                 {% for rqth in rqths %}
-                <tr>
-                    <td>{{ rqth.id }}</td>
-                    <td>{{ rqth.agentRqth }}</td>
+                <tr data-href="{{ path('app_rqth_show', {id: rqth.id}) }}">
+                    <td class="text-muted">{{ rqth.id }}</td>
+                    <td><strong>{{ rqth.agentRqth }}</strong></td>
                     <td>{{ rqth.poleServiceRqth }}</td>
                     <td>{{ rqth.emploiRqth }}</td>
                     <td><span class="badge bg-{{ rqth.etatRqth == 'Attribué' ? 'success' : (rqth.etatRqth == 'A renouveler' ? 'warning text-dark' : 'secondary') }}">{{ rqth.etatRqth }}</span></td>
                     <td>{{ rqth.dateAttributionRqth }}</td>
                     <td>{{ rqth.dateFinAttributionRqth }}</td>
-                    <td>
-                        <a href="{{ path('app_rqth_show', {id: rqth.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
-                        <a href="{{ path('app_rqth_edit', {id: rqth.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                        <form method="post" action="{{ path('app_rqth_delete', {id: rqth.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer ?')">
+                    <td class="text-nowrap" onclick="event.stopPropagation()">
+                        <a href="{{ path('app_rqth_show', {id: rqth.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
+                        <a href="{{ path('app_rqth_edit', {id: rqth.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{{ path('app_rqth_delete', {id: rqth.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rqth.id) }}">
-                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>
                     </td>
                 </tr>
-                {% else %}<tr><td colspan="8" class="text-center text-muted py-4">Aucun dossier RQTH.</td></tr>{% endfor %}
+                {% else %}
+                <tr><td colspan="8" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucun dossier RQTH.</td></tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

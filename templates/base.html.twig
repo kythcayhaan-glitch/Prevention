@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="{{ app.user ? (app.user.theme ?? '') : '' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,27 +8,189 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { min-height: calc(100vh - 56px); background: #343a40; }
-        .sidebar .nav-link { color: #adb5bd; padding: .4rem 1rem; font-size: .9rem; }
+        /* ── Variables de thème ── */
+        :root {
+            --theme-navbar-bg:    #0d6efd;
+            --theme-sidebar-bg:   #343a40;
+            --theme-sidebar-link: #adb5bd;
+            --theme-sidebar-sec:  #6c757d;
+            --theme-body-bg:      #f8f9fa;
+            --theme-table-th:     #495057;
+            --theme-table-hover:  rgba(13,110,253,.06);
+            --theme-table-border: rgba(0,0,0,.06);
+            --theme-table-color:  inherit;
+            --theme-card-bg:      #fff;
+            --theme-card-border:  rgba(0,0,0,.125);
+            --theme-input-bg:     #fff;
+            --theme-input-color:  #212529;
+            --theme-input-border: #dee2e6;
+            --theme-search-line:  #dee2e6;
+            --theme-search-focus: #0d6efd;
+        }
+        [data-theme="sombre"] {
+            --theme-navbar-bg:    #1a1a2e;
+            --theme-sidebar-bg:   #16213e;
+            --theme-sidebar-link: #a0aec0;
+            --theme-sidebar-sec:  #4a5568;
+            --theme-body-bg:      #0f0f23;
+            --theme-table-th:     #1e2a3a;
+            --theme-table-hover:  rgba(255,255,255,.05);
+            --theme-table-border: rgba(255,255,255,.06);
+            --theme-table-color:  #e2e8f0;
+            --theme-card-bg:      #1e2a3a;
+            --theme-card-border:  #2d3748;
+            --theme-input-bg:     #2d3748;
+            --theme-input-color:  #e2e8f0;
+            --theme-input-border: #4a5568;
+            --theme-search-line:  #4a5568;
+            --theme-search-focus: #90cdf4;
+        }
+        [data-theme="marine"] {
+            --theme-navbar-bg:    #1a3a5c;
+            --theme-sidebar-bg:   #0d2137;
+            --theme-sidebar-link: #90b4ce;
+            --theme-sidebar-sec:  #4a7a9b;
+            --theme-body-bg:      #eaf2fb;
+            --theme-table-th:     #1a3a5c;
+            --theme-table-hover:  rgba(26,58,92,.07);
+            --theme-table-border: rgba(26,58,92,.08);
+            --theme-table-color:  inherit;
+            --theme-card-bg:      #fff;
+            --theme-card-border:  rgba(26,58,92,.15);
+            --theme-input-bg:     #fff;
+            --theme-input-color:  #1a3a5c;
+            --theme-input-border: #90b4ce;
+            --theme-search-line:  #90b4ce;
+            --theme-search-focus: #1a3a5c;
+        }
+        [data-theme="foret"] {
+            --theme-navbar-bg:    #1e5631;
+            --theme-sidebar-bg:   #145a32;
+            --theme-sidebar-link: #a9dfbf;
+            --theme-sidebar-sec:  #52be80;
+            --theme-body-bg:      #eafaf1;
+            --theme-table-th:     #1e5631;
+            --theme-table-hover:  rgba(30,86,49,.07);
+            --theme-table-border: rgba(30,86,49,.08);
+            --theme-table-color:  inherit;
+            --theme-card-bg:      #fff;
+            --theme-card-border:  rgba(30,86,49,.15);
+            --theme-input-bg:     #fff;
+            --theme-input-color:  #1e5631;
+            --theme-input-border: #a9dfbf;
+            --theme-search-line:  #a9dfbf;
+            --theme-search-focus: #1e5631;
+        }
+        [data-theme="bordeaux"] {
+            --theme-navbar-bg:    #6d1a36;
+            --theme-sidebar-bg:   #4a1028;
+            --theme-sidebar-link: #e8b4c1;
+            --theme-sidebar-sec:  #c0697e;
+            --theme-body-bg:      #fdf2f5;
+            --theme-table-th:     #6d1a36;
+            --theme-table-hover:  rgba(109,26,54,.07);
+            --theme-table-border: rgba(109,26,54,.08);
+            --theme-table-color:  inherit;
+            --theme-card-bg:      #fff;
+            --theme-card-border:  rgba(109,26,54,.15);
+            --theme-input-bg:     #fff;
+            --theme-input-color:  #6d1a36;
+            --theme-input-border: #e8b4c1;
+            --theme-search-line:  #e8b4c1;
+            --theme-search-focus: #6d1a36;
+        }
+
+        /* ── Application des variables ── */
+        body { background-color: var(--theme-body-bg); }
+        .navbar { background-color: var(--theme-navbar-bg) !important; }
+        .sidebar { min-height: calc(100vh - 56px); background: var(--theme-sidebar-bg); }
+        .sidebar .nav-link { color: var(--theme-sidebar-link); padding: .4rem 1rem; font-size: .9rem; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,.1); border-radius: 4px; }
-        .sidebar .nav-section { color: #6c757d; font-size: .72rem; text-transform: uppercase; padding: .5rem 1rem .2rem; margin-top: .5rem; letter-spacing: .05em; }
+        .sidebar .nav-section { color: var(--theme-sidebar-sec); font-size: .72rem; text-transform: uppercase; padding: .5rem 1rem .2rem; margin-top: .5rem; letter-spacing: .05em; }
         .main-content { padding: 1.5rem; }
         .card { box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); }
         .flash-messages { position: fixed; top: 70px; right: 20px; z-index: 9999; min-width: 300px; }
-        .table th { background: #495057; color: #fff; }
+
+        /* ── Tableaux ── */
+        .table { font-size: .875rem; color: var(--theme-table-color); }
+        .table thead tr { background: var(--theme-table-th); }
+        .table thead th {
+            background: transparent;
+            color: #fff;
+            font-weight: 600;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: .65rem .85rem;
+            border: none;
+            white-space: nowrap;
+        }
+        .table tbody tr { transition: background .12s; }
+        .table tbody td { padding: .6rem .85rem; vertical-align: middle; border-color: var(--theme-table-border); }
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table-hover tbody tr:hover { background: var(--theme-table-hover); }
+        .table td .btn-sm { padding: .2rem .45rem; font-size: .78rem; }
+
+        /* ── Barre de recherche ── */
+        .table-search { border: none; border-bottom: 2px solid var(--theme-search-line); border-radius: 0; box-shadow: none; font-size: .9rem; background: transparent; color: var(--theme-input-color); }
+        .table-search:focus { border-bottom-color: var(--theme-search-focus); box-shadow: none; background: transparent; color: var(--theme-input-color); }
+
+        /* ── Cards ── */
+        .card { background: var(--theme-card-bg); border-color: var(--theme-card-border); }
+
+        /* ── Inputs ── */
+        .form-control, .form-select {
+            background-color: var(--theme-input-bg);
+            color: var(--theme-input-color);
+            border-color: var(--theme-input-border);
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: var(--theme-input-bg);
+            color: var(--theme-input-color);
+        }
+
+        /* ── Thème sombre : surcharges spécifiques ── */
+        [data-theme="sombre"] body { color: #e2e8f0; }
+        [data-theme="sombre"] .card-header { border-color: #2d3748; }
+        [data-theme="sombre"] .form-control:focus, [data-theme="sombre"] .form-select:focus { background: #374151; }
+        [data-theme="sombre"] .table td, [data-theme="sombre"] .table tr { border-color: var(--theme-table-border); }
+        [data-theme="sombre"] .text-muted { color: #718096 !important; }
+        [data-theme="sombre"] .badge.bg-light { background-color: #4a5568 !important; color: #e2e8f0 !important; }
+        [data-theme="sombre"] .agent-banner { background: var(--theme-card-bg) !important; border-color: #90cdf4; }
+        [data-theme="sombre"] .btn-outline-secondary { color: #a0aec0; border-color: #4a5568; }
+        [data-theme="sombre"] .section-title { opacity: .9; }
+
+        /* ── Sélecteur de thème ── */
+        .theme-swatches { display: flex; gap: 6px; align-items: center; }
+        .theme-swatch {
+            width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+            border: 2px solid transparent; transition: transform .15s, border-color .15s;
+        }
+        .theme-swatch:hover { transform: scale(1.2); }
+        .theme-swatch.active { border-color: #fff; transform: scale(1.2); }
     </style>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-primary navbar-expand-lg py-2">
+<nav class="navbar navbar-dark navbar-expand-lg py-2">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="{{ path('app_dashboard') }}">
             <i class="bi bi-shield-check"></i> Gestion Prévention
         </a>
         {% if app.user %}
         <div class="ms-auto d-flex align-items-center gap-3">
+
+            {# Sélecteur de thème #}
+            <div class="theme-swatches" title="Choisir un thème">
+                <i class="bi bi-palette text-white opacity-75 me-1"></i>
+                <span class="theme-swatch" data-theme=""        style="background:#0d6efd" title="Clair"></span>
+                <span class="theme-swatch" data-theme="sombre"  style="background:#1a1a2e" title="Sombre"></span>
+                <span class="theme-swatch" data-theme="marine"  style="background:#1a3a5c" title="Marine"></span>
+                <span class="theme-swatch" data-theme="foret"   style="background:#1e5631" title="Forêt"></span>
+                <span class="theme-swatch" data-theme="bordeaux"style="background:#6d1a36" title="Bordeaux"></span>
+            </div>
+
             <span class="text-white small"><i class="bi bi-person-circle"></i> {{ app.user.nom }}</span>
             <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm">
                 <i class="bi bi-box-arrow-right"></i> Déconnexion
@@ -135,13 +297,45 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 <script>
+// ── Gestion des thèmes ──
+(function () {
+    var current = document.documentElement.getAttribute('data-theme') || '';
+
+    function markActive(val) {
+        document.querySelectorAll('.theme-swatch').forEach(function (s) {
+            s.classList.toggle('active', s.dataset.theme === val);
+        });
+    }
+    markActive(current);
+
+    document.querySelectorAll('.theme-swatch').forEach(function (swatch) {
+        swatch.addEventListener('click', function () {
+            var t = this.dataset.theme;
+            document.documentElement.setAttribute('data-theme', t);
+            markActive(t);
+            fetch('{{ path('app_user_theme') }}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({theme: t})
+            });
+        });
+    });
+})();
+
+// ── Lignes de tableau cliquables ──
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('tr[data-href]').forEach(function (row) {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', function () {
+            window.location.href = this.dataset.href;
+        });
+    });
+});
+
+// ── Flatpickr ──
 function initDatePickers(root) {
     (root || document).querySelectorAll('.date-picker:not(.flatpickr-input)').forEach(function (el) {
-        flatpickr(el, {
-            locale: 'fr',
-            dateFormat: 'd/m/Y',
-            allowInput: true,
-        });
+        flatpickr(el, { locale: 'fr', dateFormat: 'd/m/Y', allowInput: true });
     });
 }
 document.addEventListener('DOMContentLoaded', function () { initDatePickers(); });

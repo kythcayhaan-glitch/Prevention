@@ -31,6 +31,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 60)]
     private string $service = '';
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $theme = null;
+
     public function getId(): ?int { return $this->id; }
 
     public function getLogin(): string { return $this->login; }
@@ -47,6 +50,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getService(): string { return $this->service; }
     public function setService(string $service): static { $this->service = $service; return $this; }
+
+    public function getTheme(): ?string { return $this->theme; }
+    public function setTheme(?string $theme): static { $this->theme = $theme; return $this; }
 
     public function getUserIdentifier(): string { return $this->login; }
 

@@ -8,8 +8,8 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <div class="p-3">
-            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher (agent, service, type...)">
+        <div class="px-3 pt-3 pb-2">
+            <input type="text" id="searchInput" class="form-control table-search" placeholder="&#xF52A;  Rechercher (agent, service, type...)">
         </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                 {% for visite in visites %}
-                    <tr class="row-clickable" data-href="{{ path('app_visite_edit', {id: visite.id}) }}" style="cursor:pointer">
+                    <tr data-href="{{ path('app_visite_show', {id: visite.id}) }}">
                         <td>{{ visite.id }}</td>
                         <td><strong>{{ visite.agentVisite }}</strong> {{ visite.prenomVisite }}</td>
                         <td>{{ visite.poleServiceVisite }}</td>
@@ -66,7 +66,7 @@
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="8" class="text-center text-muted py-4">Aucune visite enregistrée.</td></tr>
+                    <tr><td colspan="8" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune visite enregistrée.</td></tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -83,10 +83,5 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     });
 });
 
-document.querySelectorAll('.row-clickable').forEach(function(row) {
-    row.addEventListener('click', function() {
-        window.location.href = this.dataset.href;
-    });
-});
 </script>
 {% endblock %}

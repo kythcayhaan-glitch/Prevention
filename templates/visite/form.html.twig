@@ -15,10 +15,9 @@
             <div class="card-body row g-3">
                 <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
                 <div class="col-md-3">{{ form_row(form.prenomVisite, {attr: {class: 'form-control'}}) }}</div>
-                <div class="col-md-3">{{ form_row(form.poleServiceVisite, {attr: {class: 'form-control'}}) }}</div>
+                <div class="col-md-3">{{ form_row(form.poleServiceVisite, {attr: {class: 'form-select'}}) }}</div>
                 <div class="col-md-4">{{ form_row(form.emploiVisite, {attr: {class: 'form-control'}}) }}</div>
                 <div class="col-md-4">{{ form_row(form.type, {attr: {class: 'form-select'}}) }}</div>
-                <div class="col-md-4">{{ form_row(form.rqthVisite, {attr: {class: 'form-select'}}) }}</div>
             </div>
         </div>
 
@@ -58,67 +57,6 @@
             </div>
         </div>
 
-        <div class="row g-3 mb-3">
-            <div class="col-md-9">
-                <div class="card h-100">
-                    <div class="card-header bg-secondary text-white">Restrictions / Recommandations</div>
-                    <div class="card-body row g-2">
-                        <div class="col-md-4">{{ form_row(form.restrictionVisite, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
-                        <div class="col-md-4">{{ form_row(form.recommandationVisite, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
-                        <div class="col-md-4">{{ form_row(form.limitationVisite, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
-                        <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100">
-                    <div class="card-header bg-dark text-white">EPI</div>
-                    <div class="card-body row g-2">
-                        <div class="col-12">{{ form_row(form.epi, {attr: {class: 'form-select form-select-sm'}}) }}</div>
-                        <div class="col-12">{{ form_row(form.epiDetail, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header bg-info text-white">Conditions de travail</div>
-                    <div class="card-body">
-                        <div class="row g-2 mb-2">
-                            {% for field in ['travailPencheVisite','deboutVisite','conduiteVisite','utilisationVisite','travailHautVisite','travailIsoVisite','travailBasVisite','effortVisite'] %}
-                            <div class="col-6">
-                                <div class="form-check">
-                                    {{ form_widget(form[field]) }}
-                                    {{ form_label(form[field], null, {label_attr: {class: 'form-check-label'}}) }}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-12">{{ form_row(form.port, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header bg-warning text-dark">Temps partiel thérapeutique</div>
-                    <div class="card-body row g-2">
-                        <div class="col-12">{{ form_row(form.tempsPartielVisite, {attr: {class: 'form-select form-select-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt1Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt1Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt2Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt2Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt3Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt3Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt4Du, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                        <div class="col-6">{{ form_row(form.tpt4Au, {attr: {class: 'form-control form-control-sm'}}) }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>

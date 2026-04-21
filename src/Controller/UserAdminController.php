@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -63,6 +64,21 @@ class UserAdminController extends AbstractController
         }
 
         return $this->render('user/form.html.twig', ['form' => $form, 'title' => 'Modifier l\'utilisateur']);
+    }
+
+    #[Route('/theme', name: 'app_user_theme', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function saveTheme(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $allowed = ['', 'sombre', 'marine', 'foret', 'bordeaux'];
+        $theme = $request->getPayload()->getString('theme');
+        if (!in_array($theme, $allowed, true)) {
+            return new JsonResponse(['ok' => false], 400);
+        }
+        $user = $this->getUser();
+        $user->setTheme($theme ?: null);
+        $em->flush();
+        return new JsonResponse(['ok' => true]);
     }
 
     #[Route('/{id}/supprimer', name: 'app_user_delete', methods: ['POST'])]
