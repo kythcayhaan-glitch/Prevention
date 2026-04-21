@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getTheme(): ?string { return $this->theme; }
     public function setTheme(?string $theme): static { $this->theme = $theme; return $this; }
 
-    public function getUserIdentifier(): string { return $this->nom; }
+    public function getUserIdentifier(): string { return $this->login; }
 
     public function getRoles(): array
     {
