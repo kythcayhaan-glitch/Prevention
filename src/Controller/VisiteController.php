@@ -73,7 +73,7 @@ class VisiteController extends AbstractController
     #[Route('/{id}/autosave', name: 'app_visite_autosave', methods: ['POST'])]
     public function autosave(Request $request, Visite $visite, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(VisiteType::class, $visite);
+        $form = $this->createForm(VisiteType::class, $visite, ['csrf_protection' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
