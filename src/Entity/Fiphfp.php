@@ -14,8 +14,14 @@ class Fiphfp
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $genre = null;
+
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $agentFiphfp = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $prenomFiphfp = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $poleFiphfp = null;
@@ -52,8 +58,14 @@ class Fiphfp
 
     public function getId(): ?int { return $this->id; }
 
+    public function getGenre(): ?string { return $this->genre; }
+    public function setGenre(?string $genre): static { $this->genre = $genre; return $this; }
+
     public function getAgentFiphfp(): ?string { return $this->agentFiphfp; }
     public function setAgentFiphfp(?string $agentFiphfp): static { $this->agentFiphfp = $agentFiphfp; return $this; }
+
+    public function getPrenomFiphfp(): ?string { return $this->prenomFiphfp; }
+    public function setPrenomFiphfp(?string $prenomFiphfp): static { $this->prenomFiphfp = $prenomFiphfp; return $this; }
 
     public function getPoleFiphfp(): ?string { return $this->poleFiphfp; }
     public function setPoleFiphfp(?string $poleFiphfp): static { $this->poleFiphfp = $poleFiphfp; return $this; }

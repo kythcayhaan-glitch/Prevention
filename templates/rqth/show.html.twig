@@ -12,7 +12,9 @@
     <div class="card-header bg-success text-white">Dossier RQTH</div>
     <div class="card-body">
         <dl class="row mb-0">
-            <dt class="col-sm-5">Agent</dt><dd class="col-sm-7">{{ rqth.agentRqth }}</dd>
+            <dt class="col-sm-5">Genre</dt><dd class="col-sm-7">{{ rqth.genre }}</dd>
+            <dt class="col-sm-5">Nom</dt><dd class="col-sm-7"><strong>{{ rqth.agentRqth }}</strong></dd>
+            <dt class="col-sm-5">Prénom</dt><dd class="col-sm-7">{{ rqth.prenomRqth }}</dd>
             <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ rqth.poleServiceRqth }}</dd>
             <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ rqth.emploiRqth }}</dd>
             <dt class="col-sm-5">État</dt><dd class="col-sm-7"><span class="badge bg-{{ rqth.etatRqth == 'Attribué' ? 'success' : 'warning text-dark' }}">{{ rqth.etatRqth }}</span></dd>

@@ -111,11 +111,12 @@ class VisiteController extends AbstractController
         $dateJour = (int)(new \DateTime())->format('j') . ' ' . $mois[(int)(new \DateTime())->format('n') - 1] . ' ' . (new \DateTime())->format('Y');
 
         $replacements = [
-            '«Titre»'  => htmlspecialchars($visite->getGenre() ?? '', ENT_XML1),
-            '«Agents»' => htmlspecialchars(trim(($visite->getAgentVisite() ?? '') . ' ' . ($visite->getPrenomVisite() ?? '')), ENT_XML1),
-            '«C»'      => (string) $date->getId(),
-            '«Date»'   => htmlspecialchars($date->getDate() ?? '', ENT_XML1),
-            '«Heure»'  => htmlspecialchars($date->getHeure() ?? '', ENT_XML1),
+            '«Titre»'    => htmlspecialchars($visite->getGenre() ?? '', ENT_XML1),
+            '«Agents»'   => htmlspecialchars(trim(($visite->getAgentVisite() ?? '') . ' ' . ($visite->getPrenomVisite() ?? '')), ENT_XML1),
+            '«C»'        => (string) $date->getId(),
+            '«Date»'     => htmlspecialchars($date->getDate() ?? '', ENT_XML1),
+            '«Heure»'    => htmlspecialchars($date->getHeure() ?? '', ENT_XML1),
+            '«DateJour»' => $dateJour,
         ];
 
         $xml = str_replace(array_keys($replacements), array_values($replacements), $xml);

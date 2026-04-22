@@ -14,8 +14,14 @@ class Rqth
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $genre = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $agentRqth = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prenomRqth = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $poleServiceRqth = null;
@@ -34,8 +40,14 @@ class Rqth
 
     public function getId(): ?int { return $this->id; }
 
+    public function getGenre(): ?string { return $this->genre; }
+    public function setGenre(?string $genre): static { $this->genre = $genre; return $this; }
+
     public function getAgentRqth(): ?string { return $this->agentRqth; }
     public function setAgentRqth(?string $agentRqth): static { $this->agentRqth = $agentRqth; return $this; }
+
+    public function getPrenomRqth(): ?string { return $this->prenomRqth; }
+    public function setPrenomRqth(?string $prenomRqth): static { $this->prenomRqth = $prenomRqth; return $this; }
 
     public function getPoleServiceRqth(): ?string { return $this->poleServiceRqth; }
     public function setPoleServiceRqth(?string $poleServiceRqth): static { $this->poleServiceRqth = $poleServiceRqth; return $this; }

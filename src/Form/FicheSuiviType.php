@@ -77,6 +77,12 @@ class FicheSuiviType extends AbstractType
                 ],
                 'placeholder' => '-- Catégorie --',
             ])
+            ->add('prochaineHeure', TextType::class, [
+                'mapped'   => false,
+                'label'    => 'Heure',
+                'required' => false,
+                'attr'     => ['placeholder' => 'HH:MM', 'style' => 'width:90px'],
+            ])
         ;
     }
 

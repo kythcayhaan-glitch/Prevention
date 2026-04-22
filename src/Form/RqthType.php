@@ -14,7 +14,15 @@ class RqthType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('agentRqth', TextType::class, ['label' => 'Agent', 'required' => false])
+            ->add('genre', ChoiceType::class, [
+                'label' => 'Genre',
+                'required' => false,
+                'choices' => ['Monsieur' => 'Monsieur', 'Madame' => 'Madame'],
+                'placeholder' => '-- Genre --',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('agentRqth', TextType::class, ['label' => 'Nom', 'required' => false, 'attr' => ['style' => 'text-transform:uppercase']])
+            ->add('prenomRqth', TextType::class, ['label' => 'Prénom', 'required' => false])
             ->add('poleServiceRqth', TextType::class, ['label' => 'Pôle / Service', 'required' => false])
             ->add('emploiRqth', TextType::class, ['label' => 'Emploi', 'required' => false])
             ->add('etatRqth', ChoiceType::class, [

@@ -13,14 +13,16 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
                 <thead><tr>
-                    <th>#</th><th>Agent</th><th>Pôle / Service</th><th>Emploi</th>
+                    <th>#</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Pôle / Service</th><th>Emploi</th>
                     <th>État</th><th>Attribution</th><th>Fin</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
                 {% for rqth in rqths %}
                 <tr data-href="{{ path('app_rqth_show', {id: rqth.id}) }}">
                     <td class="text-muted">{{ rqth.id }}</td>
+                    <td>{{ rqth.genre }}</td>
                     <td><strong>{{ rqth.agentRqth }}</strong></td>
+                    <td>{{ rqth.prenomRqth }}</td>
                     <td>{{ rqth.poleServiceRqth }}</td>
                     <td>{{ rqth.emploiRqth }}</td>
                     <td><span class="badge bg-{{ rqth.etatRqth == 'Attribué' ? 'success' : (rqth.etatRqth == 'A renouveler' ? 'warning text-dark' : 'secondary') }}">{{ rqth.etatRqth }}</span></td>
@@ -36,7 +38,7 @@
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="8" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucun dossier RQTH.</td></tr>
+                <tr><td colspan="10" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucun dossier RQTH.</td></tr>
                 {% endfor %}
                 </tbody>
             </table>

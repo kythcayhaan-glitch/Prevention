@@ -13,14 +13,16 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
                 <thead><tr>
-                    <th>#</th><th>Agent</th><th>Pôle</th><th>Objet</th>
+                    <th>#</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Pôle</th><th>Objet</th>
                     <th>État</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
                 {% for f in fiphfps %}
                 <tr data-href="{{ path('app_fiphfp_show', {id: f.id}) }}">
                     <td class="text-muted">{{ f.id }}</td>
+                    <td>{{ f.genre }}</td>
                     <td><strong>{{ f.agentFiphfp }}</strong></td>
+                    <td>{{ f.prenomFiphfp }}</td>
                     <td>{{ f.poleFiphfp }}</td>
                     <td>{{ f.objetFiphfp }}</td>
                     <td><span class="badge bg-{{ f.etatDemandeFiphfp == 'Accordé' ? 'success' : (f.etatDemandeFiphfp == 'Refusé' ? 'danger' : 'secondary') }}">{{ f.etatDemandeFiphfp }}</span></td>
@@ -37,7 +39,7 @@
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="9" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune demande FIPHFP.</td></tr>
+                <tr><td colspan="11" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune demande FIPHFP.</td></tr>
                 {% endfor %}
                 </tbody>
             </table>

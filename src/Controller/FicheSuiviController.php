@@ -38,6 +38,7 @@ class FicheSuiviController extends AbstractController
                 $vd->setDate($prochaineDate);
                 $vd->setType('prochaine');
                 $vd->setCategorie($form->get('prochaineCategorie')->getData());
+                $vd->setHeure($form->get('prochaineHeure')->getData());
                 $vd->setVisite($visite);
                 $em->persist($vd);
             }

@@ -9,7 +9,9 @@
     <div class="card-body">
         {{ form_start(form) }}
         <div class="row g-3">
-            <div class="col-md-4">{{ form_row(form.agentRqth, {attr: {class: 'form-control'}}) }}</div>
+            <div class="col-md-2">{{ form_row(form.genre) }}</div>
+            <div class="col-md-3">{{ form_row(form.agentRqth, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
+            <div class="col-md-3">{{ form_row(form.prenomRqth, {attr: {class: 'form-control'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.poleServiceRqth, {attr: {class: 'form-control'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.emploiRqth, {attr: {class: 'form-control'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.etatRqth, {attr: {class: 'form-select'}}) }}</div>

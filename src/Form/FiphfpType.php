@@ -16,7 +16,15 @@ class FiphfpType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('agentFiphfp', TextType::class, ['label' => 'Agent', 'required' => false])
+            ->add('genre', ChoiceType::class, [
+                'label' => 'Genre',
+                'required' => false,
+                'choices' => ['Monsieur' => 'Monsieur', 'Madame' => 'Madame'],
+                'placeholder' => '-- Genre --',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('agentFiphfp', TextType::class, ['label' => 'Nom', 'required' => false, 'attr' => ['style' => 'text-transform:uppercase']])
+            ->add('prenomFiphfp', TextType::class, ['label' => 'Prénom', 'required' => false])
             ->add('poleFiphfp', TextType::class, ['label' => 'Pôle / Service', 'required' => false])
             ->add('demandeFiphfp', TextType::class, ['label' => 'N° Demande', 'required' => false])
             ->add('dateDemandeFiphfp', TextType::class, ['label' => 'Date de demande', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])

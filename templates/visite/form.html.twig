@@ -51,14 +51,6 @@
                                 <div>{{ form_widget(dateForm.heure) }}</div>
                             </div>
                             <a href="#" class="btn btn-success btn-sm btn-fiche" style="display:none"><i class="bi bi-file-medical me-1"></i>Fiche de suivi des visites</a>
-                            {% if dateEntity.id and dateEntity.type == 'prochaine' %}
-                            <a href="{{ path('app_visite_convocation', {id: visite.id, dateId: dateEntity.id}) }}"
-                               class="btn btn-warning btn-sm btn-convocation"
-                               title="Générer la convocation"><i class="bi bi-envelope me-1"></i>Convocation</a>
-                            {% else %}
-                            <a href="#" class="btn btn-warning btn-sm btn-convocation" style="display:none"
-                               title="Générer la convocation"><i class="bi bi-envelope me-1"></i>Convocation</a>
-                            {% endif %}
                             <button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -102,7 +94,6 @@
                 '<div>' + extractWidget(html, 'heure') + '</div>' +
             '</div>' +
             '<a href="#" class="btn btn-success btn-sm btn-fiche" style="display:none"><i class="bi bi-file-medical me-1"></i>Fiche de suivi des visites</a>' +
-            '<a href="#" class="btn btn-warning btn-sm btn-convocation" style="display:none" title="Générer la convocation"><i class="bi bi-envelope me-1"></i>Convocation</a>' +
             '<button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer"><i class="bi bi-trash"></i></button>';
         return div;
     }
@@ -128,7 +119,6 @@
         const typeSelect = row.querySelector('select[name*="[type]"]');
         const catSelect = row.querySelector('select[name*="[categorie]"]');
         const ficheBtn = row.querySelector('.btn-fiche');
-        const convBtn = row.querySelector('.btn-convocation');
         const convFields = row.querySelector('.conv-fields');
         if (!typeSelect) return;
 
@@ -144,7 +134,6 @@
                     ficheBtn.style.display = 'none';
                 }
             }
-            if (convBtn) convBtn.style.display = isProchaine ? '' : 'none';
             if (convFields) convFields.style.display = (isProchaine && isEsti) ? 'flex' : 'none';
         };
 
@@ -152,27 +141,6 @@
         if (catSelect) catSelect.addEventListener('change', update);
         update();
     }
-
-    // Autosave + ouverture PDF pour les boutons convocation
-    const autosaveUrl = '{{ path('app_visite_autosave', {id: visite.id ?? 0}) }}';
-    const mainForm = document.querySelector('form');
-
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest('.btn-convocation[href]:not([href="#"])');
-        if (!btn) return;
-        e.preventDefault();
-        const pdfUrl = btn.getAttribute('href');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-        btn.classList.add('disabled');
-
-        const data = new FormData(mainForm);
-        fetch(autosaveUrl, { method: 'POST', body: data })
-            .finally(() => {
-                window.open(pdfUrl, '_blank');
-                btn.innerHTML = '<i class="bi bi-envelope me-1"></i>Convocation';
-                btn.classList.remove('disabled');
-            });
-    });
 
     // attach handlers to existing rows
     container.querySelectorAll('.date-row').forEach(row => { attachRemove(row); attachTypeWatch(row); });
