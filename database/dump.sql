@@ -86,6 +86,8 @@ CREATE TABLE `fiphfp` (
   `montant_accorde_fiphfp` int(11) DEFAULT NULL,
   `accord_paye_le` varchar(10) DEFAULT NULL,
   `urgence_fiphfp` int(11) DEFAULT NULL,
+  `genre` varchar(20) DEFAULT NULL,
+  `prenom_fiphfp` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -97,14 +99,14 @@ CREATE TABLE `fiphfp` (
 LOCK TABLES `fiphfp` WRITE;
 /*!40000 ALTER TABLE `fiphfp` DISABLE KEYS */;
 INSERT INTO `fiphfp` VALUES
-(1,'Paris Sandie','ACM','01AKC791250923112314','23/09/2025','Prothèses auditives','Nofitication accord de la demande','Entendre\nFacture acquittée transmise le 17 mars 2026',4190,1700,0,'',0),
-(2,'Henry Natacha','Ecole/Entretien','01AKC791250312113721','12/03/2025','Aménagement de poste','Notification accord de paiement','Chaise ergonomique (133.13)\nTable à langer avec escabeau (414.90)\nPayé le 05/09/2025',549,467,467,'',0),
-(3,'Ducloy Christophe','Techniques','01AKC791250228105330','28/02/2025','Prothèses auditives','Notification accord de paiement','Amplifon\r\nPayé le 28/08/2025',3504,1194,1194,'',0),
-(4,'Hocq Jérèmy','Techniques','01AKC791250515091852','15/05/2025','Prothèses auditives','Demande de documents','13/10/2025 : Suite appel téléphonique, réception des décomptes de CPAM (480e) et mutuelle (1700e) par Amplifon\n14/10/2025 : Transmettre les décomptes de Sécurité Sociale avant le 13.11.2025 car ceux transmis ne conviennent pas.\n\nN° de téléphone MAman : 0631753916\n',3099,1329,1329,'',0),
-(5,'Vautier Marie Paule','Ecole/Entretien','	01AKC791250206112017','06/02/2025','Aménagement de poste','Notification accord de paiement','Chaise ergonomique petite enfance (804€)\nTable à langer avec escabeau (414.90€)\nPayé le 03/07/2025',1219,1073,1073,'',0),
-(6,'Carpe Christèle','Ecole/Entretien','	01AKC791250206103458','06/02/2025','Aménagement de poste','Notification accord de paiement','Siège ergonomique petite enfance\nPayé le 02/07/2025',396,270,208,'',0),
-(7,'Laverdure Géraldine','Crèche','01AKC791241106081322','06/11/2024','Aménagement de poste','Notification accord de paiement','Clavier - Souris -Repose pieds -Pose documents\r\nChaise ergonomique\r\nPayé le 08/04/2025',1524,1371,1371,'',0),
-(8,'MARETTE Stéphanie','SENOU','01AKC791251218092717','18/12/2025','Aménagement de poste','Accusé de réception de la demande','',1854,1854,0,'',0);
+(1,'PARIS','ACM','01AKC791250923112314','23/09/2025','Prothèses auditives','Nofitication accord de la demande','Entendre\nFacture acquittée transmise le 17 mars 2026',4190,1700,0,'',0,NULL,'Sandie'),
+(2,'HENRY','Ecole/Entretien','01AKC791250312113721','12/03/2025','Aménagement de poste','Notification accord de paiement','Chaise ergonomique (133.13)\nTable à langer avec escabeau (414.90)\nPayé le 05/09/2025',549,467,467,'',0,NULL,'Natacha'),
+(3,'DUCLOY','Techniques','01AKC791250228105330','28/02/2025','Prothèses auditives','Notification accord de paiement','Amplifon\r\nPayé le 28/08/2025',3504,1194,1194,'',0,NULL,'Christophe'),
+(4,'HOCQ','Techniques','01AKC791250515091852','15/05/2025','Prothèses auditives','Demande de documents','13/10/2025 : Suite appel téléphonique, réception des décomptes de CPAM (480e) et mutuelle (1700e) par Amplifon\n14/10/2025 : Transmettre les décomptes de Sécurité Sociale avant le 13.11.2025 car ceux transmis ne conviennent pas.\n\nN° de téléphone MAman : 0631753916\n',3099,1329,1329,'',0,NULL,'Jérèmy'),
+(5,'VAUTIER','Ecole/Entretien','	01AKC791250206112017','06/02/2025','Aménagement de poste','Notification accord de paiement','Chaise ergonomique petite enfance (804€)\nTable à langer avec escabeau (414.90€)\nPayé le 03/07/2025',1219,1073,1073,'',0,NULL,'Marie Paule'),
+(6,'CARPE','Ecole/Entretien','	01AKC791250206103458','06/02/2025','Aménagement de poste','Notification accord de paiement','Siège ergonomique petite enfance\nPayé le 02/07/2025',396,270,208,'',0,NULL,'Christèle'),
+(7,'LAVERDURE','Crèche','01AKC791241106081322','06/11/2024','Aménagement de poste','Notification accord de paiement','Clavier - Souris -Repose pieds -Pose documents\r\nChaise ergonomique\r\nPayé le 08/04/2025',1524,1371,1371,'',0,NULL,'Géraldine'),
+(8,'MARETTE','SENOU','01AKC791251218092717','18/12/2025','Aménagement de poste','Accusé de réception de la demande','',1854,1854,0,'',0,NULL,'Stéphanie');
 /*!40000 ALTER TABLE `fiphfp` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -343,7 +345,7 @@ CREATE TABLE `intervenant` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(60) NOT NULL,
   `service` varchar(60) NOT NULL,
-  `taux_inter` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `taux_inter` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -379,6 +381,8 @@ CREATE TABLE `rqth` (
   `etat_rqth` varchar(1000) DEFAULT NULL,
   `date_attribution_rqth` varchar(10) DEFAULT NULL,
   `date_fin_attribution_rqth` varchar(10) DEFAULT NULL,
+  `genre` varchar(20) DEFAULT NULL,
+  `prenom_rqth` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -390,29 +394,29 @@ CREATE TABLE `rqth` (
 LOCK TABLES `rqth` WRITE;
 /*!40000 ALTER TABLE `rqth` DISABLE KEYS */;
 INSERT INTO `rqth` VALUES
-(1,'PARIS Sandie','ACM','','Attribuée','28/08/2025','31/08/2030'),
-(2,'CARLU Valérie','Crèche','','Attribuée','14/08/2025','31/08/2030'),
-(3,'CARPE Christèle','Ecole/Entretien','','Attribuée','12/01/2023','11/01/2028'),
-(4,'DUBOIS Corinne','Crèche','','Attribuée','23/12/2021','Définitif'),
-(5,'DUCLOY Christophe','Techniques','','Attribuée','13/02/2025','Définitif'),
-(6,'GEST Didier','Techniques','','Attribuée','28/01/2021','31/12/2025'),
-(7,'GORRE Michel','Espaces Verts','','A revouveler','01/05/2019','30/04/2024'),
-(8,'GOSSE Céline','RH','','Attribuée','14/11/2024','30/11/2027'),
-(9,'GOUJON Sylvie','Crèche','','Attribuée','11/01/2024','Définitif'),
-(10,'HENRY Natacha','Ecole/Entretien','','Attribuée','01/09/2023','31/08/2028'),
-(11,'HOCQ Jérèmy','Techniques','','Attribuée','09/03/2021','31/03/2026'),
-(12,'JOIRIS Fabrice','Techniques','','Attribuée','01/05/2022','Définitif'),
-(13,'LANNOY Laurent','DGS','','Attribuée','06/04/1992','Définitif'),
-(14,'LAVERDURE Géraldine','Crèche','','Attribuée','01/01/2022','Définitif'),
-(15,'MARETTE Stéphanie','SENOU','','Attribuée','26/09/2024','Définitif'),
-(16,'MONFLIER Florence','CAJ','','Demande en cours','En cours','En cours'),
-(17,'NATIER Corinne','Ecole/Entretien','','Attribuée','09/01/2025','Définitif'),
-(18,'PAINSET Delphine','Crèche','','Attribuée','12/09/2024','Définitif'),
-(19,'SAISON Pascale','PM Administratif','','Attribuée','11/08/2022','Définitif'),
-(20,'VAUTIER Marie Paule','Ecole/Entretien','','Attribuée','23/03/2023','Définitif'),
-(21,'VAUTIER Roxane','Ecole/Entretien','','Attribuée','22/06/2023','30/06/2026'),
-(22,'BRUNET Nancy','Ecole/Entretien','','A revouveler','07/01/2021','06/01/2026'),
-(23,'SAISON Dominique','Espaces Verts','','A revouveler','01/07/2019','30/06/2024');
+(1,'PARIS','ACM','','Attribuée','28/08/2025','31/08/2030',NULL,'Sandie'),
+(2,'CARLU','Crèche','','Attribuée','14/08/2025','31/08/2030',NULL,'Valérie'),
+(3,'CARPE','Ecole/Entretien','','Attribuée','12/01/2023','11/01/2028',NULL,'Christèle'),
+(4,'DUBOIS','Crèche','','Attribuée','23/12/2021','Définitif',NULL,'Corinne'),
+(5,'DUCLOY','Techniques','','Attribuée','13/02/2025','Définitif',NULL,'Christophe'),
+(6,'GEST','Techniques','','Attribuée','28/01/2021','31/12/2025',NULL,'Didier'),
+(7,'GORRE','Espaces Verts','','A revouveler','01/05/2019','30/04/2024',NULL,'Michel'),
+(8,'GOSSE','RH','','Attribuée','14/11/2024','30/11/2027',NULL,'Céline'),
+(9,'GOUJON','Crèche','','Attribuée','11/01/2024','Définitif',NULL,'Sylvie'),
+(10,'HENRY','Ecole/Entretien','','Attribuée','01/09/2023','31/08/2028',NULL,'Natacha'),
+(11,'HOCQ','Techniques','','Attribuée','09/03/2021','31/03/2026',NULL,'Jérèmy'),
+(12,'JOIRIS','Techniques','','Attribuée','01/05/2022','Définitif',NULL,'Fabrice'),
+(13,'LANNOY','DGS','','Attribuée','06/04/1992','Définitif',NULL,'Laurent'),
+(14,'LAVERDURE','Crèche','','Attribuée','01/01/2022','Définitif',NULL,'Géraldine'),
+(15,'MARETTE','SENOU','','Attribuée','26/09/2024','Définitif',NULL,'Stéphanie'),
+(16,'MONFLIER','CAJ','','Demande en cours','En cours','En cours',NULL,'Florence'),
+(17,'NATIER','Ecole/Entretien','','Attribuée','09/01/2025','Définitif',NULL,'Corinne'),
+(18,'PAINSET','Crèche','','Attribuée','12/09/2024','Définitif',NULL,'Delphine'),
+(19,'SAISON','PM Administratif','','Attribuée','11/08/2022','Définitif',NULL,'Pascale'),
+(20,'VAUTIER','Ecole/Entretien','','Attribuée','23/03/2023','Définitif',NULL,'Marie Paule'),
+(21,'VAUTIER','Ecole/Entretien','','Attribuée','22/06/2023','30/06/2026',NULL,'Roxane'),
+(22,'BRUNET','Ecole/Entretien','','A revouveler','07/01/2021','06/01/2026',NULL,'Nancy'),
+(23,'SAISON','Espaces Verts','','A revouveler','01/07/2019','30/06/2024',NULL,'Dominique');
 /*!40000 ALTER TABLE `rqth` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -427,7 +431,7 @@ CREATE TABLE `service` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `service` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -437,9 +441,11 @@ CREATE TABLE `service` (
 LOCK TABLES `service` WRITE;
 /*!40000 ALTER TABLE `service` DISABLE KEYS */;
 INSERT INTO `service` VALUES
-(1,'INFORMATIQUE'),
+(1,'Informatique'),
 (2,'SPORTS'),
-(3,'TECHNIQUE');
+(3,'TECHNIQUE'),
+(4,'SECRETARIAT GENERAL'),
+(5,'ETAT CIVIL');
 /*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -454,9 +460,10 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `login` varchar(60) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `id_profil` int(11) NOT NULL DEFAULT 0,
+  `id_profil` int(11) NOT NULL,
   `nom` varchar(60) NOT NULL,
   `service` varchar(60) NOT NULL,
+  `theme` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -468,10 +475,9 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
-(1,'Admin','$2y$13$6turlAnRsLae5zq0K3S4OePMI3t2mJ6HLvKxb9POZdd57IAGB5IES',2,'MARLIERE','INFORMATIQUE'),
-(2,'Jerome','$2y$13$GNH8NIHF/ItFFvxmdP89zeQQpAxjpqbPaFBNhaSCEgRjuAHSOfxAa',1,'MARLIERE','INFORMATIQUE'),
-(3,'Celine','$2y$13$BZtZQ66x9ROWoWBPAsMUP.nupwL5xKmpasvhp9.dndQs.UWABvbOu',2,'SERIEYS','PRÉVENTION'),
-(4,'Isabelle','$2y$13$qROsF0bkZOM55bUFnuxnNeso8/e.CQ1ba8OMQrO/LQW7VAVOCVNoi',1,'CALON','RH');
+(2,'MARLIERE','$2y$13$fVONur0T8GBmlVeZRkpwTOrlJjDWoLI5.hAzAT70NlRqb.LtG/ERS',2,'Jérôme','INFORMATIQUE',NULL),
+(3,'SERIEYS','$2y$13$2HOARAj2gqwynbefDkyQ8ertl/Ue0xgrk6FLQb4auAaF.h//CrIfa',2,'SERIEYS','PRÉVENTION','bordeaux'),
+(4,'CALON','$2y$13$qROsF0bkZOM55bUFnuxnNeso8/e.CQ1ba8OMQrO/LQW7VAVOCVNoi',1,'CALON','RH',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -487,7 +493,6 @@ CREATE TABLE `visite` (
   `agent_visite` varchar(255) DEFAULT NULL,
   `prenom_visite` varchar(255) DEFAULT NULL,
   `pole_service_visite` varchar(255) DEFAULT NULL,
-  `date_visite` varchar(10) DEFAULT NULL,
   `observation` varchar(255) DEFAULT NULL,
   `rqth_visite` varchar(10) DEFAULT NULL,
   `restriction_visite` varchar(1000) DEFAULT NULL,
@@ -521,9 +526,9 @@ CREATE TABLE `visite` (
   `port` varchar(10) DEFAULT NULL,
   `epi` varchar(3) DEFAULT NULL,
   `epi_detail` varchar(1000) DEFAULT NULL,
-  `prochaine_date_visite` varchar(10) DEFAULT NULL,
+  `genre` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -533,43 +538,43 @@ CREATE TABLE `visite` (
 LOCK TABLES `visite` WRITE;
 /*!40000 ALTER TABLE `visite` DISABLE KEYS */;
 INSERT INTO `visite` VALUES
-(1,'MARETTE Stéphanie',NULL,'Senou  ','04/03/2025','','Oui','Contre indication à la conduite automobile pour le transport de personnes\r\n','','','Aménagement de poste','','Non','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,1,1,0,0,0,0,0,'','','',NULL),
-(2,'LEFEBVRE Camille',NULL,'Ecole/Entretien           ','25/06/2025','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',0,0,0,0,0,0,1,0,'>=7','Non','',NULL),
-(3,'MAGRIT Jovanique',NULL,'CAJ  ','04/02/2025','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent administratif','',0,0,0,0,0,0,0,1,'>=7','','',NULL),
-(4,'LE SCIELLOUR Sylvie',NULL,'  ','14/05/2025','','Non','','','','','','Oui','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,0,0,0,0,0,0,1,'>=7','','',NULL),
-(5,'MERLIN Gilles',NULL,'Techniques   ','03/03/2026','','Non','Poste adapté : peinture - serres','','','','','Oui','','','','','','','','',0,0,0,0,'Peintre','',0,0,0,0,0,0,0,1,'>=7','Non','',NULL),
-(6,'CONDETTE Rebecca',NULL,'Crèche  ','16/10/2024','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent animation','',0,0,0,0,0,0,1,0,'>=10','','',NULL),
-(7,'GRARE Nathalie',NULL,'Administratif Population     ','15/01/2025','','Non','Mettre à dispo une souris et un siège ergonomique','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,0,0,0,0,0,0,0,'','','',NULL),
-(8,'CARON Caroline',NULL,'Crèche     ','08/10/2024','','Non','Mettre à disposition une chaise haute pour être en capacité de donner les repas solides à hauteur','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Auxiliaire de puériculture','',0,0,0,0,0,0,0,0,'','','',NULL),
-(9,'ALLEAU Béatrice',NULL,'Ecole/Entretien ','08/10/2024','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',1,0,0,0,0,0,0,0,'>=10','','',NULL),
-(10,'DEPERLECQUE Christèle',NULL,'Ecole/Entretien ','16/07/2025','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',1,0,0,0,0,0,0,0,'>=5','','',NULL),
-(11,'MONFLIER Florence',NULL,'CAJ ','05/08/2024','','En cours','Fauteuil ergonomique recommandé','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,0,0,0,0,0,0,0,'','','',NULL),
-(12,'JOIRIS Fabrice',NULL,'[POLE TECHNIQUE] ','05/08/2024','','Oui','EPI à adapter','','','','','','','','','','','','','',0,0,0,0,'Directeur adjoint st','',0,0,0,0,0,0,0,0,'','Oui','',NULL),
-(13,'VAUTIER Roxane',NULL,'Ecole/Entretien ','27/07/2024','','Oui','Eviter la classe des tout petits\r\n','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Atsem','',1,0,0,0,0,0,0,0,'>=10','','',NULL),
-(14,'VANHELLE Véronique',NULL,'Crèche ','23/04/2024','','','','','','','','','','','','','','','','',0,0,0,0,'Infirmière ','',1,0,0,0,0,0,0,0,'>=7','','',NULL),
-(15,'GORRE Michel',NULL,'Techniques ','22/07/2025','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien cimetière','',0,0,0,0,0,1,0,1,'>=5','','',NULL),
-(16,'MAGNIER Natacha',NULL,'Ecole/Entretien ','10/04/2024','','Non','Limitation montée et descente escaliers','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',0,0,0,0,0,0,0,0,'>=15','','',NULL),
-(17,'CAFFIER Dimitri',NULL,'Techniques ','20/03/2024','','Non','Mise à dispostion de bouchons oreilles','','','','','','','','','','','','','',0,0,0,0,'Plombier chauffagiste','',0,0,0,0,0,0,0,0,'>=15','Oui','',NULL),
-(18,'GOUJON Sylvie',NULL,'Crèche ','17/12/2024','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Auxiliaire de puériculture','',0,0,0,0,0,0,0,0,'>=5','','',NULL),
-(19,'MENNEFILE Christophe',NULL,'Techniques ','21/02/2024','','','','','','','','','','','','','','','','',0,0,0,0,'Agent de voierie','',1,0,0,0,0,0,0,0,'>=15','','',NULL),
-(20,'DUCLOY Christophe',NULL,'Techniques ','19/02/2025','','Oui','Limitation des heures supplémentaires\r\nDoit pouvoir alterner les activités\r\nPas de contre indication à la réalisation de travaux électriques','','','','','','','','','','','','','',0,0,0,0,'Gardien maison des asso','',1,0,0,0,1,0,0,0,'>=10','','',NULL),
-(21,'SAISON Dominique',NULL,'Espaces Verts ','11/02/2025','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Jardinier','',1,0,0,0,0,0,1,0,'>=5','','',NULL),
-(22,'NOEL Romaric',NULL,'Espaces Verts ','24/01/2024','','Non','','','','','','','','','','','','','','',0,0,0,0,'Jardinier','',1,0,0,0,0,0,0,0,'>=15','','',NULL),
-(23,'CAFFIER Anne Marie',NULL,'Ecole/Entretien ','16/09/2025','','','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',1,0,0,0,0,0,0,0,'>=7','','',NULL),
-(24,'VIGREUX Hélène',NULL,'Ecole/Entretien ','15/07/2025','','','Pas de mouvements répétitifs en rotation des membres supérieurs','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',0,0,0,0,0,0,1,0,'>=7','','',NULL),
-(25,'CARPE Christèle',NULL,'Ecole/Entretien ','17/06/2025','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Atsem','',1,1,0,0,0,0,1,0,'>=7','','',NULL),
-(26,'ROQUE Luis',NULL,'Techniques ','18/03/2024','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent de voierie','',0,0,0,0,0,0,1,0,'>=15','','',NULL),
-(27,'PAINSET Delphine',NULL,'Crèche  ','10/02/2026','','Oui','MP 57A Gauche','','','Aménagement de poste','','Oui','','','','','','','','',0,0,0,0,'Agent de restauration','',0,0,0,0,0,0,1,0,'>=5','Non','',NULL),
-(28,'BAILLARD Maryline',NULL,'Administratif Population  ','06/01/2026','','Non','Clavier et souris ergonomique\r\nPorte document\r\nNon compatible avec MP 57B Droite','','','Aménagement de poste','','Non','','','','','','','','',0,0,0,0,'Responsable de pôle','',0,0,0,0,0,0,0,0,'','Non','',NULL),
-(29,'LASSALLE Stéphanie',NULL,'Ecole/Entretien ','13/01/2026','','Non','Limiter les mouvements de torsion du poignet\r\nUtiliser un chariot','','','','','Non','','','','','','','','',0,0,0,0,'Agent entretien et restauration','',0,0,0,0,0,0,0,0,'>=7','Non','',NULL),
-(30,'BOUVOT Christèle',NULL,'Ecole/Entretien','03/02/2026','','','','','','','','Oui','','','','','','','','',0,0,0,0,'Agent de restauration','',0,0,0,0,0,0,0,0,'>=10','Non','',NULL),
-(31,'FONTAINE Marion',NULL,'Ecole/Entretien','28/01/2026','','','','','','','','Oui','','','','','','','','',0,0,0,0,'Agent entretien et restauration','',1,0,0,0,0,0,0,0,'>=5','Non','',NULL),
-(32,'HENRY Natacha',NULL,'Ecole/Entretien','04/03/2026','','Oui','','','','','','Non','','','','','','','','',0,0,0,0,'Atsem','',0,0,0,0,0,0,0,0,'>=10','Oui','',NULL),
-(33,'MAGNIER Hélène',NULL,'Ecole/Entretien','04/02/2026','','','','','','','','Non','','','','','','','','',0,0,0,0,'Agent entretien et restauration','',0,0,0,0,0,0,0,0,'','Oui','',NULL),
-(34,'BERNARD Mélanie',NULL,'EMMD','24/02/2026','','','','','','','','Non','','','','','','','','',0,0,0,0,'Agent administratif','',0,0,0,0,0,1,0,0,'','Non','',NULL),
-(35,'PARIS Sandie',NULL,'ACM','10/02/2026','','Oui','','','','','','Non','','','','','','','','',0,0,0,0,'Responsable acm','',0,0,0,0,0,0,0,0,'','Non','',NULL),
-(36,'NATIER Corinne',NULL,'Ecole/Entretien','14/01/2026',NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'Agent entretien','',0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL),
-(37,'MARLIERE','Jérôme','Informatique',NULL,NULL,NULL,'ok','Celine',NULL,'ok','ok',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Agent administratif',NULL,0,0,0,1,0,0,0,0,NULL,NULL,NULL,NULL);
+(1,'MARETTE','Stéphanie','Senou  ','','Oui','Contre indication à la conduite automobile pour le transport de personnes\r\n','','','Aménagement de poste','','Non','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,1,1,0,0,0,0,0,'','','',NULL),
+(2,'LEFEBVRE','Camille','Ecole/Entretien           ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',0,0,0,0,0,0,1,0,'>=7','Non','',NULL),
+(3,'MAGRIT','Jovanique','CAJ  ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent administratif','',0,0,0,0,0,0,0,1,'>=7','','',NULL),
+(4,'LE SCIELLOUR','Sylvie','  ','','Non','','','','','','Oui','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,0,0,0,0,0,0,1,'>=7','','',NULL),
+(5,'MERLIN','Gilles','Techniques   ','','Non','Poste adapté : peinture - serres','','','','','Oui','','','','','','','','',0,0,0,0,'Peintre','',0,0,0,0,0,0,0,1,'>=7','Non','',NULL),
+(6,'CONDETTE','Rebecca','Crèche  ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent animation','',0,0,0,0,0,0,1,0,'>=10','','',NULL),
+(7,'GRARE','Nathalie','Administratif Population     ','','Non','Mettre à dispo une souris et un siège ergonomique','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,0,0,0,0,0,0,0,'','','',NULL),
+(8,'CARON','Caroline','Crèche     ','','Non','Mettre à disposition une chaise haute pour être en capacité de donner les repas solides à hauteur','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Auxiliaire de puériculture','',0,0,0,0,0,0,0,0,'','','',NULL),
+(9,'ALLEAU','Béatrice','Ecole/Entretien ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',1,0,0,0,0,0,0,0,'>=10','','',NULL),
+(10,'DEPERLECQUE','Christèle','Ecole/Entretien ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',1,0,0,0,0,0,0,0,'>=5','','',NULL),
+(11,'MONFLIER','Florence','CAJ ','','En cours','Fauteuil ergonomique recommandé','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Adjoint administratif','',0,0,0,0,0,0,0,0,'','','',NULL),
+(12,'JOIRIS','Fabrice','[POLE TECHNIQUE] ','','Oui','EPI à adapter','','','','','','','','','','','','','',0,0,0,0,'Directeur adjoint st','',0,0,0,0,0,0,0,0,'','Oui','',NULL),
+(13,'VAUTIER','Roxane','Ecole/Entretien ','','Oui','Eviter la classe des tout petits\r\n','','','Aménagement de poste','','','','','','','','','','',0,0,0,0,'Atsem','',1,0,0,0,0,0,0,0,'>=10','','',NULL),
+(14,'VANHELLE','Véronique','Crèche ','','','','','','','','','','','','','','','','',0,0,0,0,'Infirmière ','',1,0,0,0,0,0,0,0,'>=7','','',NULL),
+(15,'GORRE','Michel','Techniques ','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien cimetière','',0,0,0,0,0,1,0,1,'>=5','','',NULL),
+(16,'MAGNIER','Natacha','Ecole/Entretien ','','Non','Limitation montée et descente escaliers','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',0,0,0,0,0,0,0,0,'>=15','','',NULL),
+(17,'CAFFIER','Dimitri','Techniques ','','Non','Mise à dispostion de bouchons oreilles','','','','','','','','','','','','','',0,0,0,0,'Plombier chauffagiste','',0,0,0,0,0,0,0,0,'>=15','Oui','',NULL),
+(18,'GOUJON','Sylvie','Crèche ','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Auxiliaire de puériculture','',0,0,0,0,0,0,0,0,'>=5','','',NULL),
+(19,'MENNEFILE','Christophe','Techniques ','','','','','','','','','','','','','','','','',0,0,0,0,'Agent de voierie','',1,0,0,0,0,0,0,0,'>=15','','',NULL),
+(20,'DUCLOY','Christophe','Techniques ','','Oui','Limitation des heures supplémentaires\r\nDoit pouvoir alterner les activités\r\nPas de contre indication à la réalisation de travaux électriques','','','','','','','','','','','','','',0,0,0,0,'Gardien maison des asso','',1,0,0,0,1,0,0,0,'>=10','','',NULL),
+(21,'SAISON','Dominique','Espaces Verts ','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Jardinier','',1,0,0,0,0,0,1,0,'>=5','','',NULL),
+(22,'NOEL','Romaric','Espaces Verts ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Jardinier','',1,0,0,0,0,0,0,0,'>=15','','',NULL),
+(23,'CAFFIER','Anne Marie','Ecole/Entretien ','','','','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',1,0,0,0,0,0,0,0,'>=7','','',NULL),
+(24,'VIGREUX','Hélène','Ecole/Entretien ','','','Pas de mouvements répétitifs en rotation des membres supérieurs','','','','','','','','','','','','','',0,0,0,0,'Agent entretien','',0,0,0,0,0,0,1,0,'>=7','','',NULL),
+(25,'CARPE','Christèle','Ecole/Entretien ','','Oui','','','','','','','','','','','','','','',0,0,0,0,'Atsem','',1,1,0,0,0,0,1,0,'>=7','','',NULL),
+(26,'ROQUE','Luis','Techniques ','','Non','','','','','','','','','','','','','','',0,0,0,0,'Agent de voierie','',0,0,0,0,0,0,1,0,'>=15','','',NULL),
+(27,'PAINSET','Delphine','Crèche  ','','Oui','MP 57A Gauche','','','Aménagement de poste','','Oui','','','','','','','','',0,0,0,0,'Agent de restauration','',0,0,0,0,0,0,1,0,'>=5','Non','',NULL),
+(28,'BAILLARD','Maryline','Administratif Population  ','','Non','Clavier et souris ergonomique\r\nPorte document\r\nNon compatible avec MP 57B Droite','','','Aménagement de poste','','Non','','','','','','','','',0,0,0,0,'Responsable de pôle','',0,0,0,0,0,0,0,0,'','Non','',NULL),
+(29,'LASSALLE','Stéphanie','Ecole/Entretien ','','Non','Limiter les mouvements de torsion du poignet\r\nUtiliser un chariot','','','','','Non','','','','','','','','',0,0,0,0,'Agent entretien et restauration','',0,0,0,0,0,0,0,0,'>=7','Non','',NULL),
+(30,'BOUVOT','Christèle','Ecole/Entretien','','','','','','','','Oui','','','','','','','','',0,0,0,0,'Agent de restauration','',0,0,0,0,0,0,0,0,'>=10','Non','',NULL),
+(31,'FONTAINE','Marion','Ecole/Entretien','','','','','','','','Oui','','','','','','','','',0,0,0,0,'Agent entretien et restauration','',1,0,0,0,0,0,0,0,'>=5','Non','',NULL),
+(32,'HENRY','Natacha','Ecole/Entretien','','Oui','','','','','','Non','','','','','','','','',0,0,0,0,'Atsem','',0,0,0,0,0,0,0,0,'>=10','Oui','',NULL),
+(33,'MAGNIER','Hélène','Ecole/Entretien','','','','','','','','Non','','','','','','','','',0,0,0,0,'Agent entretien et restauration','',0,0,0,0,0,0,0,0,'','Oui','',NULL),
+(34,'BERNARD','Mélanie','EMMD','','','','','','','','Non','','','','','','','','',0,0,0,0,'Agent administratif','',0,0,0,0,0,1,0,0,'','Non','',NULL),
+(35,'PARIS','Sandie','ACM','','Oui','','','','','','Non','','','','','','','','',0,0,0,0,'Responsable acm','',0,0,0,0,0,0,0,0,'','Non','',NULL),
+(36,'NATIER','Corinne','Ecole/Entretien',NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'Agent entretien','',0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL),
+(38,'MARLIERE','Jérôme','Informatique',NULL,'non','lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum','Celine','Visite périodique','lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum','lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Agent administratif',NULL,0,0,0,1,0,0,0,0,NULL,'non',NULL,'Monsieur');
 /*!40000 ALTER TABLE `visite` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -586,9 +591,10 @@ CREATE TABLE `visite_date` (
   `date` varchar(10) DEFAULT NULL,
   `type` varchar(15) DEFAULT NULL,
   `categorie` varchar(10) DEFAULT NULL,
+  `heure` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_visite_date_visite_id` (`visite_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  KEY `IDX_27EF98CBC1C5DC59` (`visite_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -598,43 +604,44 @@ CREATE TABLE `visite_date` (
 LOCK TABLES `visite_date` WRITE;
 /*!40000 ALTER TABLE `visite_date` DISABLE KEYS */;
 INSERT INTO `visite_date` VALUES
-(1,1,'04/03/2025','realisee',NULL),
-(2,2,'25/06/2025','realisee',NULL),
-(3,3,'04/02/2025','realisee',NULL),
-(4,4,'14/05/2025','realisee',NULL),
-(5,5,'03/03/2026','realisee',NULL),
-(6,6,'16/10/2024','realisee',NULL),
-(7,7,'15/01/2025','realisee',NULL),
-(8,8,'08/10/2024','realisee',NULL),
-(9,9,'08/10/2024','realisee',NULL),
-(10,10,'16/07/2025','realisee',NULL),
-(11,11,'05/08/2024','realisee',NULL),
-(12,12,'05/08/2024','realisee',NULL),
-(13,13,'27/07/2024','realisee',NULL),
-(14,14,'23/04/2024','realisee',NULL),
-(15,15,'22/07/2025','realisee',NULL),
-(16,16,'10/04/2024','realisee',NULL),
-(17,17,'20/03/2024','realisee',NULL),
-(18,18,'17/12/2024','realisee',NULL),
-(19,19,'21/02/2024','realisee',NULL),
-(20,20,'19/02/2025','realisee',NULL),
-(21,21,'11/02/2025','realisee',NULL),
-(22,22,'24/01/2024','realisee',NULL),
-(23,23,'16/09/2025','realisee',NULL),
-(24,24,'15/07/2025','realisee',NULL),
-(25,25,'17/06/2025','realisee',NULL),
-(26,26,'18/03/2024','realisee',NULL),
-(27,27,'10/02/2026','realisee',NULL),
-(28,28,'06/01/2026','realisee',NULL),
-(29,29,'13/01/2026','realisee',NULL),
-(30,30,'03/02/2026','realisee',NULL),
-(31,31,'28/01/2026','realisee',NULL),
-(32,32,'04/03/2026','realisee',NULL),
-(33,33,'04/02/2026','realisee',NULL),
-(34,34,'24/02/2026','realisee',NULL),
-(35,35,'10/02/2026','realisee',NULL),
-(36,36,'14/01/2026','realisee',NULL),
-(52,37,'28/04/2026','realisee','VP');
+(1,1,'04/03/2025','realisee',NULL,NULL),
+(2,2,'25/06/2025','realisee',NULL,NULL),
+(3,3,'04/02/2025','realisee',NULL,NULL),
+(4,4,'14/05/2025','realisee',NULL,NULL),
+(5,5,'03/03/2026','realisee',NULL,NULL),
+(6,6,'16/10/2024','realisee',NULL,NULL),
+(7,7,'15/01/2025','realisee',NULL,NULL),
+(8,8,'08/10/2024','realisee',NULL,NULL),
+(9,9,'08/10/2024','realisee',NULL,NULL),
+(10,10,'16/07/2025','realisee',NULL,NULL),
+(11,11,'05/08/2024','realisee',NULL,NULL),
+(12,12,'05/08/2024','realisee',NULL,NULL),
+(13,13,'27/07/2024','realisee',NULL,NULL),
+(14,14,'23/04/2024','realisee',NULL,NULL),
+(15,15,'22/07/2025','realisee',NULL,NULL),
+(16,16,'10/04/2024','realisee',NULL,NULL),
+(17,17,'20/03/2024','realisee',NULL,NULL),
+(18,18,'17/12/2024','realisee',NULL,NULL),
+(19,19,'21/02/2024','realisee',NULL,NULL),
+(20,20,'19/02/2025','realisee',NULL,NULL),
+(21,21,'11/02/2025','realisee',NULL,NULL),
+(22,22,'24/01/2024','realisee',NULL,NULL),
+(23,23,'16/09/2025','realisee',NULL,NULL),
+(24,24,'15/07/2025','realisee',NULL,NULL),
+(25,25,'17/06/2025','realisee',NULL,NULL),
+(26,26,'18/03/2024','realisee',NULL,NULL),
+(27,27,'10/02/2026','realisee',NULL,NULL),
+(28,28,'06/01/2026','realisee',NULL,NULL),
+(29,29,'13/01/2026','realisee',NULL,NULL),
+(30,30,'03/02/2026','realisee',NULL,NULL),
+(31,31,'28/01/2026','realisee',NULL,NULL),
+(32,32,'04/03/2026','realisee',NULL,NULL),
+(33,33,'04/02/2026','realisee',NULL,NULL),
+(34,34,'24/02/2026','realisee',NULL,NULL),
+(35,35,'10/02/2026','realisee',NULL,NULL),
+(36,36,'14/01/2026','realisee',NULL,NULL),
+(66,38,'28/04/2026','realisee','ESTI','10:10'),
+(68,38,'28/10/2026','prochaine','MDP','10:10');
 /*!40000 ALTER TABLE `visite_date` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -647,4 +654,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-04-20 16:14:45
+-- Dump completed on 2026-04-22 18:29:07
