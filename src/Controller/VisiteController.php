@@ -138,15 +138,17 @@ class VisiteController extends AbstractController
         $cmd = '"' . $soffice . '" --headless --norestore'
             . ' "-env:UserInstallation=' . $loProfileUri . '"'
             . ' --convert-to pdf --outdir "' . $tmpDir . '" "' . $tmpDocx . '"';
-        exec($cmd, $output, $returnCode);
+        exec($cmd . ' 2>&1', $output, $returnCode);
 
         $pdfFile = $tmpDir . '/' . pathinfo($tmpDocx, PATHINFO_FILENAME) . '.pdf';
 
         if ($returnCode !== 0 || !file_exists($pdfFile)) {
-            unlink($tmpDocx);
-            array_map('unlink', glob($tmpDir . '/*'));
-            rmdir($tmpDir);
-            throw new \RuntimeException('Échec conversion PDF (code ' . $returnCode . '): ' . implode(' ', $output));
+            $logFile = $varTmp . '/conv_error.log';
+            file_put_contents($logFile, date('Y-m-d H:i:s') . "\nCMD: $cmd\nCode: $returnCode\nOutput: " . implode("\n", $output) . "\npdfFile: $pdfFile\nexists: " . (file_exists($pdfFile) ? 'oui' : 'non') . "\n\n", FILE_APPEND);
+            @unlink($tmpDocx);
+            @array_map('unlink', glob($tmpDir . '/*') ?: []);
+            @rmdir($tmpDir);
+            throw new \RuntimeException('Échec conversion PDF (code ' . $returnCode . '): ' . implode(' ', $output) . ' | CMD: ' . $cmd);
         }
 
         $pdf = file_get_contents($pdfFile);
