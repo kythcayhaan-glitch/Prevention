@@ -29,7 +29,14 @@
                     </dd>
                     <dt class="col-sm-5">Prochaines visites</dt><dd class="col-sm-7">
                         {% set prochaines = visite.dates|filter(d => d.type == 'prochaine') %}
-                        {% if prochaines|length %}{% for d in prochaines %}<span class="badge bg-success me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}{% else %}-{% endif %}
+                        {% if prochaines|length %}
+                            {% for d in prochaines %}
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-success">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}{% if d.heure %} {{ d.heure }}{% endif %}</span>
+                                <a href="{{ path('app_visite_convocation', {id: visite.id, dateId: d.id}) }}" class="btn btn-warning btn-sm py-0 px-2" title="Générer la convocation" target="_blank"><i class="bi bi-envelope me-1"></i>Convocation</a>
+                            </div>
+                            {% endfor %}
+                        {% else %}-{% endif %}
                     </dd>
                     <dt class="col-sm-5">Type</dt><dd class="col-sm-7"><span class="badge bg-secondary">{{ visite.type }}</span></dd>
                     <dt class="col-sm-5">RQTH</dt><dd class="col-sm-7">

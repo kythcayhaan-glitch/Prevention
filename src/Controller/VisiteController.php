@@ -133,7 +133,7 @@ class VisiteController extends AbstractController
 
         $loProfile = $kernel->getProjectDir() . '/var/tmp/lo_profile';
         if (!is_dir($loProfile)) mkdir($loProfile, 0777, true);
-        $loProfileUri = 'file://' . str_replace('\\', '/', $loProfile);
+        $loProfileUri = 'file:///' . str_replace('\\', '/', $loProfile);
 
         $cmd = '"' . $soffice . '" --headless --norestore'
             . ' "-env:UserInstallation=' . $loProfileUri . '"'
