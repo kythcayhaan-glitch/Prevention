@@ -96,8 +96,10 @@ class VisiteController extends AbstractController
         };
 
         $templatePath = $kernel->getProjectDir() . '/convocations/' . $template;
-        $tmpDocx = sys_get_temp_dir() . '/conv_' . uniqid() . '.docx';
-        $tmpDir  = sys_get_temp_dir() . '/conv_' . uniqid();
+        $varTmp  = $kernel->getProjectDir() . '/var/tmp';
+        if (!is_dir($varTmp)) mkdir($varTmp, 0777, true);
+        $tmpDocx = $varTmp . '/conv_' . uniqid() . '.docx';
+        $tmpDir  = $varTmp . '/out_' . uniqid();
 
         // Charger le docx, remplacer les champs, sauvegarder
         $zip = new \ZipArchive();
@@ -125,15 +127,20 @@ class VisiteController extends AbstractController
 
         // Conversion PDF via LibreOffice
         mkdir($tmpDir, 0777, true);
-        $soffice = '/usr/bin/libreoffice';
-        exec(escapeshellcmd($soffice) . ' --headless --convert-to pdf --outdir ' . escapeshellarg($tmpDir) . ' ' . escapeshellarg($tmpDocx));
+        $soffice = file_exists('/usr/bin/libreoffice')
+            ? '/usr/bin/libreoffice'
+            : 'C:/Program Files/LibreOffice/program/soffice.exe';
+
+        $cmd = '"' . $soffice . '" --headless --convert-to pdf --outdir "' . $tmpDir . '" "' . $tmpDocx . '"';
+        exec($cmd, $output, $returnCode);
 
         $pdfFile = $tmpDir . '/' . pathinfo($tmpDocx, PATHINFO_FILENAME) . '.pdf';
 
-        if (!file_exists($pdfFile)) {
+        if ($returnCode !== 0 || !file_exists($pdfFile)) {
             unlink($tmpDocx);
+            array_map('unlink', glob($tmpDir . '/*'));
             rmdir($tmpDir);
-            throw new \RuntimeException('Échec de la conversion PDF.');
+            throw new \RuntimeException('Échec conversion PDF (code ' . $returnCode . '): ' . implode(' ', $output));
         }
 
         $pdf = file_get_contents($pdfFile);
