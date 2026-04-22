@@ -23,6 +23,9 @@ class VisiteDate
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $categorie = null; // 'ESTI' | 'MDP' | 'VP'
 
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $heure = null; // ex: '09:00'
+
     #[ORM\ManyToOne(inversedBy: 'dates')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Visite $visite = null;
@@ -37,6 +40,9 @@ class VisiteDate
 
     public function getCategorie(): ?string { return $this->categorie; }
     public function setCategorie(?string $categorie): static { $this->categorie = $categorie; return $this; }
+
+    public function getHeure(): ?string { return $this->heure; }
+    public function setHeure(?string $heure): static { $this->heure = $heure; return $this; }
 
     public function getVisite(): ?Visite { return $this->visite; }
     public function setVisite(?Visite $visite): static { $this->visite = $visite; return $this; }

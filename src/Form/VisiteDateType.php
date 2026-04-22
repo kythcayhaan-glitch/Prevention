@@ -40,6 +40,11 @@ class VisiteDateType extends AbstractType
                 'placeholder' => '-- Catégorie --',
                 'attr' => ['class' => 'form-select'],
             ])
+            ->add('heure', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => ['placeholder' => 'HH:MM', 'class' => 'form-control conv-field', 'style' => 'width:80px'],
+            ])
         ;
     }
 

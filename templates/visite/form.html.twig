@@ -13,6 +13,7 @@
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">Informations générales</div>
             <div class="card-body row g-3">
+                <div class="col-md-2">{{ form_row(form.genre) }}</div>
                 <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
                 <div class="col-md-3">{{ form_row(form.prenomVisite, {attr: {class: 'form-control'}}) }}</div>
                 <div class="col-md-3">{{ form_row(form.poleServiceVisite, {attr: {class: 'form-select'}}) }}</div>
@@ -35,7 +36,8 @@
                      data-index="{{ form.dates|length }}">
 
                     {% for dateForm in form.dates %}
-                        <div class="date-row d-flex align-items-center gap-2 mb-2">
+                        {% set dateEntity = dateForm.vars.data %}
+                        <div class="date-row d-flex align-items-center gap-2 mb-2 flex-wrap">
                             <div style="width:150px">
                                 {{ form_widget(dateForm.date) }}
                             </div>
@@ -45,7 +47,18 @@
                             <div style="width:300px">
                                 {{ form_widget(dateForm.categorie) }}
                             </div>
+                            <div class="conv-fields d-flex gap-2" style="display:{% if dateEntity.type == 'prochaine' and dateEntity.categorie == 'ESTI' %}flex{% else %}none{% endif %}!important">
+                                <div>{{ form_widget(dateForm.heure) }}</div>
+                            </div>
                             <a href="#" class="btn btn-success btn-sm btn-fiche" style="display:none"><i class="bi bi-file-medical me-1"></i>Fiche de suivi des visites</a>
+                            {% if dateEntity.id and dateEntity.type == 'prochaine' %}
+                            <a href="{{ path('app_visite_convocation', {id: visite.id, dateId: dateEntity.id}) }}"
+                               class="btn btn-warning btn-sm btn-convocation"
+                               title="Générer la convocation"><i class="bi bi-envelope me-1"></i>Convocation</a>
+                            {% else %}
+                            <a href="#" class="btn btn-warning btn-sm btn-convocation" style="display:none"
+                               title="Générer la convocation"><i class="bi bi-envelope me-1"></i>Convocation</a>
+                            {% endif %}
                             <button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -80,12 +93,16 @@
 
     function buildRow(html) {
         const div = document.createElement('div');
-        div.className = 'date-row d-flex align-items-center gap-2 mb-2';
+        div.className = 'date-row d-flex align-items-center gap-2 mb-2 flex-wrap';
         div.innerHTML =
             '<div style="width:150px">' + extractWidget(html, 'date') + '</div>' +
             '<div style="width:140px">' + extractWidget(html, 'type') + '</div>' +
             '<div style="width:300px">' + extractWidget(html, 'categorie') + '</div>' +
+            '<div class="conv-fields d-flex gap-2" style="display:none">' +
+                '<div>' + extractWidget(html, 'heure') + '</div>' +
+            '</div>' +
             '<a href="#" class="btn btn-success btn-sm btn-fiche" style="display:none"><i class="bi bi-file-medical me-1"></i>Fiche de suivi des visites</a>' +
+            '<a href="#" class="btn btn-warning btn-sm btn-convocation" style="display:none" title="Générer la convocation"><i class="bi bi-envelope me-1"></i>Convocation</a>' +
             '<button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer"><i class="bi bi-trash"></i></button>';
         return div;
     }
@@ -109,19 +126,53 @@
 
     function attachTypeWatch(row) {
         const typeSelect = row.querySelector('select[name*="[type]"]');
+        const catSelect = row.querySelector('select[name*="[categorie]"]');
         const ficheBtn = row.querySelector('.btn-fiche');
-        if (!typeSelect || !ficheBtn) return;
+        const convBtn = row.querySelector('.btn-convocation');
+        const convFields = row.querySelector('.conv-fields');
+        if (!typeSelect) return;
+
         const update = () => {
-            if (typeSelect.value === 'realisee' && fichePath) {
-                ficheBtn.href = fichePath;
-                ficheBtn.style.display = '';
-            } else {
-                ficheBtn.style.display = 'none';
+            const isProchaine = typeSelect.value === 'prochaine';
+            const isEsti = catSelect && catSelect.value === 'ESTI';
+
+            if (ficheBtn) {
+                if (typeSelect.value === 'realisee' && fichePath) {
+                    ficheBtn.href = fichePath;
+                    ficheBtn.style.display = '';
+                } else {
+                    ficheBtn.style.display = 'none';
+                }
             }
+            if (convBtn) convBtn.style.display = isProchaine ? '' : 'none';
+            if (convFields) convFields.style.display = (isProchaine && isEsti) ? 'flex' : 'none';
         };
+
         typeSelect.addEventListener('change', update);
+        if (catSelect) catSelect.addEventListener('change', update);
         update();
     }
+
+    // Autosave + ouverture PDF pour les boutons convocation
+    const autosaveUrl = '{{ path('app_visite_autosave', {id: visite.id ?? 0}) }}';
+    const mainForm = document.querySelector('form');
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-convocation[href]:not([href="#"])');
+        if (!btn) return;
+        e.preventDefault();
+        const pdfUrl = btn.getAttribute('href');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        btn.classList.add('disabled');
+
+        const data = new FormData(mainForm);
+        fetch(autosaveUrl, { method: 'POST', body: data })
+            .finally(() => {
+                window.open(pdfUrl, '_blank');
+                btn.innerHTML = '<i class="bi bi-envelope me-1"></i>Convocation';
+                btn.classList.remove('disabled');
+            });
+    });
 
     // attach handlers to existing rows
     container.querySelectorAll('.date-row').forEach(row => { attachRemove(row); attachTypeWatch(row); });

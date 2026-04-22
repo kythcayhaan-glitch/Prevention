@@ -25,6 +25,13 @@ class VisiteType extends AbstractType
         }
 
         $builder
+            ->add('genre', ChoiceType::class, [
+                'label'       => 'Genre',
+                'required'    => false,
+                'choices'     => ['Monsieur' => 'Monsieur', 'Madame' => 'Madame'],
+                'placeholder' => '-- Genre --',
+                'attr'        => ['class' => 'form-select'],
+            ])
             ->add('agentVisite', TextType::class, ['label' => 'Nom', 'required' => false, 'attr' => ['placeholder' => 'NOM', 'style' => 'text-transform:uppercase']])
             ->add('prenomVisite', TextType::class, ['label' => 'Prénom', 'required' => false])
             ->add('poleServiceVisite', ChoiceType::class, [

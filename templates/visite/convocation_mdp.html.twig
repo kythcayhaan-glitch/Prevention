@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', 'Helvetica', sans-serif; font-size: 10pt; color: #000; }
+    .page { padding: 18mm 18mm 15mm 18mm; }
+
+    .header-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+    .header-table td { vertical-align: top; padding: 0; }
+    .col-logo { width: 45%; }
+    .col-logo img { width: 130px; }
+    .col-mairie { width: 55%; font-size: 8pt; color: #333; line-height: 1.5; }
+    .col-mairie strong { font-size: 9pt; }
+
+    .header2-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+    .header2-table td { vertical-align: top; padding: 0; }
+    .col-adm { width: 45%; font-size: 8pt; color: #333; line-height: 1.5; border-top: 1px solid #aaa; padding-top: 5px; }
+    .col-destinataire { width: 55%; text-align: right; font-size: 10pt; font-weight: bold; line-height: 1.6; }
+
+    .lieu-date { text-align: right; font-size: 10pt; margin-bottom: 4px; }
+    .service-ref { font-size: 10pt; margin-bottom: 3px; }
+    .objet { font-weight: bold; font-size: 10.5pt; margin: 16px 0 14px 0; }
+
+    .corps { font-size: 10pt; line-height: 1.7; }
+    .corps p { margin-bottom: 10px; }
+    .adresse-med { margin: 12px 0 12px 30px; font-weight: bold; font-size: 10pt; line-height: 1.9; }
+    .adresse-med .precision { font-weight: normal; font-size: 9pt; }
+    .important { font-weight: bold; }
+    .signature { margin-top: 35px; text-align: right; font-size: 10pt; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="page">
+
+    <table class="header-table">
+        <tr>
+            <td class="col-logo">
+                <img src="{{ logo_path }}" alt="Outreau">
+            </td>
+            <td class="col-mairie">
+                <strong>Département du PAS-DE-CALAIS</strong><br>
+                Arrondissement de BOULOGNE-SUR-MER<br>
+                Canton d'Outreau<br>
+                Tél. 03 21 99 07 77 &nbsp; Télécopie 03 21 31 65 99<br>
+                mairie@ville-outreau.fr
+            </td>
+        </tr>
+    </table>
+
+    <table class="header2-table">
+        <tr>
+            <td class="col-adm">
+                Département du PAS-DE-CALAIS<br>
+                Arrondissement de BOULOGNE-SUR-MER<br>
+                Canton d'Outreau<br>
+                Tél. 03 21 99 07 77 &nbsp; Télécopie 03 21 31 65 99<br>
+                mairie@ville-outreau.fr
+            </td>
+            <td class="col-destinataire">
+                {{ visite.genre }} {{ visite.agentVisite }} {{ visite.prenomVisite }}
+            </td>
+        </tr>
+    </table>
+
+    <div class="lieu-date">A Outreau, le {{ "now"|date("d") }} {{ ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"][("now"|date("n"))-1] }} {{ "now"|date("Y") }}</div>
+    <div class="service-ref">Service Ressources Humaines</div>
+    <div class="service-ref">REF : SC/IC/CS/{{ "now"|date("Y") }}/N°&nbsp;{{ date.id }}</div>
+
+    <div class="objet">OBJET : Convocation médecine de prévention</div>
+
+    <div class="corps">
+        <p>{{ visite.genre }},</p>
+
+        <p>A la suite de votre visite médicale auprès du Médecin du Travail, celui-ci a souhaité vous rencontrer à nouveau.</p>
+
+        <p>Je vous saurais gré de bien vouloir vous présenter le <strong>{{ date.date }}</strong> à <strong>{{ date.heure }}</strong> à l'adresse suivante&nbsp;:</p>
+
+        <div class="adresse-med">
+            MEDECINE PREVENTIVE du CDG 62<br>
+            Centre Directionnel<br>
+            56 rue Ferdinand Buisson<br>
+            62200 BOULOGNE SUR MER<br>
+            <span class="precision">(6ème étage – à gauche à la sortie de l'ascenseur)</span>
+        </div>
+
+        <p>Afin d'y bénéficier d'une visite auprès du Docteur VIALET, médecin du travail.</p>
+
+        <p>Il vous appartient de vous munir de tous résultats d'examens médicaux récents en votre possession.</p>
+
+        <p class="important">Votre présence est impérative.</p>
+
+        <p>Veuillez croire, {{ visite.genre }}, à l'assurance de mes sincères salutations.</p>
+    </div>
+
+    <div class="signature">
+        Isabelle CALON<br>
+        Responsable du service<br>
+        Ressources Humaines
+    </div>
+
+</div>
+</body>
+</html>

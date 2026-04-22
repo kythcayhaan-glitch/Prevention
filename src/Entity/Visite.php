@@ -16,6 +16,9 @@ class Visite
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $genre = null; // 'Monsieur' | 'Madame'
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $agentVisite = null;
 
@@ -150,6 +153,9 @@ class Visite
         $this->dates->removeElement($date);
         return $this;
     }
+
+    public function getGenre(): ?string { return $this->genre; }
+    public function setGenre(?string $genre): static { $this->genre = $genre; return $this; }
 
     public function getAgentVisite(): ?string { return $this->agentVisite; }
     public function setAgentVisite(?string $agentVisite): static { $this->agentVisite = $agentVisite ? mb_strtoupper($agentVisite) : null; return $this; }
