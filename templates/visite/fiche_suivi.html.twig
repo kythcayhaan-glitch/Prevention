@@ -3,31 +3,81 @@
 
 {% block stylesheets %}
 <style>
-    @media print {
-        .no-print { display: none !important; }
-        .card { break-inside: avoid; }
-        body { background: white !important; }
-        .sidebar, nav.navbar { display: none !important; }
-        main.main-content { padding: 0 !important; }
-        .col-md-10 { width: 100% !important; max-width: 100% !important; flex: 0 0 100% !important; }
-        select, textarea, input { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
-    }
+    /* ── Écran ─────────────────────────────────────────────── */
     .section-title { background: #0d6efd; color: white; padding: .35rem .75rem; border-radius: 4px; font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .75rem; }
     .section-title.bg-secondary { background: #6c757d !important; }
     .section-title.bg-info    { background: #0dcaf0 !important; color: #000 !important; }
     .section-title.bg-warning { background: #ffc107 !important; color: #000 !important; }
     .agent-banner { background: #f8f9fa; border-left: 4px solid #0d6efd; padding: .75rem 1rem; border-radius: 4px; }
     .btn-check:checked + .btn-outline-primary {
-        background-color: #0d6efd !important;
-        border-color: #0d6efd !important;
-        color: #fff !important;
-        font-weight: 700 !important;
+        background-color: #0d6efd !important; border-color: #0d6efd !important;
+        color: #fff !important; font-weight: 700 !important;
         box-shadow: 0 0 0 4px rgba(13,110,253,.4) !important;
+    }
+    .print-only { display: none !important; }
+
+    /* ── Impression ─────────────────────────────────────────── */
+    @media print {
+        @page { size: A4 portrait; margin: 1.2cm 1.5cm; }
+
+        /* Masquer tout le contenu écran */
+        nav.navbar, .sidebar, footer, form,
+        .agent-banner, .no-print { display: none !important; }
+
+        /* Révéler la section impression */
+        .print-only { display: block !important; }
+
+        /* Pleine largeur */
+        .col-md-10 { width: 100% !important; max-width: 100% !important; flex: 0 0 100% !important; padding: 0 !important; }
+        main.main-content { padding: 0 !important; margin: 0 !important; }
+
+        body { font-size: 9.5pt; font-family: Arial, Helvetica, sans-serif; background: #fff !important; color: #000; }
+
+        /* En-tête */
+        .pd-header { display: flex !important; justify-content: space-between; align-items: center; border-bottom: 2pt solid #222; padding-bottom: 8pt; margin-bottom: 10pt; }
+        .pd-header img { height: 36pt; }
+        .pd-header-title { font-size: 15pt; font-weight: bold; text-transform: uppercase; letter-spacing: .08em; text-align: center; }
+        .pd-header-sub { font-size: 8pt; color: #555; text-align: center; margin-top: 2pt; }
+        .pd-header-date { font-size: 8pt; color: #444; text-align: right; line-height: 1.5; }
+
+        /* Bloc agent */
+        .pd-agent { border: 1.5pt solid #222; border-left: 5pt solid #222; padding: 6pt 10pt; margin-bottom: 8pt; font-size: 9.5pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pd-agent-name { font-size: 12pt; font-weight: bold; margin-bottom: 3pt; }
+        .pd-agent-info { font-size: 8.5pt; color: #333; }
+        .pd-agent-dates { margin-top: 4pt; font-size: 8.5pt; }
+        .pd-badge { display: inline-block; background: #222 !important; color: #fff !important; font-size: 7.5pt; padding: 1pt 4pt; margin-right: 3pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+        /* Titres de section */
+        .pd-title { font-size: 8pt; font-weight: bold; text-transform: uppercase; letter-spacing: .05em;
+            padding: 3pt 7pt; margin: 7pt 0 4pt; color: #fff !important;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pd-title-dark    { background: #343a40 !important; }
+        .pd-title-gray    { background: #6c757d !important; }
+        .pd-title-info    { background: #0891b2 !important; }
+        .pd-title-warning { background: #b45309 !important; }
+        .pd-title-dark2   { background: #1e293b !important; }
+
+        /* Cellules de contenu */
+        .pd-cell { border: 0.5pt solid #ccc; padding: 4pt 6pt; font-size: 9pt; vertical-align: top; }
+        .pd-cell-label { font-size: 7pt; font-weight: bold; text-transform: uppercase; color: #555; margin-bottom: 2pt; }
+
+        /* Tableaux */
+        .pd-table { border-collapse: collapse; width: 100%; font-size: 8.5pt; }
+        .pd-table th { background: #333 !important; color: #fff !important; padding: 3pt 6pt; text-align: left; font-size: 8pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pd-table td { padding: 3pt 6pt; border-bottom: 0.5pt solid #e0e0e0; }
+        .pd-table tr.prochaine td { background: #f0fdf4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+        /* Signatures */
+        .pd-signatures { display: flex !important; justify-content: flex-end; gap: 50pt; margin-top: 28pt; }
+        .pd-sig-box { text-align: center; font-size: 8pt; }
+        .pd-sig-line { border-bottom: 0.75pt solid #000; width: 110pt; margin: 28pt auto 3pt; }
     }
 </style>
 {% endblock %}
 
 {% block body %}
+
+{# ── Boutons écran ─────────────────────────────────────────── #}
 <div class="d-flex justify-content-between align-items-center mb-4 no-print">
     <h2><i class="bi bi-file-medical"></i> Fiche de suivi</h2>
     <div class="d-flex gap-2">
@@ -36,7 +86,170 @@
     </div>
 </div>
 
-{# Bandeau agent + dates — lecture seule #}
+{# ── SECTION IMPRESSION UNIQUEMENT ─────────────────────────── #}
+<div class="print-only">
+
+    {# En-tête document #}
+    <div class="pd-header">
+        <img src="/images/logo_mairie.png" alt="Mairie d'Outreau">
+        <div>
+            <div class="pd-header-title">Fiche de suivi</div>
+            <div class="pd-header-sub">Service Prévention &amp; Médecine du travail</div>
+        </div>
+        <div class="pd-header-date">
+            Imprimé le {{ "now"|date("d/m/Y") }}<br>
+            Réf. dossier : #{{ visite.id }}
+        </div>
+    </div>
+
+    {# Bloc agent #}
+    <div class="pd-agent">
+        <div class="pd-agent-name">{{ visite.agentVisite }} {{ visite.prenomVisite }}</div>
+        <div class="pd-agent-info">
+            {% if visite.poleServiceVisite %}Service : <strong>{{ visite.poleServiceVisite }}</strong>{% endif %}
+            {% if visite.emploiVisite %}&nbsp;&nbsp;|&nbsp;&nbsp;Emploi : <strong>{{ visite.emploiVisite }}</strong>{% endif %}
+        </div>
+        {% if realisees|length > 0 %}
+        <div class="pd-agent-dates">
+            Visite(s) réalisée(s) :
+            {% for d in realisees %}
+                <span class="pd-badge">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    {# Historique des visites #}
+    <div class="pd-title pd-title-dark">Historique des visites</div>
+    <table class="pd-table">
+        <thead>
+            <tr><th>Date</th><th>Type</th><th>Catégorie</th></tr>
+        </thead>
+        <tbody>
+        {% set toutes = visite.dates|sort((a, b) => a.date <=> b.date) %}
+        {% for d in toutes %}
+            <tr class="{{ d.type == 'prochaine' ? 'prochaine' : '' }}">
+                <td>{{ d.date }}</td>
+                <td>{{ d.type == 'prochaine' ? 'Prévue' : 'Réalisée' }}</td>
+                <td>{{ d.categorie ?: '—' }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="3" style="color:#777;font-style:italic">Aucune date enregistrée.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {# Restrictions / Recommandations / Limitations #}
+    {% set hasPresc = visite.restrictionVisite or visite.recommandationVisite or visite.limitationVisite %}
+    {% if hasPresc %}
+    <div class="pd-title pd-title-gray">Restrictions / Recommandations / Limitations</div>
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+        <tr style="vertical-align:top">
+            {% if visite.restrictionVisite %}
+            <td class="pd-cell">
+                <div class="pd-cell-label">Restrictions</div>
+                {{ visite.restrictionVisite|nl2br }}
+            </td>
+            {% endif %}
+            {% if visite.recommandationVisite %}
+            <td class="pd-cell">
+                <div class="pd-cell-label">Recommandations</div>
+                {{ visite.recommandationVisite|nl2br }}
+            </td>
+            {% endif %}
+            {% if visite.limitationVisite %}
+            <td class="pd-cell">
+                <div class="pd-cell-label">Limitations</div>
+                {{ visite.limitationVisite|nl2br }}
+            </td>
+            {% endif %}
+        </tr>
+    </table>
+    {% endif %}
+
+    {# Observations #}
+    {% if visite.observation %}
+    <div class="pd-title pd-title-gray" style="margin-top:6pt">Observations</div>
+    <div class="pd-cell">{{ visite.observation|nl2br }}</div>
+    {% endif %}
+
+    {# EPI #}
+    {% if visite.epi %}
+    <div class="pd-title pd-title-dark2" style="margin-top:6pt">EPI</div>
+    <div class="pd-cell">
+        <strong>{{ visite.epi|capitalize }}</strong>
+        {% if visite.epiDetail %}&nbsp;— {{ visite.epiDetail }}{% endif %}
+    </div>
+    {% endif %}
+
+    {# Conditions de travail #}
+    {% set condLabels = {
+        'travailPencheVisite': 'Travail penché',
+        'deboutVisite':        'Debout prolongé',
+        'conduiteVisite':      'Conduite',
+        'utilisationVisite':   'Écran',
+        'travailHautVisite':   'Travail en hauteur',
+        'travailIsoVisite':    'Travail isolé',
+        'travailBasVisite':    'Position basse',
+        'effortVisite':        'Effort / Force'
+    } %}
+    {% set activeCond = [] %}
+    {% for field, label in condLabels %}
+        {% if attribute(visite, field) %}
+            {% set activeCond = activeCond|merge([label]) %}
+        {% endif %}
+    {% endfor %}
+    {% if activeCond|length > 0 or visite.port %}
+    <div class="pd-title pd-title-info" style="margin-top:6pt">Conditions de travail</div>
+    <div class="pd-cell">
+        {% if activeCond|length > 0 %}
+        <div style="margin-bottom:{% if visite.port %}4pt{% endif %}">
+            {% for label in activeCond %}
+                <span style="display:inline-block;margin-right:12pt;font-size:9pt">✓ {{ label }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if visite.port %}
+        <div><strong>Port de charges :</strong> {{ visite.port }}</div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Temps partiel thérapeutique #}
+    {% if visite.tempsPartielVisite %}
+    <div class="pd-title pd-title-warning" style="margin-top:6pt">Temps partiel thérapeutique</div>
+    <div class="pd-cell">
+        <div style="margin-bottom:3pt"><strong>{{ visite.tempsPartielVisite|capitalize }}</strong></div>
+        {% set tpts = [
+            {du: visite.tpt1Du, au: visite.tpt1Au, n: 1},
+            {du: visite.tpt2Du, au: visite.tpt2Au, n: 2},
+            {du: visite.tpt3Du, au: visite.tpt3Au, n: 3},
+            {du: visite.tpt4Du, au: visite.tpt4Au, n: 4}
+        ] %}
+        {% for tpt in tpts %}
+            {% if tpt.du or tpt.au %}
+            <div style="font-size:8.5pt">Période {{ tpt.n }} : du <strong>{{ tpt.du ?: '—' }}</strong> au <strong>{{ tpt.au ?: '—' }}</strong></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Signatures #}
+    <div class="pd-signatures">
+        <div class="pd-sig-box">
+            <div class="pd-sig-line"></div>
+            Le médecin de prévention
+        </div>
+        <div class="pd-sig-box">
+            <div class="pd-sig-line"></div>
+            L'infirmière de prévention
+        </div>
+    </div>
+
+</div>
+{# ── Fin section impression ────────────────────────────────── #}
+
+{# Bandeau agent + dates — écran seulement #}
 <div class="agent-banner mb-4 d-flex flex-wrap gap-4 align-items-center">
     <div>
         <div class="text-muted small">Agent</div>
@@ -108,10 +321,8 @@
                 <div class="btn-group btn-group-sm" role="group">
                     <input type="radio" class="btn-check delai-radio" name="delai_visite" id="delai3"  value="3"  autocomplete="off">
                     <label class="btn btn-outline-primary" for="delai3">3 mois</label>
-
                     <input type="radio" class="btn-check delai-radio" name="delai_visite" id="delai6"  value="6"  autocomplete="off">
                     <label class="btn btn-outline-primary" for="delai6">6 mois</label>
-
                     <input type="radio" class="btn-check delai-radio" name="delai_visite" id="delai12" value="12" autocomplete="off">
                     <label class="btn btn-outline-primary" for="delai12">1 an</label>
                 </div>
@@ -198,7 +409,7 @@
 
 </div>
 
-<div class="mt-4 no-print">
+<div class="mt-4">
     <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
     <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-outline-secondary ms-2">Annuler</a>
 </div>
@@ -227,18 +438,11 @@
     function applyDelai(mois) {
         const base = parseDD(refDate);
         base.setMonth(base.getMonth() + mois);
-        const formatted = formatDD(base);
-
         const input = document.querySelector('.prochaine-date-field');
         if (!input) return;
-
-        // flatpickr attache l'instance sur l'input original
         const fp = input._flatpickr;
-        if (fp) {
-            fp.setDate(formatted, true, 'd/m/Y');
-        } else {
-            input.value = formatted;
-        }
+        if (fp) fp.setDate(formatDD(base), true, 'd/m/Y');
+        else input.value = formatDD(base);
     }
 
     document.querySelectorAll('.delai-radio').forEach(function (radio) {
@@ -247,13 +451,10 @@
         });
     });
 
-    // Décocher les radios si l'utilisateur saisit la date manuellement (pas si c'est applyDelai qui écrit)
     const dateInput = document.querySelector('.prochaine-date-field');
     if (dateInput) {
         dateInput.addEventListener('input', function (e) {
-            if (e.isTrusted) {
-                document.querySelectorAll('.delai-radio').forEach(r => r.checked = false);
-            }
+            if (e.isTrusted) document.querySelectorAll('.delai-radio').forEach(r => r.checked = false);
         });
     }
 })();
