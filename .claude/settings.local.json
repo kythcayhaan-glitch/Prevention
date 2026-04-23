@@ -160,7 +160,10 @@
       "Bash(where pscp.exe)",
       "Read(//c/Program Files \\(x86\\)/**)",
       "Bash(python *)",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(\"C:/Program Files/MariaDB 11.4/bin/mysql.exe\" -u root -psopxsopx celine_symfony -e \"DELETE FROM visite_date WHERE visite_id IN \\(SELECT id FROM visite WHERE agent_visite IS NULL OR agent_visite = ''\\);\")",
+      "Bash(\"C:/Program Files/MariaDB 11.4/bin/mysql.exe\" -u root -psopxsopx celine_symfony)",
+      "Bash('C:/Program Files/MariaDB 11.4/bin/mysql.exe' -u root -psopxsopx celine_symfony -e ' *)"
     ]
   }
 }

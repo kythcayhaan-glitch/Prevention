@@ -9,9 +9,9 @@
     <div class="card-body">
         {{ form_start(form) }}
         <div class="row g-3">
-            <div class="col-md-2">{{ form_row(form.genre) }}</div>
+            <div class="col-md-2">{{ form_row(form.genre, {attr: {class: 'form-select genre-autofill'}}) }}</div>
             <div class="col-md-3">{{ form_row(form.agentFiphfp, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.prenomFiphfp, {attr: {class: 'form-control'}}) }}</div>
+            <div class="col-md-3">{{ form_row(form.prenomFiphfp, {attr: {class: 'form-control prenom-genre-trigger'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.poleFiphfp, {attr: {class: 'form-control'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.demandeFiphfp, {attr: {class: 'form-control'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.dateDemandeFiphfp, {attr: {class: 'form-control'}}) }}</div>

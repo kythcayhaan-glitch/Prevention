@@ -25,7 +25,7 @@ class StatistiquesController extends AbstractController
         foreach ($statsByAgent as $row) {
             $agent = $row['agent'] ?: 'Non renseigné';
             if (!isset($parAgent[$agent])) {
-                $parAgent[$agent] = ['agent' => $agent, 'pole_service' => $row['pole_service'], 'nb_visites' => 0];
+                $parAgent[$agent] = ['agent' => $agent, 'pole_service' => $row['pole_service'], 'nb_visites' => 0, 'visite_id' => $row['visite_id']];
             }
             $parAgent[$agent]['nb_visites'] += (int)$row['nb_visites'];
         }

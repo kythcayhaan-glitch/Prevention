@@ -29,7 +29,7 @@
                     <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ visite.poleServiceVisite }}</dd>
                     <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ visite.emploiVisite }}</dd>
                     <dt class="col-sm-5">Dates réalisées</dt><dd class="col-sm-7">
-                        {% set realisees = visite.dates|filter(d => d.type == 'realisee') %}
+                        {% set realisees = visite.dates|filter(d => d.type == 'realisee')|sort((a, b) => (a.date|slice(6,4)~a.date|slice(3,2)~a.date|slice(0,2)) <=> (b.date|slice(6,4)~b.date|slice(3,2)~b.date|slice(0,2))) %}
                         {% if realisees|length %}{% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}{% else %}-{% endif %}
                     </dd>
                     <dt class="col-sm-5">Prochaines visites</dt><dd class="col-sm-7">

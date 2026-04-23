@@ -8,15 +8,29 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <div class="px-3 pt-3 pb-2">
+        <div class="px-3 pt-3 pb-1">
             <input type="text" id="searchInput" class="form-control table-search" placeholder="&#xF52A;  Rechercher (agent, service, type...)">
+        </div>
+        <div class="px-3 pb-2 d-flex flex-wrap gap-1 align-items-center">
+            <small class="text-muted me-1">Année :</small>
+            <button class="btn btn-sm btn-primary year-btn active" data-year="">Toutes</button>
+            {% set allYears = [] %}
+            {% for visite in visites %}
+                {% for d in visite.dates|filter(d => d.type == 'realisee') %}
+                    {% set y = d.date|slice(-4) %}
+                    {% if y not in allYears %}{% set allYears = allYears|merge([y]) %}{% endif %}
+                {% endfor %}
+            {% endfor %}
+            {% for y in allYears|sort %}
+                <button class="btn btn-sm btn-outline-primary year-btn" data-year="{{ y }}">{{ y }}</button>
+            {% endfor %}
         </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nom</th>
+                        <th id="th-nom" style="cursor:pointer;user-select:none">Nom <span id="sort-icon">↕</span></th>
                         <th>Prénom</th>
                         <th>Pôle / Service</th>
                         <th>Emploi</th>
@@ -28,14 +42,19 @@
                 </thead>
                 <tbody>
                 {% for visite in visites %}
-                    <tr data-href="{{ path('app_visite_show', {id: visite.id}) }}">
+                    {% set rowYears = [] %}
+                    {% for d in visite.dates|filter(d => d.type == 'realisee') %}
+                        {% set y = d.date|slice(-4) %}
+                        {% if y not in rowYears %}{% set rowYears = rowYears|merge([y]) %}{% endif %}
+                    {% endfor %}
+                    <tr data-href="{{ path('app_visite_show', {id: visite.id}) }}" data-years="{{ rowYears|join(',') }}">
                         <td>{{ visite.id }}</td>
                         <td><strong>{{ visite.agentVisite }}</strong></td>
                         <td>{{ visite.prenomVisite }}</td>
                         <td>{{ visite.poleServiceVisite }}</td>
                         <td>{{ visite.emploiVisite }}</td>
                         <td>
-                            {% set realisees = visite.dates|filter(d => d.type == 'realisee') %}
+                            {% set realisees = visite.dates|filter(d => d.type == 'realisee')|sort((a, b) => (a.date|slice(6,4)~a.date|slice(3,2)~a.date|slice(0,2)) <=> (b.date|slice(6,4)~b.date|slice(3,2)~b.date|slice(0,2))) %}
                             {% if realisees|length %}
                                 {% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}</span>{% endfor %}
                             {% else %}-{% endif %}
@@ -65,12 +84,48 @@
 {% endblock %}
 {% block javascripts %}
 <script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
+let activeYear = '';
+
+function applyFilters() {
+    const filter = document.getElementById('searchInput').value.toLowerCase();
     document.querySelectorAll('#mainTable tbody tr').forEach(row => {
-        row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+        const matchSearch = !filter || row.textContent.toLowerCase().includes(filter);
+        const years = row.dataset.years ? row.dataset.years.split(',') : [];
+        const matchYear = !activeYear || years.includes(activeYear);
+        row.style.display = (matchSearch && matchYear) ? '' : 'none';
+    });
+}
+
+document.getElementById('searchInput').addEventListener('keyup', applyFilters);
+
+document.querySelectorAll('.year-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active', 'btn-primary'));
+        document.querySelectorAll('.year-btn').forEach(b => b.classList.add('btn-outline-primary'));
+        this.classList.remove('btn-outline-primary');
+        this.classList.add('active', 'btn-primary');
+        activeYear = this.dataset.year;
+        applyFilters();
     });
 });
 
+let sortAsc = null;
+function sortByNom(asc) {
+    const tbody = document.querySelector('#mainTable tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+        const A = a.cells[1] ? a.cells[1].textContent.trim() : '';
+        const B = b.cells[1] ? b.cells[1].textContent.trim() : '';
+        return asc ? A.localeCompare(B, 'fr') : B.localeCompare(A, 'fr');
+    });
+    rows.forEach(r => tbody.appendChild(r));
+    document.getElementById('sort-icon').textContent = asc ? '↑' : '↓';
+}
+document.getElementById('th-nom').addEventListener('click', function() {
+    sortAsc = sortAsc === true ? false : true;
+    sortByNom(sortAsc);
+});
+sortAsc = true;
+sortByNom(true);
 </script>
 {% endblock %}

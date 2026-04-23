@@ -95,7 +95,7 @@
             {% set total = par_agent|map(a => a.nb_visites)|reduce((carry, v) => carry + v, 0) %}
             {% set max_val = max(par_agent|map(a => a['nb_visites'])) %}
             {% for row in par_agent %}
-            <tr>
+            <tr data-href="{{ path('app_visite_show', {id: row.visite_id}) }}" style="cursor:pointer">
                 <td><strong>{{ row.agent }}</strong></td>
                 <td><span class="text-muted">{{ row.pole_service }}</span></td>
                 <td><span class="badge bg-primary fs-6">{{ row.nb_visites }}</span></td>

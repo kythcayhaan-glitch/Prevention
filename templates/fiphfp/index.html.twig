@@ -13,14 +13,13 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
                 <thead><tr>
-                    <th>#</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Pôle</th><th>Objet</th>
+                    <th>#</th><th id="th-nom" style="cursor:pointer;user-select:none">Nom <span id="sort-icon">↕</span></th><th>Prénom</th><th>Pôle</th><th>Objet</th>
                     <th>État</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
                 {% for f in fiphfps %}
                 <tr data-href="{{ path('app_fiphfp_show', {id: f.id}) }}">
                     <td class="text-muted">{{ f.id }}</td>
-                    <td>{{ f.genre }}</td>
                     <td><strong>{{ f.agentFiphfp }}</strong></td>
                     <td>{{ f.prenomFiphfp }}</td>
                     <td>{{ f.poleFiphfp }}</td>
@@ -39,7 +38,7 @@
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="11" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune demande FIPHFP.</td></tr>
+                <tr><td colspan="10" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune demande FIPHFP.</td></tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -52,4 +51,23 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     const f = this.value.toLowerCase();
     document.querySelectorAll('#mainTable tbody tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(f) ? '' : 'none');
 });
+
+let sortAsc = null;
+function sortByNom(asc) {
+    const tbody = document.querySelector('#mainTable tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+        const A = a.cells[1] ? a.cells[1].textContent.trim() : '';
+        const B = b.cells[1] ? b.cells[1].textContent.trim() : '';
+        return asc ? A.localeCompare(B, 'fr') : B.localeCompare(A, 'fr');
+    });
+    rows.forEach(r => tbody.appendChild(r));
+    document.getElementById('sort-icon').textContent = asc ? '↑' : '↓';
+}
+document.getElementById('th-nom').addEventListener('click', function() {
+    sortAsc = sortAsc === true ? false : true;
+    sortByNom(sortAsc);
+});
+sortAsc = true;
+sortByNom(true);
 </script>{% endblock %}

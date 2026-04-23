@@ -13,9 +13,9 @@
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">Informations générales</div>
             <div class="card-body row g-3">
-                <div class="col-md-2">{{ form_row(form.genre) }}</div>
+                <div class="col-md-2">{{ form_row(form.genre, {attr: {class: 'form-select genre-autofill'}}) }}</div>
                 <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
-                <div class="col-md-3">{{ form_row(form.prenomVisite, {attr: {class: 'form-control'}}) }}</div>
+                <div class="col-md-3">{{ form_row(form.prenomVisite, {attr: {class: 'form-control prenom-genre-trigger'}}) }}</div>
                 <div class="col-md-3">{{ form_row(form.poleServiceVisite, {attr: {class: 'form-select'}}) }}</div>
                 <div class="col-md-4">{{ form_row(form.emploiVisite, {attr: {class: 'form-control'}}) }}</div>
                 <div class="col-md-4">{{ form_row(form.type, {attr: {class: 'form-select'}}) }}</div>

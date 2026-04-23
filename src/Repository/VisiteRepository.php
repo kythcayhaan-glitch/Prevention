@@ -34,9 +34,9 @@ class VisiteRepository extends ServiceEntityRepository
         $where = $annee ? "WHERE annee = :annee" : "";
 
         $sql = "
-            SELECT annee, agent, pole_service, COUNT(*) as nb_visites
+            SELECT annee, agent, pole_service, COUNT(*) as nb_visites, MIN(visite_id) as visite_id
             FROM (
-                SELECT SUBSTRING(vd.date, 7, 4) as annee, TRIM(CONCAT(COALESCE(v.agent_visite,''), ' ', COALESCE(v.prenom_visite,''))) as agent, v.pole_service_visite as pole_service
+                SELECT SUBSTRING(vd.date, 7, 4) as annee, TRIM(CONCAT(COALESCE(v.agent_visite,''), ' ', COALESCE(v.prenom_visite,''))) as agent, v.pole_service_visite as pole_service, v.id as visite_id
                 FROM visite_date vd
                 JOIN visite v ON vd.visite_id = v.id
                 WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
