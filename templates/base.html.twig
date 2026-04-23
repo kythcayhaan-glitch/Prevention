@@ -251,6 +251,15 @@
                 </li>
                 {% endif %}
 
+                {% if app.user.login == 'marliere' %}
+                <div class="nav-section">Gestion</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_actualite' ? 'active' }}" href="{{ path('app_actualite_index') }}">
+                        <i class="bi bi-megaphone"></i> Mises à jour
+                    </a>
+                </li>
+                {% endif %}
+
                 <div class="nav-section">Statistiques</div>
                 <li class="nav-item">
                     <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_stats' ? 'active' }}" href="{{ path('app_stats_visites') }}">

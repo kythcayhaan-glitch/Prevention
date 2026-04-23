@@ -139,7 +139,10 @@
                         </td>
                         <td class="text-muted small">{{ pj.taille ? (pj.taille / 1024)|round ~ ' Ko' : '—' }}</td>
                         <td class="text-muted small">{{ pj.dateAjout|date('d/m/Y') }}</td>
-                        <td class="text-end">
+                        <td class="text-end text-nowrap">
+                            {% if pj.extension in ['pdf','png','jpg','jpeg','gif','webp','svg','txt'] %}
+                            <a href="{{ path('app_visite_pj_view', {id: visite.id, pjId: pj.id}) }}" class="btn btn-sm btn-outline-info" title="Visualiser" target="_blank"><i class="bi bi-eye"></i></a>
+                            {% endif %}
                             <a href="{{ path('app_visite_pj_download', {id: visite.id, pjId: pj.id}) }}" class="btn btn-sm btn-outline-primary" title="Télécharger"><i class="bi bi-download"></i></a>
                             <form method="post" action="{{ path('app_visite_pj_delete', {id: visite.id, pjId: pj.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer ce fichier ?')">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete-pj-' ~ pj.id) }}">

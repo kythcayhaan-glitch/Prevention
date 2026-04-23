@@ -3,12 +3,13 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card" style="width: 380px;">
+<div class="d-flex justify-content-center align-items-start gap-4 flex-wrap" style="min-height: 80vh; padding-top: 5vh;">
+
+    {# Formulaire de connexion #}
+    <div class="card" style="width: 380px; flex-shrink:0;">
         <div class="card-header bg-primary text-white text-center py-3">
-		<big>Gestion Prévention</big>
+            <big>Gestion Prévention</big>
             <h4 class="mb-0"><i class="bi bi-shield-lock"></i> Connexion</h4>
-            
         </div>
         <div class="card-body p-4">
             {% if error %}
@@ -31,5 +32,30 @@
             </form>
         </div>
     </div>
+
+    {# Encart mises à jour #}
+    {% if actualites is not empty %}
+    <div class="card" style="width: 420px; flex-shrink:0; max-height: 70vh; overflow-y: auto;">
+        <div class="card-header bg-info text-white">
+            <i class="bi bi-megaphone"></i> Mises à jour
+        </div>
+        <div class="card-body p-0">
+            {% for actu in actualites %}
+            <div class="px-3 py-2 {% if not loop.last %}border-bottom{% endif %}">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    {% if actu.titre %}
+                        <strong class="small">{{ actu.titre }}</strong>
+                    {% else %}
+                        <span></span>
+                    {% endif %}
+                    <span class="text-muted" style="font-size:.75rem">{{ actu.dateCreation|date('d/m/Y') }}</span>
+                </div>
+                <div style="font-size:.875rem; white-space: pre-line;">{{ actu.contenu }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

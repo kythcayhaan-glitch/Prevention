@@ -6,6 +6,7 @@ use App\Entity\Visite;
 use App\Entity\VisiteDate;
 use App\Entity\VisitePieceJointe;
 use App\Form\VisiteType;
+use App\Repository\VisitePieceJointeRepository;
 use App\Repository\VisiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,10 +30,11 @@ class VisiteController extends AbstractController
     }
 
     #[Route('/', name: 'app_visite_index')]
-    public function index(VisiteRepository $repository): Response
+    public function index(VisiteRepository $repository, VisitePieceJointeRepository $pjRepo): Response
     {
         return $this->render('visite/index.html.twig', [
-            'visites' => $repository->findBy([], ['id' => 'DESC']),
+            'visites'    => $repository->findBy([], ['id' => 'DESC']),
+            'pj_counts'  => $pjRepo->countByVisite(),
         ]);
     }
 
@@ -180,6 +182,36 @@ class VisiteController extends AbstractController
             'Content-Type'        => 'application/pdf',
             'Content-Disposition' => 'inline; filename="convocation_' . $nom . '.pdf"',
         ]);
+    }
+
+    #[Route('/{id}/piece-jointe/{pjId}/voir', name: 'app_visite_pj_view')]
+    public function pjView(Visite $visite, int $pjId, EntityManagerInterface $em): Response
+    {
+        $pj = $em->getRepository(VisitePieceJointe::class)->find($pjId);
+        if (!$pj || $pj->getVisiteId() !== $visite->getId()) {
+            throw $this->createNotFoundException();
+        }
+
+        $path = $this->uploadDir . '/' . $visite->getId() . '/' . $pj->getNomFichier();
+        if (!file_exists($path)) throw $this->createNotFoundException('Fichier introuvable.');
+
+        $mimeMap = [
+            'pdf'  => 'application/pdf',
+            'png'  => 'image/png',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif'  => 'image/gif',
+            'webp' => 'image/webp',
+            'svg'  => 'image/svg+xml',
+            'txt'  => 'text/plain',
+        ];
+        $ext      = strtolower(pathinfo($pj->getNomFichier(), PATHINFO_EXTENSION));
+        $mimeType = $mimeMap[$ext] ?? (function_exists('mime_content_type') ? mime_content_type($path) : 'application/octet-stream');
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', $mimeType);
+        $response->headers->set('Content-Disposition', 'inline; filename="' . addslashes($pj->getNom()) . '"');
+        return $response;
     }
 
     #[Route('/{id}/piece-jointe/upload', name: 'app_visite_pj_upload', methods: ['POST'])]

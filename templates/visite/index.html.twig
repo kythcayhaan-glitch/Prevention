@@ -16,7 +16,7 @@
             <button class="btn btn-sm btn-primary year-btn active" data-year="">Toutes</button>
             {% set allYears = [] %}
             {% for visite in visites %}
-                {% for d in visite.dates|filter(d => d.type == 'realisee') %}
+                {% for d in visite.dates %}
                     {% set y = d.date|slice(-4) %}
                     {% if y not in allYears %}{% set allYears = allYears|merge([y]) %}{% endif %}
                 {% endfor %}
@@ -43,7 +43,7 @@
                 <tbody>
                 {% for visite in visites %}
                     {% set rowYears = [] %}
-                    {% for d in visite.dates|filter(d => d.type == 'realisee') %}
+                    {% for d in visite.dates %}
                         {% set y = d.date|slice(-4) %}
                         {% if y not in rowYears %}{% set rowYears = rowYears|merge([y]) %}{% endif %}
                     {% endfor %}
@@ -71,6 +71,9 @@
                             <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
                             {% if visite.dates|filter(d => d.type == 'realisee')|length %}
                                 <a href="{{ path('app_visite_fiche_suivi', {id: visite.id}) }}" class="btn btn-sm btn-outline-success" title="Fiche de suivi"><i class="bi bi-file-medical"></i></a>
+                            {% endif %}
+                            {% if pj_counts[visite.id] is defined %}
+                                <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ pj_counts[visite.id] }} pièce(s) jointe(s)"><i class="bi bi-paperclip"></i></a>
                             {% endif %}
                             <form method="post" action="{{ path('app_visite_delete', {id: visite.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?')">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ visite.id) }}">
