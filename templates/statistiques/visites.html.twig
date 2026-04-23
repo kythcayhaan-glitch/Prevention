@@ -90,7 +90,7 @@
     <div class="card-body p-0">
         <div class="p-3"><input type="text" id="searchInput" class="form-control" placeholder="Rechercher un agent..."></div>
         <table class="table table-hover mb-0" id="mainTable">
-            <thead><tr><th>Agent</th><th>Pôle / Service</th><th>Nombre de visites</th><th>Répartition</th></tr></thead>
+            <thead><tr><th id="th-nom" style="cursor:pointer;user-select:none">Agent <span id="sort-icon">↑</span></th><th>Pôle / Service</th><th>Nombre de visites</th><th>Répartition</th></tr></thead>
             <tbody>
             {% set total = par_agent|map(a => a.nb_visites)|reduce((carry, v) => carry + v, 0) %}
             {% set max_val = max(par_agent|map(a => a['nb_visites'])) %}
@@ -121,5 +121,24 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     const f = this.value.toLowerCase();
     document.querySelectorAll('#mainTable tbody tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(f) ? '' : 'none');
 });
+
+let sortAsc = null;
+function sortByNom(asc) {
+    const tbody = document.querySelector('#mainTable tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+        const A = a.cells[0] ? a.cells[0].textContent.trim() : '';
+        const B = b.cells[0] ? b.cells[0].textContent.trim() : '';
+        return asc ? A.localeCompare(B, 'fr') : B.localeCompare(A, 'fr');
+    });
+    rows.forEach(r => tbody.appendChild(r));
+    document.getElementById('sort-icon').textContent = asc ? '↑' : '↓';
+}
+document.getElementById('th-nom').addEventListener('click', function() {
+    sortAsc = sortAsc === true ? false : true;
+    sortByNom(sortAsc);
+});
+sortAsc = true;
+sortByNom(true);
 </script>
 {% endblock %}
