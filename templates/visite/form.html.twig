@@ -166,12 +166,14 @@
         });
     }
 
+    const annulerUrlTemplate = '{{ path('app_visite_date_annuler', {id: '__VID__', dateId: '__DID__'}) }}';
+
     function attachAnnuler(row) {
         const btn = row.querySelector('.btn-annuler-date');
         if (!btn) return;
         btn.addEventListener('click', function () {
             const dateId = row.dataset.dateId;
-            const action = '/visite/' + visiteId + '/date/' + dateId + '/annuler';
+            const action = annulerUrlTemplate.replace('__VID__', visiteId).replace('__DID__', dateId);
             document.getElementById('formAnnulation').action = action;
             document.getElementById('motifInput').value = '';
             new bootstrap.Modal(document.getElementById('modalAnnulation')).show();

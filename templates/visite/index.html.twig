@@ -55,9 +55,12 @@
                         <td>{{ visite.emploiVisite }}</td>
                         <td>
                             {% set realisees = visite.dates|filter(d => d.type == 'realisee' and not d.annulee)|sort((a, b) => (a.date|slice(6,4)~a.date|slice(3,2)~a.date|slice(0,2)) <=> (b.date|slice(6,4)~b.date|slice(3,2)~b.date|slice(0,2))) %}
+                            {% set annulees = visite.dates|filter(d => d.annulee) %}
                             {% if realisees|length %}
                                 {% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}</span>{% endfor %}
-                            {% else %}-{% endif %}
+                            {% endif %}
+                            {% for d in annulees %}<span class="badge bg-secondary text-decoration-line-through me-1" title="Annulée{% if d.motifAnnulation %} : {{ d.motifAnnulation }}{% endif %}">{{ d.date }}</span>{% endfor %}
+                            {% if not realisees|length and not annulees|length %}-{% endif %}
                         </td>
                         <td>
                             {% set prochaines = visite.dates|filter(d => d.type == 'prochaine' and not d.annulee) %}
