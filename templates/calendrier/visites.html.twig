@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('modalPole').textContent = info.event.extendedProps.pole || '—';
             document.getElementById('modalDate').textContent = info.event.startStr;
             document.getElementById('modalType').textContent = info.event.extendedProps.type || '—';
-            document.getElementById('modalLienFiche').href = '/visite/' + info.event.extendedProps.visite_id;
+            document.getElementById('modalLienFiche').href = '{{ path('app_visite_show', {id: '__ID__'}) }}'.replace('__ID__', info.event.extendedProps.visite_id);
             modal.show();
         },
         noEventsContent: 'Aucune visite prévue.'
