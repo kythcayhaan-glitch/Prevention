@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\DocumentRepository;
 use App\Repository\FiphfpRepository;
 use App\Repository\InterRepository;
 use App\Repository\RqthRepository;
@@ -18,12 +19,14 @@ class DashboardController extends AbstractController
         RqthRepository $rqthRepo,
         FiphfpRepository $fiphfpRepo,
         InterRepository $interRepo,
+        DocumentRepository $docRepo,
     ): Response {
         return $this->render('dashboard/index.html.twig', [
             'nb_visites' => $visiteRepo->count([]),
-            'nb_rqth' => $rqthRepo->count([]),
-            'nb_fiphfp' => $fiphfpRepo->count([]),
-            'nb_inter' => $interRepo->count([]),
+            'nb_rqth'    => $rqthRepo->count([]),
+            'nb_fiphfp'  => $fiphfpRepo->count([]),
+            'nb_inter'   => $interRepo->count([]),
+            'documents'  => $docRepo->findBy([], ['dateAjout' => 'DESC']),
         ]);
     }
 }
