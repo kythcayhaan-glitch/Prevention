@@ -99,5 +99,60 @@
         </div>
     </div>
     {% endif %}
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-paperclip"></i> Pièces jointes</span>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#formPj">
+                    <i class="bi bi-upload"></i> Ajouter un fichier
+                </button>
+            </div>
+            <div class="collapse" id="formPj">
+                <div class="card-body border-bottom">
+                    <form method="post" action="{{ path('app_visite_pj_upload', {id: visite.id}) }}" enctype="multipart/form-data" class="d-flex gap-2 align-items-end flex-wrap">
+                        <div>
+                            <label class="form-label mb-1 small">Fichier</label>
+                            <input type="file" name="fichier" class="form-control form-control-sm" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i> Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if visite.piecesJointes is empty %}
+                    <p class="text-muted text-center py-4 mb-0"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune pièce jointe.</p>
+                {% else %}
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Fichier</th><th>Taille</th><th>Ajouté le</th><th></th></tr></thead>
+                    <tbody>
+                    {% for pj in visite.piecesJointes %}
+                    <tr>
+                        <td>
+                            {% set ext = pj.extension %}
+                            {% if ext in ['pdf'] %}<i class="bi bi-file-earmark-pdf text-danger me-1"></i>
+                            {% elseif ext in ['doc','docx'] %}<i class="bi bi-file-earmark-word text-primary me-1"></i>
+                            {% elseif ext in ['xls','xlsx'] %}<i class="bi bi-file-earmark-excel text-success me-1"></i>
+                            {% elseif ext in ['jpg','jpeg','png','gif'] %}<i class="bi bi-file-earmark-image text-info me-1"></i>
+                            {% else %}<i class="bi bi-file-earmark text-muted me-1"></i>{% endif %}
+                            {{ pj.nom }}
+                        </td>
+                        <td class="text-muted small">{{ pj.taille ? (pj.taille / 1024)|round ~ ' Ko' : '—' }}</td>
+                        <td class="text-muted small">{{ pj.dateAjout|date('d/m/Y') }}</td>
+                        <td class="text-end">
+                            <a href="{{ path('app_visite_pj_download', {id: visite.id, pjId: pj.id}) }}" class="btn btn-sm btn-outline-primary" title="Télécharger"><i class="bi bi-download"></i></a>
+                            <form method="post" action="{{ path('app_visite_pj_delete', {id: visite.id, pjId: pj.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer ce fichier ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-pj-' ~ pj.id) }}">
+                                <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

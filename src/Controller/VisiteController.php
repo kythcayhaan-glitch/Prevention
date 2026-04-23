@@ -4,18 +4,30 @@ namespace App\Controller;
 
 use App\Entity\Visite;
 use App\Entity\VisiteDate;
+use App\Entity\VisitePieceJointe;
 use App\Form\VisiteType;
 use App\Repository\VisiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/visite')]
 class VisiteController extends AbstractController
 {
+    private string $uploadDir;
+
+    public function __construct(#[Autowire('%kernel.project_dir%')] string $projectDir)
+    {
+        $this->uploadDir = $projectDir . '/var/uploads/visites';
+    }
+
     #[Route('/', name: 'app_visite_index')]
     public function index(VisiteRepository $repository): Response
     {
@@ -162,6 +174,71 @@ class VisiteController extends AbstractController
             'Content-Type'        => 'application/pdf',
             'Content-Disposition' => 'inline; filename="convocation_' . $nom . '.pdf"',
         ]);
+    }
+
+    #[Route('/{id}/piece-jointe/upload', name: 'app_visite_pj_upload', methods: ['POST'])]
+    public function pjUpload(Request $request, Visite $visite, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $file = $request->files->get('fichier');
+        if (!$file || !$file->isValid()) {
+            $this->addFlash('error', 'Fichier invalide.');
+            return $this->redirectToRoute('app_visite_show', ['id' => $visite->getId()]);
+        }
+
+        $dir = $this->uploadDir . '/' . $visite->getId();
+        if (!is_dir($dir)) mkdir($dir, 0775, true);
+
+        $nom      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $ext      = $file->getClientOriginalExtension();
+        $safeName = $slugger->slug($nom) . '-' . uniqid() . '.' . $ext;
+        $taille   = $file->getSize();
+        $file->move($dir, $safeName);
+
+        $pj = new VisitePieceJointe();
+        $pj->setVisite($visite)
+           ->setNom($file->getClientOriginalName())
+           ->setNomFichier($safeName)
+           ->setTaille($taille ?: filesize($dir . '/' . $safeName));
+
+        $em->persist($pj);
+        $em->flush();
+
+        $this->addFlash('success', 'Fichier ajouté.');
+        return $this->redirectToRoute('app_visite_show', ['id' => $visite->getId()]);
+    }
+
+    #[Route('/{id}/piece-jointe/{pjId}/download', name: 'app_visite_pj_download')]
+    public function pjDownload(Visite $visite, int $pjId, EntityManagerInterface $em): BinaryFileResponse
+    {
+        $pj   = $em->getRepository(VisitePieceJointe::class)->find($pjId);
+        if (!$pj || $pj->getVisite()->getId() !== $visite->getId()) {
+            throw $this->createNotFoundException();
+        }
+
+        $path = $this->uploadDir . '/' . $visite->getId() . '/' . $pj->getNomFichier();
+        if (!file_exists($path)) throw $this->createNotFoundException('Fichier introuvable.');
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Disposition',
+            'attachment; filename="' . addslashes($pj->getNom()) . '"'
+        );
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        return $response;
+    }
+
+    #[Route('/{id}/piece-jointe/{pjId}/supprimer', name: 'app_visite_pj_delete', methods: ['POST'])]
+    public function pjDelete(Request $request, Visite $visite, int $pjId, EntityManagerInterface $em): Response
+    {
+        $pj = $em->getRepository(VisitePieceJointe::class)->find($pjId);
+        if ($pj && $pj->getVisite()->getId() === $visite->getId()
+            && $this->isCsrfTokenValid('delete-pj-' . $pjId, $request->request->get('_token'))) {
+            $path = $this->uploadDir . '/' . $visite->getId() . '/' . $pj->getNomFichier();
+            if (file_exists($path)) unlink($path);
+            $em->remove($pj);
+            $em->flush();
+            $this->addFlash('success', 'Fichier supprimé.');
+        }
+        return $this->redirectToRoute('app_visite_show', ['id' => $visite->getId()]);
     }
 
     #[Route('/{id}/supprimer', name: 'app_visite_delete', methods: ['POST'])]
