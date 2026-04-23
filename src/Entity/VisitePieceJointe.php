@@ -6,7 +6,7 @@ use App\Repository\VisitePieceJointeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VisitePieceJointeRepository::class)]
-#[ORM\Table(name: 'visite_piece_jointe')]
+#[ORM\Table(name: 'visite_piece_jointe', options: ['engine' => 'MyISAM'])]
 class VisitePieceJointe
 {
     #[ORM\Id]
