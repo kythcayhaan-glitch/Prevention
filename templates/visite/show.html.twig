@@ -10,9 +10,7 @@
     <h2><i class="bi bi-clipboard-heart"></i> Visite de prévention #{{ visite.id }}</h2>
     <div class="d-flex gap-2">
         <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Modifier</a>
-        {% if visite.dates|filter(d => d.type == 'realisee')|length > 0 %}
         <a href="{{ path('app_visite_fiche_suivi', {id: visite.id}) }}" class="btn btn-success"><i class="bi bi-file-medical"></i> Fiche de suivi</a>
-        {% endif %}
         <a href="{{ path('app_visite_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
     </div>
 </div>
@@ -29,11 +27,15 @@
                     <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ visite.poleServiceVisite }}</dd>
                     <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ visite.emploiVisite }}</dd>
                     <dt class="col-sm-5">Dates réalisées</dt><dd class="col-sm-7">
-                        {% set realisees = visite.dates|filter(d => d.type == 'realisee')|sort((a, b) => (a.date|slice(6,4)~a.date|slice(3,2)~a.date|slice(0,2)) <=> (b.date|slice(6,4)~b.date|slice(3,2)~b.date|slice(0,2))) %}
+                        {% set realisees = visite.dates|filter(d => d.type == 'realisee' and not d.annulee)|sort((a, b) => (a.date|slice(6,4)~a.date|slice(3,2)~a.date|slice(0,2)) <=> (b.date|slice(6,4)~b.date|slice(3,2)~b.date|slice(0,2))) %}
                         {% if realisees|length %}{% for d in realisees %}<span class="badge bg-primary me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}{% else %}-{% endif %}
+                        {% set annulees = visite.dates|filter(d => d.annulee) %}
+                        {% if annulees|length %}
+                            <div class="mt-1">{% for d in annulees %}<span class="badge bg-secondary text-decoration-line-through me-1" title="{{ d.motifAnnulation }}">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% if d.motifAnnulation %}<small class="text-muted fst-italic me-2">{{ d.motifAnnulation }}</small>{% endif %}{% endfor %}</div>
+                        {% endif %}
                     </dd>
                     <dt class="col-sm-5">Prochaines visites</dt><dd class="col-sm-7">
-                        {% set prochaines = visite.dates|filter(d => d.type == 'prochaine') %}
+                        {% set prochaines = visite.dates|filter(d => d.type == 'prochaine' and not d.annulee) %}
                         {% if prochaines|length %}
                             {% for d in prochaines %}
                             <div class="d-flex align-items-center gap-2 mb-1">

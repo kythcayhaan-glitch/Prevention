@@ -20,6 +20,7 @@ class VisiteDateRepository extends ServiceEntityRepository
             ->addSelect('v')
             ->where('vd.date IS NOT NULL')
             ->andWhere('vd.date != :empty')
+            ->andWhere('vd.annulee = false')
             ->setParameter('empty', '')
             ->orderBy('vd.date', 'ASC')
             ->getQuery()

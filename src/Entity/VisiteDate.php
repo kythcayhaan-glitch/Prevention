@@ -24,7 +24,13 @@ class VisiteDate
     private ?string $categorie = null; // 'ESTI' | 'MDP' | 'VP'
 
     #[ORM\Column(length: 5, nullable: true)]
-    private ?string $heure = null; // ex: '09:00'
+    private ?string $heure = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $annulee = false;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
 
     #[ORM\ManyToOne(inversedBy: 'dates')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -43,6 +49,12 @@ class VisiteDate
 
     public function getHeure(): ?string { return $this->heure; }
     public function setHeure(?string $heure): static { $this->heure = $heure; return $this; }
+
+    public function isAnnulee(): bool { return $this->annulee; }
+    public function setAnnulee(bool $annulee): static { $this->annulee = $annulee; return $this; }
+
+    public function getMotifAnnulation(): ?string { return $this->motifAnnulation; }
+    public function setMotifAnnulation(?string $motif): static { $this->motifAnnulation = $motif; return $this; }
 
     public function getVisite(): ?Visite { return $this->visite; }
     public function setVisite(?Visite $visite): static { $this->visite = $visite; return $this; }

@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ title }}{% endblock %}
+{% block stylesheets %}
+<style>
+    .date-annulee input, .date-annulee select { pointer-events: none; opacity: .6; background-color: #e9ecef; }
+</style>
+{% endblock %}
 {% block body %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-clipboard-heart"></i> {{ title }}</h2>
@@ -32,34 +37,51 @@
             <div class="card-body p-3">
                 <div id="dates-collection"
                      data-prototype="{{ form_widget(form.dates.vars.prototype)|e('html_attr') }}"
-                     data-index="{{ form.dates|length }}">
+                     data-index="{{ form.dates|length }}"
+                     data-visite-id="{{ visite is defined ? visite.id : '' }}">
 
                     {% for dateForm in form.dates %}
                         {% set dateEntity = dateForm.vars.data %}
-                        <div class="date-row d-flex align-items-center gap-2 mb-2 flex-wrap">
-                            <div style="width:150px">
-                                {{ form_widget(dateForm.date) }}
+                        {% if dateEntity.annulee %}
+                            <div class="date-row date-annulee d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                <div style="width:150px">{{ form_widget(dateForm.date) }}</div>
+                                <div style="width:140px">{{ form_widget(dateForm.type) }}</div>
+                                <div style="width:300px">{{ form_widget(dateForm.categorie) }}</div>
+                                <div style="width:80px">{{ form_widget(dateForm.heure) }}</div>
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Annulée</span>
+                                {% if dateEntity.motifAnnulation %}
+                                    <span class="text-muted small fst-italic">{{ dateEntity.motifAnnulation }}</span>
+                                {% endif %}
+                                {% if is_granted('ROLE_SUPER_ADMIN') and dateEntity.id %}
+                                <button type="submit" form="form-delete-date-{{ dateEntity.id }}" class="btn btn-sm btn-danger" title="Supprimer définitivement" onclick="return confirm('Supprimer définitivement cette date annulée ?')"><i class="bi bi-trash-fill"></i></button>
+                                {% endif %}
                             </div>
-                            <div style="width:140px">
-                                {{ form_widget(dateForm.type) }}
+                        {% else %}
+                            <div class="date-row d-flex align-items-center gap-2 mb-2 flex-wrap"
+                                 data-date-id="{{ dateEntity.id }}">
+                                <div style="width:150px">{{ form_widget(dateForm.date) }}</div>
+                                <div style="width:140px">{{ form_widget(dateForm.type) }}</div>
+                                <div style="width:300px">{{ form_widget(dateForm.categorie) }}</div>
+                                <div class="conv-fields d-flex gap-2" style="display:{% if dateEntity.type == 'prochaine' and dateEntity.categorie == 'ESTI' %}flex{% else %}none{% endif %}!important">
+                                    <div>{{ form_widget(dateForm.heure) }}</div>
+                                </div>
+                                {% if dateEntity.id %}
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-annuler-date" title="Annuler cette date">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                {% endif %}
                             </div>
-                            <div style="width:300px">
-                                {{ form_widget(dateForm.categorie) }}
-                            </div>
-                            <div class="conv-fields d-flex gap-2" style="display:{% if dateEntity.type == 'prochaine' and dateEntity.categorie == 'ESTI' %}flex{% else %}none{% endif %}!important">
-                                <div>{{ form_widget(dateForm.heure) }}</div>
-                            </div>
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        {% endif %}
                     {% else %}
                         <p class="text-muted mb-0" id="no-dates-msg">Aucune date enregistrée. Cliquez sur « Ajouter une date ».</p>
                     {% endfor %}
                 </div>
             </div>
         </div>
-
 
     </div>
 </div>
@@ -69,6 +91,40 @@
     <a href="{{ path('app_visite_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
 </div>
 {{ form_end(form) }}
+
+{% if is_granted('ROLE_SUPER_ADMIN') %}
+{% for dateForm in form.dates %}
+    {% set dateEntity = dateForm.vars.data %}
+    {% if dateEntity.annulee and dateEntity.id %}
+    <form id="form-delete-date-{{ dateEntity.id }}" method="post" action="{{ path('app_visite_date_delete', {id: visite.id, dateId: dateEntity.id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete-date-' ~ dateEntity.id) }}">
+    </form>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+{# Modal motif d'annulation #}
+<div class="modal fade" id="modalAnnulation" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h6 class="modal-title"><i class="bi bi-x-circle me-1"></i>Annuler la date</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formAnnulation" method="post">
+                <div class="modal-body">
+                    <label class="form-label fw-bold small">Motif <span class="text-muted fw-normal">(optionnel)</span></label>
+                    <input type="text" name="motif" id="motifInput" class="form-control form-control-sm"
+                           placeholder="Ex : Absent, Reporté…">
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-check-lg me-1"></i>Confirmer</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -77,6 +133,7 @@
     const container = document.getElementById('dates-collection');
     const btnAdd = document.getElementById('btn-add-date');
     const noMsg = document.getElementById('no-dates-msg');
+    const visiteId = container.dataset.visiteId;
 
     function buildRow(html) {
         const div = document.createElement('div');
@@ -95,17 +152,29 @@
     function extractWidget(html, field) {
         const tmp = document.createElement('div');
         tmp.innerHTML = html;
-        // find the input/select whose name ends with [field]
         const el = tmp.querySelector('[name*="[' + field + ']"]');
         return el ? el.outerHTML : '';
     }
 
     function attachRemove(row) {
-        row.querySelector('.btn-remove-date').addEventListener('click', function () {
+        const btn = row.querySelector('.btn-remove-date');
+        if (btn) btn.addEventListener('click', function () {
             row.remove();
-            if (!container.querySelector('.date-row')) {
+            if (!container.querySelector('.date-row:not(.date-annulee)')) {
                 if (noMsg) noMsg.style.display = '';
             }
+        });
+    }
+
+    function attachAnnuler(row) {
+        const btn = row.querySelector('.btn-annuler-date');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+            const dateId = row.dataset.dateId;
+            const action = '/visite/' + visiteId + '/date/' + dateId + '/annuler';
+            document.getElementById('formAnnulation').action = action;
+            document.getElementById('motifInput').value = '';
+            new bootstrap.Modal(document.getElementById('modalAnnulation')).show();
         });
     }
 
@@ -114,39 +183,33 @@
         const catSelect = row.querySelector('select[name*="[categorie]"]');
         const convFields = row.querySelector('.conv-fields');
         if (!typeSelect) return;
-
         const update = () => {
             const isProchaine = typeSelect.value === 'prochaine';
             const isEsti = catSelect && catSelect.value === 'ESTI';
-
             if (convFields) convFields.style.display = (isProchaine && isEsti) ? 'flex' : 'none';
         };
-
         typeSelect.addEventListener('change', update);
         if (catSelect) catSelect.addEventListener('change', update);
         update();
     }
 
-    // attach handlers to existing rows
-    container.querySelectorAll('.date-row').forEach(row => { attachRemove(row); attachTypeWatch(row); });
+    container.querySelectorAll('.date-row').forEach(row => {
+        attachRemove(row);
+        attachAnnuler(row);
+        attachTypeWatch(row);
+    });
 
     btnAdd.addEventListener('click', function () {
         if (noMsg) noMsg.style.display = 'none';
-
         let index = parseInt(container.dataset.index);
         const proto = container.dataset.prototype.replace(/__name__/g, index);
         container.dataset.index = index + 1;
-
         const row = buildRow(proto);
         container.appendChild(row);
         attachRemove(row);
         attachTypeWatch(row);
-
-        // Pré-sélectionner "Prévue" par défaut
         const typeSelect = row.querySelector('select[name*="[type]"]');
         if (typeSelect) typeSelect.value = 'prochaine';
-
-        // initialize date pickers on new row
         initDatePickers(row);
         row.querySelector('input').focus();
     });

@@ -123,18 +123,20 @@
     <div class="pd-title pd-title-dark">Historique des visites</div>
     <table class="pd-table">
         <thead>
-            <tr><th>Date</th><th>Type</th><th>Catégorie</th></tr>
+            <tr><th>Date</th><th>Type</th><th>Catégorie</th><th>Motif annulation</th></tr>
         </thead>
         <tbody>
         {% set toutes = visite.dates|sort((a, b) => a.date <=> b.date) %}
         {% for d in toutes %}
-            <tr class="{{ d.type == 'prochaine' ? 'prochaine' : '' }}">
-                <td>{{ d.date }}</td>
-                <td>{{ d.type == 'prochaine' ? 'Prévue' : 'Réalisée' }}</td>
+            <tr class="{{ d.annulee ? '' : (d.type == 'prochaine' ? 'prochaine' : '') }}"
+                style="{{ d.annulee ? 'opacity:.55' : '' }}">
+                <td style="{{ d.annulee ? 'text-decoration:line-through' : '' }}">{{ d.date }}</td>
+                <td>{{ d.annulee ? 'Annulée' : (d.type == 'prochaine' ? 'Prévue' : 'Réalisée') }}</td>
                 <td>{{ d.categorie ?: '—' }}</td>
+                <td style="font-style:italic;color:#666">{{ d.motifAnnulation ?: '' }}</td>
             </tr>
         {% else %}
-            <tr><td colspan="3" style="color:#777;font-style:italic">Aucune date enregistrée.</td></tr>
+            <tr><td colspan="4" style="color:#777;font-style:italic">Aucune date enregistrée.</td></tr>
         {% endfor %}
         </tbody>
     </table>
@@ -286,24 +288,27 @@
         <div class="section-title" style="background:#343a40"><i class="bi bi-calendar3"></i> Historique des visites</div>
         <table class="table table-sm table-bordered mb-0">
             <thead class="table-dark">
-                <tr><th>Date</th><th>Type</th><th>Catégorie</th></tr>
+                <tr><th>Date</th><th>Type</th><th>Catégorie</th><th>Motif annulation</th></tr>
             </thead>
             <tbody>
             {% set toutes = visite.dates|sort((a, b) => a.date <=> b.date) %}
             {% for d in toutes %}
-                <tr class="{{ d.type == 'prochaine' ? 'table-success' : '' }}">
-                    <td>{{ d.date }}</td>
+                <tr class="{{ d.annulee ? 'table-secondary' : (d.type == 'prochaine' ? 'table-success' : '') }}">
+                    <td class="{{ d.annulee ? 'text-decoration-line-through text-muted' : '' }}">{{ d.date }}</td>
                     <td>
-                        {% if d.type == 'prochaine' %}
+                        {% if d.annulee %}
+                            <span class="badge bg-secondary"><i class="bi bi-x-circle me-1"></i>Annulée</span>
+                        {% elseif d.type == 'prochaine' %}
                             <span class="badge bg-success">Prévue</span>
                         {% else %}
                             <span class="badge bg-primary">Réalisée</span>
                         {% endif %}
                     </td>
                     <td>{{ d.categorie ?: '—' }}</td>
+                    <td class="text-muted fst-italic small">{{ d.motifAnnulation ?: '' }}</td>
                 </tr>
             {% else %}
-                <tr><td colspan="3" class="text-muted text-center">Aucune date enregistrée.</td></tr>
+                <tr><td colspan="4" class="text-muted text-center">Aucune date enregistrée.</td></tr>
             {% endfor %}
             </tbody>
         </table>

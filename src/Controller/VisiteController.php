@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/visite')]
@@ -35,6 +36,16 @@ class VisiteController extends AbstractController
         return $this->render('visite/index.html.twig', [
             'visites'    => $repository->findBy([], ['id' => 'DESC']),
             'pj_counts'  => $pjRepo->countByVisite(),
+        ]);
+    }
+
+    #[Route('/recapitulatif', name: 'app_visite_recapitulatif')]
+    public function recapitulatif(VisiteRepository $repository): Response
+    {
+        $visites = $repository->findBy([], ['agentVisite' => 'ASC', 'prenomVisite' => 'ASC']);
+
+        return $this->render('visite/recapitulatif.html.twig', [
+            'visites' => $visites,
         ]);
     }
 
@@ -182,6 +193,38 @@ class VisiteController extends AbstractController
             'Content-Type'        => 'application/pdf',
             'Content-Disposition' => 'inline; filename="convocation_' . $nom . '.pdf"',
         ]);
+    }
+
+    #[Route('/{id}/date/{dateId}/supprimer', name: 'app_visite_date_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    public function dateDelete(Request $request, Visite $visite, int $dateId, EntityManagerInterface $em): Response
+    {
+        $date = $em->getRepository(VisiteDate::class)->find($dateId);
+        if (!$date || $date->getVisite()->getId() !== $visite->getId() || !$date->isAnnulee()) {
+            throw $this->createNotFoundException();
+        }
+        if ($this->isCsrfTokenValid('delete-date-' . $dateId, $request->request->get('_token'))) {
+            $em->remove($date);
+            $em->flush();
+            $this->addFlash('success', 'Date annulée supprimée.');
+        }
+        return $this->redirectToRoute('app_visite_edit', ['id' => $visite->getId()]);
+    }
+
+    #[Route('/{id}/date/{dateId}/annuler', name: 'app_visite_date_annuler', methods: ['POST'])]
+    public function dateAnnuler(Request $request, Visite $visite, int $dateId, EntityManagerInterface $em): Response
+    {
+        $date = $em->getRepository(VisiteDate::class)->find($dateId);
+        if (!$date || $date->getVisite()->getId() !== $visite->getId()) {
+            throw $this->createNotFoundException();
+        }
+
+        $motif = trim($request->request->get('motif', ''));
+        $date->setAnnulee(true)->setMotifAnnulation($motif ?: null);
+        $em->flush();
+
+        $this->addFlash('success', 'Date annulée.');
+        return $this->redirectToRoute('app_visite_edit', ['id' => $visite->getId()]);
     }
 
     #[Route('/{id}/piece-jointe/{pjId}/voir', name: 'app_visite_pj_view')]

@@ -20,6 +20,7 @@ class VisiteRepository extends ServiceEntityRepository
             ->where('d.type = :type')
             ->andWhere('d.date IS NOT NULL')
             ->andWhere('d.date != :empty')
+            ->andWhere('d.annulee = false')
             ->setParameter('type', 'prochaine')
             ->setParameter('empty', '')
             ->orderBy('d.date', 'ASC')
@@ -39,7 +40,7 @@ class VisiteRepository extends ServiceEntityRepository
                 SELECT SUBSTRING(vd.date, 7, 4) as annee, TRIM(CONCAT(COALESCE(v.agent_visite,''), ' ', COALESCE(v.prenom_visite,''))) as agent, v.pole_service_visite as pole_service, v.id as visite_id
                 FROM visite_date vd
                 JOIN visite v ON vd.visite_id = v.id
-                WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
+                WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee' AND vd.annulee = 0
             ) as toutes_dates
             $where
             GROUP BY annee, agent, pole_service
@@ -65,7 +66,7 @@ class VisiteRepository extends ServiceEntityRepository
             FROM (
                 SELECT SUBSTRING(vd.date, 7, 4) as annee
                 FROM visite_date vd
-                WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
+                WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee' AND vd.annulee = 0
             ) as toutes_dates
             $where
             GROUP BY annee
@@ -86,7 +87,7 @@ class VisiteRepository extends ServiceEntityRepository
         $sql = "
             SELECT DISTINCT SUBSTRING(vd.date, 7, 4) as annee
             FROM visite_date vd
-            WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee'
+            WHERE vd.date IS NOT NULL AND vd.date != '' AND vd.type = 'realisee' AND vd.annulee = 0
             ORDER BY annee DESC
         ";
         return $conn->fetchFirstColumn($sql);

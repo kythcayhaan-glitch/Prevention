@@ -16,7 +16,7 @@ class FicheSuiviController extends AbstractController
     #[Route('/visite/{id}/fiche-suivi', name: 'app_visite_fiche_suivi', methods: ['GET', 'POST'])]
     public function index(Request $request, Visite $visite, EntityManagerInterface $em): Response
     {
-        $realisees = $visite->getDates()->filter(fn($d) => $d->getType() === 'realisee')->toArray();
+        $realisees = $visite->getDates()->filter(fn($d) => $d->getType() === 'realisee' && !$d->isAnnulee())->toArray();
         usort($realisees, fn($a, $b) => strcmp($a->getDate() ?? '', $b->getDate() ?? ''));
         $derniereRealisee = !empty($realisees) ? end($realisees) : null;
 
