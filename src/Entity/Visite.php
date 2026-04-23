@@ -31,9 +31,6 @@ class Visite
     #[ORM\OneToMany(mappedBy: 'visite', targetEntity: VisiteDate::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $dates;
 
-    #[ORM\OneToMany(mappedBy: 'visite', targetEntity: VisitePieceJointe::class, cascade: ['remove'], orphanRemoval: true)]
-    private Collection $piecesJointes;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $observation = null;
 
@@ -135,13 +132,10 @@ class Visite
 
     public function __construct()
     {
-        $this->dates         = new ArrayCollection();
-        $this->piecesJointes = new ArrayCollection();
+        $this->dates = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
-
-    public function getPiecesJointes(): Collection { return $this->piecesJointes; }
 
     public function getDates(): Collection { return $this->dates; }
 

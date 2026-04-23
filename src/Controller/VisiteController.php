@@ -58,9 +58,15 @@ class VisiteController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_visite_show')]
-    public function show(Visite $visite): Response
+    public function show(Visite $visite, EntityManagerInterface $em): Response
     {
-        return $this->render('visite/show.html.twig', ['visite' => $visite]);
+        $piecesJointes = $em->getRepository(VisitePieceJointe::class)
+            ->findBy(['visiteId' => $visite->getId()], ['dateAjout' => 'DESC']);
+
+        return $this->render('visite/show.html.twig', [
+            'visite'        => $visite,
+            'piecesJointes' => $piecesJointes,
+        ]);
     }
 
     #[Route('/{id}/modifier', name: 'app_visite_edit', methods: ['GET', 'POST'])]
@@ -195,7 +201,7 @@ class VisiteController extends AbstractController
         $file->move($dir, $safeName);
 
         $pj = new VisitePieceJointe();
-        $pj->setVisite($visite)
+        $pj->setVisiteId($visite->getId())
            ->setNom($file->getClientOriginalName())
            ->setNomFichier($safeName)
            ->setTaille($taille ?: filesize($dir . '/' . $safeName));
@@ -210,8 +216,8 @@ class VisiteController extends AbstractController
     #[Route('/{id}/piece-jointe/{pjId}/download', name: 'app_visite_pj_download')]
     public function pjDownload(Visite $visite, int $pjId, EntityManagerInterface $em): BinaryFileResponse
     {
-        $pj   = $em->getRepository(VisitePieceJointe::class)->find($pjId);
-        if (!$pj || $pj->getVisite()->getId() !== $visite->getId()) {
+        $pj = $em->getRepository(VisitePieceJointe::class)->find($pjId);
+        if (!$pj || $pj->getVisiteId() !== $visite->getId()) {
             throw $this->createNotFoundException();
         }
 
@@ -230,7 +236,7 @@ class VisiteController extends AbstractController
     public function pjDelete(Request $request, Visite $visite, int $pjId, EntityManagerInterface $em): Response
     {
         $pj = $em->getRepository(VisitePieceJointe::class)->find($pjId);
-        if ($pj && $pj->getVisite()->getId() === $visite->getId()
+        if ($pj && $pj->getVisiteId() === $visite->getId()
             && $this->isCsrfTokenValid('delete-pj-' . $pjId, $request->request->get('_token'))) {
             $path = $this->uploadDir . '/' . $visite->getId() . '/' . $pj->getNomFichier();
             if (file_exists($path)) unlink($path);

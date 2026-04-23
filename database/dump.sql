@@ -1,4 +1,4 @@
--- Dump 2026-04-23 15:11:26
+-- Dump 2026-04-23 15:13:25
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -1920,13 +1920,12 @@ INSERT INTO `visite_date` (`id`, `visite_id`, `date`, `type`, `categorie`, `heur
 DROP TABLE IF EXISTS `visite_piece_jointe`;
 CREATE TABLE `visite_piece_jointe` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `visite_id` int(11) NOT NULL,
   `nom` varchar(255) NOT NULL,
   `nom_fichier` varchar(255) NOT NULL,
   `taille` int(11) DEFAULT NULL,
   `date_ajout` datetime NOT NULL,
-  `visite_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_89E6CE2DC1C5DC59` (`visite_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 SET FOREIGN_KEY_CHECKS=1;

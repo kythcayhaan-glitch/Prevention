@@ -14,9 +14,8 @@ class VisitePieceJointe
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Visite::class, inversedBy: 'piecesJointes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Visite $visite = null;
+    #[ORM\Column(name: 'visite_id', type: 'integer')]
+    private int $visiteId = 0;
 
     #[ORM\Column(length: 255)]
     private string $nom = '';
@@ -37,8 +36,8 @@ class VisitePieceJointe
 
     public function getId(): ?int { return $this->id; }
 
-    public function getVisite(): ?Visite { return $this->visite; }
-    public function setVisite(?Visite $visite): static { $this->visite = $visite; return $this; }
+    public function getVisiteId(): int { return $this->visiteId; }
+    public function setVisiteId(int $visiteId): static { $this->visiteId = $visiteId; return $this; }
 
     public function getNom(): string { return $this->nom; }
     public function setNom(string $nom): static { $this->nom = $nom; return $this; }
