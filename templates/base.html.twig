@@ -211,18 +211,6 @@
                     </a>
                 </li>
 
-                <div class="nav-section">Statistiques</div>
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_stats' ? 'active' }}" href="{{ path('app_stats_visites') }}">
-                        <i class="bi bi-bar-chart-line"></i> Visites
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_calendrier' ? 'active' }}" href="{{ path('app_calendrier_visites') }}">
-                        <i class="bi bi-calendar3"></i> Calendrier
-                    </a>
-                </li>
-
                 <div class="nav-section">Prévention</div>
                 <li class="nav-item">
                     <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_visite' ? 'active' }}" href="{{ path('app_visite_index') }}">
@@ -262,6 +250,18 @@
                     </a>
                 </li>
                 {% endif %}
+
+                <div class="nav-section">Statistiques</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_stats' ? 'active' }}" href="{{ path('app_stats_visites') }}">
+                        <i class="bi bi-bar-chart-line"></i> Visites
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_calendrier' ? 'active' }}" href="{{ path('app_calendrier_visites') }}">
+                        <i class="bi bi-calendar3"></i> Calendrier
+                    </a>
+                </li>
             </ul>
         </nav>
         {% endif %}
