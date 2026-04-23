@@ -49,17 +49,6 @@ class VisiteType extends AbstractType
                 'by_reference' => false,
                 'label'        => false,
             ])
-            ->add('type', ChoiceType::class, [
-                'label'    => 'Type de visite',
-                'required' => false,
-                'choices'  => [
-                    'Visite de prévention' => 'Visite de prévention',
-                    'Visite de reprise'    => 'Visite de reprise',
-                    'Visite spontanée'     => 'Visite spontanée',
-                    'Visite périodique'    => 'Visite périodique',
-                ],
-                'placeholder' => '-- Choisir --',
-            ])
         ;
     }
 
