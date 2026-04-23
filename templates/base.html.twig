@@ -287,6 +287,11 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+            <script>
+                document.querySelectorAll('.flash-messages .alert').forEach(function(el) {
+                    setTimeout(function() { bootstrap.Alert.getOrCreateInstance(el).close(); }, 3000);
+                });
+            </script>
 
             {% block body %}{% endblock %}
         </main>

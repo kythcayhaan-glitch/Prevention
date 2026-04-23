@@ -50,7 +50,6 @@
                             <div class="conv-fields d-flex gap-2" style="display:{% if dateEntity.type == 'prochaine' and dateEntity.categorie == 'ESTI' %}flex{% else %}none{% endif %}!important">
                                 <div>{{ form_widget(dateForm.heure) }}</div>
                             </div>
-                            <a href="#" class="btn btn-success btn-sm btn-fiche" style="display:none"><i class="bi bi-file-medical me-1"></i>Fiche de suivi des visites</a>
                             <button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -80,9 +79,6 @@
     const btnAdd = document.getElementById('btn-add-date');
     const noMsg = document.getElementById('no-dates-msg');
 
-    const visiteId = {{ visite.id ?? 'null' }};
-    const fichePath = visiteId ? '/visite/' + visiteId + '/fiche-suivi' : null;
-
     function buildRow(html) {
         const div = document.createElement('div');
         div.className = 'date-row d-flex align-items-center gap-2 mb-2 flex-wrap';
@@ -93,7 +89,6 @@
             '<div class="conv-fields d-flex gap-2" style="display:none">' +
                 '<div>' + extractWidget(html, 'heure') + '</div>' +
             '</div>' +
-            '<a href="#" class="btn btn-success btn-sm btn-fiche" style="display:none"><i class="bi bi-file-medical me-1"></i>Fiche de suivi des visites</a>' +
             '<button type="button" class="btn btn-outline-danger btn-sm btn-remove-date" title="Supprimer"><i class="bi bi-trash"></i></button>';
         return div;
     }
@@ -118,7 +113,6 @@
     function attachTypeWatch(row) {
         const typeSelect = row.querySelector('select[name*="[type]"]');
         const catSelect = row.querySelector('select[name*="[categorie]"]');
-        const ficheBtn = row.querySelector('.btn-fiche');
         const convFields = row.querySelector('.conv-fields');
         if (!typeSelect) return;
 
@@ -126,14 +120,6 @@
             const isProchaine = typeSelect.value === 'prochaine';
             const isEsti = catSelect && catSelect.value === 'ESTI';
 
-            if (ficheBtn) {
-                if (typeSelect.value === 'realisee' && fichePath) {
-                    ficheBtn.href = fichePath;
-                    ficheBtn.style.display = '';
-                } else {
-                    ficheBtn.style.display = 'none';
-                }
-            }
             if (convFields) convFields.style.display = (isProchaine && isEsti) ? 'flex' : 'none';
         };
 
