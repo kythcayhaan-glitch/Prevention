@@ -248,16 +248,6 @@
                 {% if is_granted('ROLE_ADMIN') %}
                 <div class="nav-section">Administration</div>
                 <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_intervenant' ? 'active' }}" href="{{ path('app_intervenant_index') }}">
-                        <i class="bi bi-people"></i> Intervenants
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_batiment' ? 'active' }}" href="{{ path('app_batiment_index') }}">
-                        <i class="bi bi-building"></i> Bâtiments
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_service' ? 'active' }}" href="{{ path('app_service_index') }}">
                         <i class="bi bi-diagram-3"></i> Services
                     </a>
