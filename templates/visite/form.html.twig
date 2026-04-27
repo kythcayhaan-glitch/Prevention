@@ -3,6 +3,7 @@
 {% block stylesheets %}
 <style>
     .date-annulee input, .date-annulee select { pointer-events: none; opacity: .6; background-color: #e9ecef; }
+    .date-realisee input, .date-realisee select { pointer-events: none; opacity: .6; background-color: #e9ecef; }
 </style>
 {% endblock %}
 {% block body %}
@@ -57,6 +58,20 @@
                                 {% endif %}
                                 {% if is_granted('ROLE_SUPER_ADMIN') and dateEntity.id %}
                                 <button type="submit" form="form-delete-date-{{ dateEntity.id }}" class="btn btn-sm btn-danger" title="Supprimer définitivement" onclick="return confirm('Supprimer définitivement cette date annulée ?')"><i class="bi bi-trash-fill"></i></button>
+                                {% endif %}
+                            </div>
+                        {% elseif dateEntity.type == 'realisee' %}
+                            <div class="date-row date-realisee d-flex align-items-center gap-2 mb-2 flex-wrap"
+                                 data-date-id="{{ dateEntity.id }}">
+                                <div style="width:150px">{{ form_widget(dateForm.date) }}</div>
+                                <div style="width:140px">{{ form_widget(dateForm.type) }}</div>
+                                <div style="width:300px">{{ form_widget(dateForm.categorie) }}</div>
+                                <div style="width:80px">{{ form_widget(dateForm.heure) }}</div>
+                                <span class="badge bg-primary"><i class="bi bi-check-circle me-1"></i>Réalisée</span>
+                                {% if dateEntity.id %}
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-annuler-date" title="Annuler cette date">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 {% endif %}
                             </div>
                         {% else %}
