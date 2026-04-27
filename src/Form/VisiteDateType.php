@@ -62,7 +62,7 @@ class VisiteDateType extends AbstractType
         for ($h = 7; $h <= 18; $h++) {
             foreach ([0, 15, 30, 45] as $m) {
                 if ($h === 18 && $m > 0) break;
-                $label = sprintf('%02d h %02d', $h, $m);
+                $label = sprintf('%02dh%02d', $h, $m);
                 $value = sprintf('%02d:%02d', $h, $m);
                 $choices[$label] = $value;
             }
