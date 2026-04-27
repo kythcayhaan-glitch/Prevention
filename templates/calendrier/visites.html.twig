@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             document.getElementById('modalAgent').textContent = info.event.extendedProps.agent || 'Non renseigné';
             document.getElementById('modalPole').textContent = info.event.extendedProps.pole || '—';
-            document.getElementById('modalDate').textContent = info.event.startStr;
+            const [y, m, d] = info.event.startStr.split('-');
+            document.getElementById('modalDate').textContent = d + '-' + m + '-' + y;
             document.getElementById('modalType').textContent = info.event.extendedProps.type || '—';
             document.getElementById('modalLienFiche').href = '{{ path('app_visite_show', {id: '__ID__'}) }}'.replace('__ID__', info.event.extendedProps.visite_id);
             modal.show();
