@@ -1,5 +1,21 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ title }}{% endblock %}
+{% block stylesheets %}
+<style>
+    input[type="file"]::file-selector-button {
+        background-color: #198754;
+        color: #fff;
+        border: none;
+        padding: .375rem .75rem;
+        border-radius: .375rem;
+        cursor: pointer;
+        margin-right: .5rem;
+    }
+    input[type="file"]::file-selector-button:hover {
+        background-color: #157347;
+    }
+</style>
+{% endblock %}
 {% block body %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-person-badge"></i> {{ title }}</h2>
