@@ -140,13 +140,19 @@ class VisiteController extends AbstractController
         $zip->close();
 
         $mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-        $dateJour = (int)(new \DateTime())->format('j') . ' ' . $mois[(int)(new \DateTime())->format('n') - 1] . ' ' . (new \DateTime())->format('Y');
+        $now = new \DateTime();
+        $dateJour = (int)$now->format('j') . ' ' . $mois[(int)$now->format('n') - 1] . ' ' . $now->format('Y');
+
+        $formatDate = function (?string $d) use ($mois): string {
+            if (!$d || !preg_match('#^(\d{2})/(\d{2})/(\d{4})$#', $d, $p)) return $d ?? '';
+            return (int)$p[1] . ' ' . $mois[(int)$p[2] - 1] . ' ' . $p[3];
+        };
 
         $replacements = [
             '«Titre»'    => htmlspecialchars($visite->getGenre() ?? '', ENT_XML1),
             '«Agents»'   => htmlspecialchars(trim(($visite->getAgentVisite() ?? '') . ' ' . ($visite->getPrenomVisite() ?? '')), ENT_XML1),
             '«C»'        => (string) $date->getId(),
-            '«Date»'     => htmlspecialchars($date->getDate() ?? '', ENT_XML1),
+            '«Date»'     => htmlspecialchars($formatDate($date->getDate()), ENT_XML1),
             '«Heure»'    => htmlspecialchars($date->getHeure() ?? '', ENT_XML1),
             '«DateJour»' => $dateJour,
         ];
