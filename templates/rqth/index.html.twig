@@ -17,8 +17,12 @@
                     <th>État</th><th>Attribution</th><th>Fin</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
+                {% set seuil = 'now'|date_modify('+4 months')|date('Ymd') %}
                 {% for rqth in rqths %}
-                <tr data-href="{{ path('app_rqth_show', {id: rqth.id}) }}">
+                {% set fin = rqth.dateFinAttributionRqth %}
+                {% set finYmd = fin ? fin|slice(6,4)~fin|slice(3,2)~fin|slice(0,2) : '' %}
+                {% set expireBientot = fin and finYmd <= seuil %}
+                <tr data-href="{{ path('app_rqth_show', {id: rqth.id}) }}" class="{{ expireBientot ? 'table-warning' : '' }}">
                     <td class="text-muted">{{ rqth.id }}</td>
                     <td><strong>{{ rqth.agentRqth }}</strong></td>
                     <td>{{ rqth.prenomRqth }}</td>
