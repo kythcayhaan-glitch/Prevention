@@ -41,10 +41,12 @@ class VisiteDateType extends AbstractType
                 'placeholder' => '-- Catégorie --',
                 'attr' => ['class' => 'form-select'],
             ])
-            ->add('heure', TextType::class, [
+            ->add('heure', ChoiceType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'HH:MM', 'class' => 'form-control conv-field', 'style' => 'width:80px'],
+                'placeholder' => '-- Heure --',
+                'choices' => self::buildHeureChoices(),
+                'attr' => ['class' => 'form-select'],
             ])
         ;
     }
@@ -52,5 +54,19 @@ class VisiteDateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => VisiteDate::class]);
+    }
+
+    private static function buildHeureChoices(): array
+    {
+        $choices = [];
+        for ($h = 7; $h <= 18; $h++) {
+            foreach ([0, 15, 30, 45] as $m) {
+                if ($h === 18 && $m > 0) break;
+                $label = sprintf('%02d h %02d', $h, $m);
+                $value = sprintf('%02d:%02d', $h, $m);
+                $choices[$label] = $value;
+            }
+        }
+        return $choices;
     }
 }

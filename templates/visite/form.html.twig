@@ -62,8 +62,8 @@
                                 <div style="width:150px">{{ form_widget(dateForm.date) }}</div>
                                 <div style="width:140px">{{ form_widget(dateForm.type) }}</div>
                                 <div style="width:300px">{{ form_widget(dateForm.categorie) }}</div>
-                                <div class="conv-fields d-flex gap-2" style="display:{% if dateEntity.type == 'prochaine' and dateEntity.categorie == 'ESTI' %}flex{% else %}none{% endif %}!important">
-                                    <div>{{ form_widget(dateForm.heure) }}</div>
+                                <div class="conv-fields d-flex gap-2" style="display:{% if dateEntity.type == 'prochaine' %}flex{% else %}none{% endif %}!important">
+                                    <div style="width:130px">{{ form_widget(dateForm.heure) }}</div>
                                 </div>
                                 {% if dateEntity.id %}
                                     <button type="button" class="btn btn-outline-danger btn-sm btn-annuler-date" title="Annuler cette date">
@@ -186,9 +186,7 @@
         const convFields = row.querySelector('.conv-fields');
         if (!typeSelect) return;
         const update = () => {
-            const isProchaine = typeSelect.value === 'prochaine';
-            const isEsti = catSelect && catSelect.value === 'ESTI';
-            if (convFields) convFields.style.display = (isProchaine && isEsti) ? 'flex' : 'none';
+            if (convFields) convFields.style.display = typeSelect.value === 'prochaine' ? 'flex' : 'none';
         };
         typeSelect.addEventListener('change', update);
         if (catSelect) catSelect.addEventListener('change', update);

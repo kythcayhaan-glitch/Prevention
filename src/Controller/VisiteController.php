@@ -153,7 +153,7 @@ class VisiteController extends AbstractController
             '«Agents»'   => htmlspecialchars(trim(($visite->getAgentVisite() ?? '') . ' ' . ($visite->getPrenomVisite() ?? '')), ENT_XML1),
             '«C»'        => (string) $date->getId(),
             '«Date»'     => htmlspecialchars($formatDate($date->getDate()), ENT_XML1),
-            '«Heure»'    => htmlspecialchars($date->getHeure() ?? '', ENT_XML1),
+            '«Heure»'    => htmlspecialchars(preg_replace('/^(\d{2}):(\d{2})$/', '$1 h $2', $date->getHeure() ?? ''), ENT_XML1),
             '«DateJour»' => $dateJour,
         ];
 
