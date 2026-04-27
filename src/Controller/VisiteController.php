@@ -96,7 +96,7 @@ class VisiteController extends AbstractController
 
         return $this->render('visite/form.html.twig', [
             'form' => $form,
-            'title' => 'Modifier la visite',
+            'title' => 'Planifier une visite',
             'visite' => $visite,
         ]);
     }
