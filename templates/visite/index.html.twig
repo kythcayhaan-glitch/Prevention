@@ -36,7 +36,6 @@
                         <th>Emploi</th>
                         <th>Dates réalisées</th>
                         <th>Prochaines visites</th>
-                        <th>Type</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -68,7 +67,6 @@
                                 {% for d in prochaines %}<span class="badge bg-success me-1">{{ d.date }}{% if d.categorie %} · {{ d.categorie }}{% endif %}</span>{% endfor %}
                             {% else %}-{% endif %}
                         </td>
-                        <td><span class="badge bg-secondary">{{ visite.type }}</span></td>
                         <td class="text-nowrap" onclick="event.stopPropagation()">
                             <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
                             <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
