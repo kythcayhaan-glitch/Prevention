@@ -14,7 +14,7 @@
             <table class="table table-hover mb-0" id="mainTable">
                 <thead><tr>
                     <th>#</th><th id="th-nom" style="cursor:pointer;user-select:none">Nom <span id="sort-icon">↕</span></th><th>Prénom</th><th>Pôle</th><th>Objet</th>
-                    <th>État</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th>
+                    <th>N° demande</th><th>Date demande</th><th>Accordé (€)</th><th>Urgence</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
                 {% for f in fiphfps %}
@@ -24,7 +24,7 @@
                     <td>{{ f.prenomFiphfp }}</td>
                     <td>{{ f.poleFiphfp }}</td>
                     <td>{{ f.objetFiphfp }}</td>
-                    <td><span class="badge bg-{{ f.etatDemandeFiphfp == 'Accordé' ? 'success' : (f.etatDemandeFiphfp == 'Refusé' ? 'danger' : 'secondary') }}">{{ f.etatDemandeFiphfp }}</span></td>
+                    <td><small class="text-muted">{{ f.demandeFiphfp }}</small></td>
                     <td>{{ f.dateDemandeFiphfp }}</td>
                     <td>{{ f.montantAccordeFiphfp ? f.montantAccordeFiphfp ~ ' €' : '—' }}</td>
                     <td>{% if f.urgenceFiphfp %}<span class="badge bg-danger">Urgent</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
