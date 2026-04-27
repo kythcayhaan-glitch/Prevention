@@ -36,6 +36,7 @@ class VisiteDateType extends AbstractType
                     'Entretien Infirmier' => 'ESTI',
                     'Visite à la demande du médecin de prévention' => 'MDP',
                     'Visite périodique' => 'VP',
+                    'Temps partiel thérapeutique' => 'TPT',
                 ],
                 'placeholder' => '-- Catégorie --',
                 'attr' => ['class' => 'form-select'],

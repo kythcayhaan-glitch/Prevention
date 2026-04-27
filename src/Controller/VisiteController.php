@@ -123,6 +123,7 @@ class VisiteController extends AbstractController
 
         $template = match ($date->getCategorie()) {
             'MDP'  => 'medecin.docx',
+            'TPT'  => 'tpt.docx',
             default => 'infirmier.docx',
         };
 
