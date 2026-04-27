@@ -177,19 +177,19 @@ class VisiteController extends AbstractController
             ? '/usr/bin/libreoffice'
             : 'C:/Program Files/LibreOffice/program/soffice.exe';
 
+        $loProfile = $kernel->getProjectDir() . '/var/tmp/lo_profile';
+        if (!is_dir($loProfile)) mkdir($loProfile, 0777, true);
+        $loProfileUri = 'file:///' . str_replace('\\', '/', $loProfile);
+
         // Installer les fonts Montserrat dans le profil LibreOffice si absent
         $loFontsDir = $loProfile . '/user/fonts';
-        if (!is_dir($loFontsDir . '/') || !file_exists($loFontsDir . '/Montserrat-Regular.ttf')) {
+        if (!is_dir($loFontsDir) || !file_exists($loFontsDir . '/Montserrat-Regular.ttf')) {
             @mkdir($loFontsDir, 0777, true);
             $srcFonts = $kernel->getProjectDir() . '/resources/fonts/montserrat';
             foreach (glob($srcFonts . '/*.ttf') ?: [] as $ttf) {
                 @copy($ttf, $loFontsDir . '/' . basename($ttf));
             }
         }
-
-        $loProfile = $kernel->getProjectDir() . '/var/tmp/lo_profile';
-        if (!is_dir($loProfile)) mkdir($loProfile, 0777, true);
-        $loProfileUri = 'file:///' . str_replace('\\', '/', $loProfile);
 
         $cmd = '"' . $soffice . '" --headless --norestore'
             . ' "-env:UserInstallation=' . $loProfileUri . '"'
