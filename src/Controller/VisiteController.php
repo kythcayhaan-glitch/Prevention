@@ -151,6 +151,13 @@ class VisiteController extends AbstractController
             '«DateJour»' => $dateJour,
         ];
 
+        // Consolidate placeholders «...» potentially split across multiple XML runs by Word
+        $xml = preg_replace_callback(
+            '/«[^»]*»/u',
+            fn($m) => preg_replace('/<[^>]+>/u', '', $m[0]),
+            $xml
+        );
+
         $xml = str_replace(array_keys($replacements), array_values($replacements), $xml);
 
         copy($templatePath, $tmpDocx);
