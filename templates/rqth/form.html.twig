@@ -3,11 +3,11 @@
 {% block body %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-person-badge"></i> {{ title }}</h2>
-    <a href="{{ path('app_rqth_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
+    <a href="{{ rqth is defined ? path('app_rqth_show', {id: rqth.id}) : path('app_rqth_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
 </div>
 <div class="card">
     <div class="card-body">
-        {{ form_start(form) }}
+        {{ form_start(form, {attr: {enctype: 'multipart/form-data'}}) }}
         <div class="row g-3">
             <div class="col-md-2">{{ form_row(form.genre, {attr: {class: 'form-select genre-autofill'}}) }}</div>
             <div class="col-md-3">{{ form_row(form.agentRqth, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
@@ -17,10 +17,26 @@
             <div class="col-md-4">{{ form_row(form.etatRqth, {attr: {class: 'form-select'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.dateAttributionRqth, {attr: {class: 'form-control'}}) }}</div>
             <div class="col-md-4">{{ form_row(form.dateFinAttributionRqth, {attr: {class: 'form-control'}}) }}</div>
+            <div class="col-12">
+                <hr>
+                <label class="form-label fw-semibold"><i class="bi bi-paperclip"></i> Documents</label>
+                {% if rqth is defined and rqth.documents is not empty %}
+                    <ul class="list-group list-group-flush mb-2">
+                    {% for doc in rqth.documents %}
+                        <li class="list-group-item px-0 py-1 d-flex align-items-center gap-2">
+                            <i class="bi bi-file-earmark-pdf text-danger"></i>
+                            <a href="{{ app.request.basePath }}/uploads/rqth/{{ doc.filename }}" target="_blank" class="text-decoration-none small">{{ doc.nomOriginal }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                <input type="file" name="documentFiles[]" multiple accept=".pdf,.doc,.docx,.jpg,.png" class="form-control">
+                <div class="form-text">Vous pouvez sélectionner plusieurs fichiers à la fois.</div>
+            </div>
         </div>
         <div class="mt-3">
             <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
-            <a href="{{ path('app_rqth_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
+            <a href="{{ rqth is defined ? path('app_rqth_show', {id: rqth.id}) : path('app_rqth_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
         </div>
         {{ form_end(form) }}
     </div>

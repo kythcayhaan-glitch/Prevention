@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Rqth;
+use App\Entity\RqthDocument;
 use App\Form\RqthType;
 use App\Repository\RqthRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,7 @@ class RqthController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->handleUploads($request, $rqth);
             $em->persist($rqth);
             $em->flush();
             $this->addFlash('success', 'RQTH ajouté avec succès.');
@@ -55,6 +57,7 @@ class RqthController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->handleUploads($request, $rqth);
             $em->flush();
             $this->addFlash('success', 'RQTH modifié avec succès.');
             return $this->redirectToRoute('app_rqth_show', ['id' => $rqth->getId()]);
@@ -67,14 +70,71 @@ class RqthController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/document/{docId}/supprimer', name: 'app_rqth_document_delete', methods: ['POST'])]
+    public function deleteDocument(Request $request, Rqth $rqth, int $docId, EntityManagerInterface $em): Response
+    {
+        if (!$this->isCsrfTokenValid('delete-doc' . $docId, $request->getPayload()->getString('_token'))) {
+            return $this->redirectToRoute('app_rqth_show', ['id' => $rqth->getId()]);
+        }
+
+        foreach ($rqth->getDocuments() as $doc) {
+            if ($doc->getId() === $docId) {
+                $this->deleteFile($doc->getFilename());
+                $rqth->removeDocument($doc);
+                $em->remove($doc);
+                break;
+            }
+        }
+
+        $em->flush();
+        $this->addFlash('success', 'Document supprimé.');
+        return $this->redirectToRoute('app_rqth_show', ['id' => $rqth->getId()]);
+    }
+
     #[Route('/{id}/supprimer', name: 'app_rqth_delete', methods: ['POST'])]
     public function delete(Request $request, Rqth $rqth, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$rqth->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $rqth->getId(), $request->getPayload()->getString('_token'))) {
+            foreach ($rqth->getDocuments() as $doc) {
+                $this->deleteFile($doc->getFilename());
+            }
             $em->remove($rqth);
             $em->flush();
             $this->addFlash('success', 'RQTH supprimé.');
         }
         return $this->redirectToRoute('app_rqth_index');
+    }
+
+    private function handleUploads(Request $request, Rqth $rqth): void
+    {
+        $files = $request->files->get('documentFiles') ?? [];
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+
+        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/rqth';
+
+        foreach ($files as $file) {
+            if (!$file) {
+                continue;
+            }
+            $originalName = $file->getClientOriginalName();
+            $ext = pathinfo($originalName, PATHINFO_EXTENSION) ?: 'pdf';
+            $filename = uniqid('rqth_') . '.' . $ext;
+            $file->move($uploadDir, $filename);
+
+            $doc = new RqthDocument();
+            $doc->setFilename($filename);
+            $doc->setNomOriginal($originalName);
+            $rqth->addDocument($doc);
+        }
+    }
+
+    private function deleteFile(string $filename): void
+    {
+        $path = $this->getParameter('kernel.project_dir') . '/public/uploads/rqth/' . $filename;
+        if (file_exists($path)) {
+            unlink($path);
+        }
     }
 }

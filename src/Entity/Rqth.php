@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RqthRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RqthRepository::class)]
@@ -38,6 +40,14 @@ class Rqth
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $dateFinAttributionRqth = null;
 
+    #[ORM\OneToMany(mappedBy: 'rqth', targetEntity: RqthDocument::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $documents;
+
+    public function __construct()
+    {
+        $this->documents = new ArrayCollection();
+    }
+
     public function getId(): ?int { return $this->id; }
 
     public function getGenre(): ?string { return $this->genre; }
@@ -63,4 +73,21 @@ class Rqth
 
     public function getDateFinAttributionRqth(): ?string { return $this->dateFinAttributionRqth; }
     public function setDateFinAttributionRqth(?string $dateFinAttributionRqth): static { $this->dateFinAttributionRqth = $dateFinAttributionRqth; return $this; }
+
+    public function getDocuments(): Collection { return $this->documents; }
+
+    public function addDocument(RqthDocument $doc): static
+    {
+        if (!$this->documents->contains($doc)) {
+            $this->documents->add($doc);
+            $doc->setRqth($this);
+        }
+        return $this;
+    }
+
+    public function removeDocument(RqthDocument $doc): static
+    {
+        $this->documents->removeElement($doc);
+        return $this;
+    }
 }

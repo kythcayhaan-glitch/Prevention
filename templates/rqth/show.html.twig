@@ -1,26 +1,62 @@
 {% extends 'base.html.twig' %}
-{% block title %}RQTH #{{ rqth.id }}{% endblock %}
+{% block title %}RQTH – {{ rqth.agentRqth }} {{ rqth.prenomRqth }}{% endblock %}
 {% block body %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-person-badge"></i> RQTH #{{ rqth.id }}</h2>
+    <h2><i class="bi bi-person-badge"></i> RQTH – {{ rqth.agentRqth }} {{ rqth.prenomRqth }}</h2>
     <div class="d-flex gap-2">
         <a href="{{ path('app_rqth_edit', {id: rqth.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Modifier</a>
         <a href="{{ path('app_rqth_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
     </div>
 </div>
-<div class="card col-md-6">
-    <div class="card-header bg-success text-white">Dossier RQTH</div>
-    <div class="card-body">
-        <dl class="row mb-0">
-            <dt class="col-sm-5">Genre</dt><dd class="col-sm-7">{{ rqth.genre }}</dd>
-            <dt class="col-sm-5">Nom</dt><dd class="col-sm-7"><strong>{{ rqth.agentRqth }}</strong></dd>
-            <dt class="col-sm-5">Prénom</dt><dd class="col-sm-7">{{ rqth.prenomRqth }}</dd>
-            <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ rqth.poleServiceRqth }}</dd>
-            <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ rqth.emploiRqth }}</dd>
-            <dt class="col-sm-5">État</dt><dd class="col-sm-7"><span class="badge bg-{{ rqth.etatRqth == 'Attribué' ? 'success' : 'warning text-dark' }}">{{ rqth.etatRqth }}</span></dd>
-            <dt class="col-sm-5">Date attribution</dt><dd class="col-sm-7">{{ rqth.dateAttributionRqth }}</dd>
-            <dt class="col-sm-5">Date fin</dt><dd class="col-sm-7">{{ rqth.dateFinAttributionRqth }}</dd>
-        </dl>
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">Dossier RQTH</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Genre</dt><dd class="col-sm-7">{{ rqth.genre }}</dd>
+                    <dt class="col-sm-5">Nom</dt><dd class="col-sm-7"><strong>{{ rqth.agentRqth }}</strong></dd>
+                    <dt class="col-sm-5">Prénom</dt><dd class="col-sm-7">{{ rqth.prenomRqth }}</dd>
+                    <dt class="col-sm-5">Pôle / Service</dt><dd class="col-sm-7">{{ rqth.poleServiceRqth }}</dd>
+                    <dt class="col-sm-5">Emploi</dt><dd class="col-sm-7">{{ rqth.emploiRqth }}</dd>
+                    <dt class="col-sm-5">État</dt><dd class="col-sm-7"><span class="badge bg-{{ rqth.etatRqth == 'Attribué' ? 'success' : 'warning text-dark' }}">{{ rqth.etatRqth }}</span></dd>
+                    <dt class="col-sm-5">Date attribution</dt><dd class="col-sm-7">{{ rqth.dateAttributionRqth }}</dd>
+                    <dt class="col-sm-5">Date fin</dt><dd class="col-sm-7">{{ rqth.dateFinAttributionRqth }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-paperclip"></i> Documents</span>
+                <span class="badge bg-light text-dark">{{ rqth.documents|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if rqth.documents is empty %}
+                    <p class="text-muted mb-0"><i class="bi bi-inbox"></i> Aucun document joint.</p>
+                {% else %}
+                    <ul class="list-group list-group-flush">
+                    {% for doc in rqth.documents %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <a href="{{ app.request.basePath }}/uploads/rqth/{{ doc.filename }}" target="_blank" class="text-decoration-none">
+                                <i class="bi bi-file-earmark-pdf text-danger"></i> {{ doc.nomOriginal }}
+                            </a>
+                            <form method="post" action="{{ path('app_rqth_document_delete', {id: rqth.id, docId: doc.id}) }}" onsubmit="return confirm('Supprimer ce document ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-doc' ~ doc.id) }}">
+                                <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('app_rqth_edit', {id: rqth.id}) }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-upload"></i> Ajouter des documents
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
