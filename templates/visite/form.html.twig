@@ -41,8 +41,8 @@
                      data-visite-id="{{ visite is defined ? visite.id : '' }}">
 
                     {% for dateForm in form.dates|sort((a, b) =>
-                        (a.vars.data.date ? a.vars.data.date|slice(6,4)~a.vars.data.date|slice(3,2)~a.vars.data.date|slice(0,2) : '99991231') <=>
-                        (b.vars.data.date ? b.vars.data.date|slice(6,4)~b.vars.data.date|slice(3,2)~b.vars.data.date|slice(0,2) : '99991231')
+                        (b.vars.data.date ? b.vars.data.date|slice(6,4)~b.vars.data.date|slice(3,2)~b.vars.data.date|slice(0,2) : '00000000') <=>
+                        (a.vars.data.date ? a.vars.data.date|slice(6,4)~a.vars.data.date|slice(3,2)~a.vars.data.date|slice(0,2) : '00000000')
                     ) %}
                         {% set dateEntity = dateForm.vars.data %}
                         {% if dateEntity.annulee %}
