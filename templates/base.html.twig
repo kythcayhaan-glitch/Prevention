@@ -216,6 +216,11 @@
                     <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_visite' ? 'active' }}" href="{{ path('app_visite_index') }}">
                         <i class="bi bi-clipboard-heart"></i> Visites
                     </a>
+					 <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_calendrier' ? 'active' }}" href="{{ path('app_calendrier_visites') }}">
+                        <i class="bi bi-calendar3"></i> Calendrier des visites
+                    </a>
+                </li>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_rqth' ? 'active' }}" href="{{ path('app_rqth_index') }}">
@@ -232,11 +237,7 @@
                         <i class="bi bi-tools"></i> Interventions
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_calendrier' ? 'active' }}" href="{{ path('app_calendrier_visites') }}">
-                        <i class="bi bi-calendar3"></i> Calendrier
-                    </a>
-                </li>
+               
 
                 {% if is_granted('ROLE_ADMIN') %}
                 <div class="nav-section">Administration</div>
