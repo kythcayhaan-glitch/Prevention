@@ -9,7 +9,7 @@
 <div class="card">
     <div class="card-body p-0">
         <div class="px-3 pt-3 pb-1">
-            <input type="text" id="searchInput" class="form-control table-search" placeholder="&#xF52A;  Rechercher (agent, service, type...)">
+            <input type="text" id="searchInput" class="form-control table-search" placeholder="&#xF52A;  Rechercher (agent, service...)">
         </div>
         <div class="px-3 pb-2 d-flex flex-wrap gap-1 align-items-center">
             <small class="text-muted me-1">Année :</small>
@@ -69,7 +69,7 @@
                         </td>
                         <td class="text-nowrap" onclick="event.stopPropagation()">
                             <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
-                            <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                            <a href="{{ path('app_visite_edit', {id: visite.id}) }}" class="btn btn-sm btn-outline-secondary" title="Planification visite médicale"><i class="bi bi-pencil"></i></a>
                             <a href="{{ path('app_visite_fiche_suivi', {id: visite.id}) }}" class="btn btn-sm btn-outline-success" title="Fiche de suivi"><i class="bi bi-file-medical"></i></a>
                             {% if pj_counts[visite.id] is defined %}
                                 <a href="{{ path('app_visite_show', {id: visite.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ pj_counts[visite.id] }} pièce(s) jointe(s)"><i class="bi bi-paperclip"></i></a>
