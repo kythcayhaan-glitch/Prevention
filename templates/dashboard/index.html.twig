@@ -6,20 +6,7 @@
 <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Tableau de bord</h2>
 
 <div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <a href="{{ path('app_visite_index') }}" class="text-decoration-none">
-            <div class="card border-0 bg-primary text-white">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <i class="bi bi-clipboard-heart fs-1"></i>
-                    <div>
-                        <div class="fs-1 fw-bold">{{ nb_visites }}</div>
-                        <div>Visites de prévention</div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <a href="{{ path('app_rqth_index') }}" class="text-decoration-none">
             <div class="card border-0 bg-success text-white">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -32,7 +19,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <a href="{{ path('app_fiphfp_index') }}" class="text-decoration-none">
             <div class="card border-0 bg-warning text-dark">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -45,7 +32,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <a href="{{ path('app_inter_index') }}" class="text-decoration-none">
             <div class="card border-0 bg-danger text-white">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -66,7 +53,6 @@
             <div class="card-header"><i class="bi bi-lightning-charge"></i> Actions rapides</div>
             <div class="card-body">
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ path('app_visite_new') }}" class="btn btn-primary"><i class="bi bi-plus"></i> Nouvelle visite</a>
                     <a href="{{ path('app_rqth_new') }}" class="btn btn-success"><i class="bi bi-plus"></i> Nouveau RQTH</a>
                     <a href="{{ path('app_fiphfp_new') }}" class="btn btn-warning"><i class="bi bi-plus"></i> FIPHFP</a>
                     <a href="{{ path('app_inter_new') }}" class="btn btn-danger"><i class="bi bi-plus"></i> Intervention</a>
