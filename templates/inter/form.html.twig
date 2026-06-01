@@ -15,34 +15,23 @@
         <div class="col-md-3">{{ form_row(form.urgence, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control', rows: 3}}) }}</div>
-        <div class="col-12">{{ form_row(form.interEffect, {attr: {class: 'form-control', rows: 3}}) }}</div>
+        <div class="col-12">
+            <div class="accordion" id="accordionInterEffect">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInterEffect" aria-expanded="false">
+                            Intervention effectuée
+                        </button>
+                    </h2>
+                    <div id="collapseInterEffect" class="accordion-collapse collapse" data-bs-parent="#accordionInterEffect">
+                        <div class="accordion-body p-2">
+                            {{ form_row(form.interEffect, {label: false, attr: {class: 'form-control', rows: 5}}) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control', rows: 2}}) }}</div>
-    </div>
-</div>
-<div class="card mb-3">
-    <div class="card-header bg-secondary text-white">Intervenants & Coûts</div>
-    <div class="card-body row g-3">
-        <div class="col-md-3">{{ form_row(form.intervenant, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.tauxIntervenant, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.intervenant2, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.tauxIntervenant2, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.intervenant3, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.tauxIntervenant3, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.duree, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.coutMatos, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.par, {attr: {class: 'form-control'}}) }}</div>
-    </div>
-</div>
-<div class="card mb-3">
-    <div class="card-header bg-primary text-white">Visite / RQTH (si applicable)</div>
-    <div class="card-body row g-3">
-        <div class="col-md-3">{{ form_row(form.poleServiceVisite, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.dateVisite, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.rqthVisite, {attr: {class: 'form-select'}}) }}</div>
-        <div class="col-md-4">{{ form_row(form.restrictionVisite, {attr: {class: 'form-control', rows: 2}}) }}</div>
-        <div class="col-md-4">{{ form_row(form.recommandationVisite, {attr: {class: 'form-control', rows: 2}}) }}</div>
-        <div class="col-md-4">{{ form_row(form.limitationVisite, {attr: {class: 'form-control', rows: 2}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.tempsPartielVisite, {attr: {class: 'form-select'}}) }}</div>
     </div>
 </div>
 <div class="mt-3">
