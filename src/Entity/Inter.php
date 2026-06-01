@@ -80,7 +80,7 @@ class Inter
     #[ORM\Column(length: 60, nullable: true)]
     private ?string $userInter = null;
 
-    #[ORM\Column(length: 5, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $urgence = null;
 
     #[ORM\Column(length: 60, nullable: true)]

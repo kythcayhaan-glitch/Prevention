@@ -29,9 +29,14 @@ class InterType extends AbstractType
                 ],
                 'placeholder' => '-- Choisir --',
             ])
-            ->add('service', TextType::class, ['label' => 'Service', 'required' => false])
+            ->add('service', ChoiceType::class, [
+                'label' => 'Service',
+                'required' => false,
+                'placeholder' => '-- Choisir --',
+                'choices' => array_combine($options['services'], $options['services']),
+            ])
             ->add('panneAnnonce', TextareaType::class, ['label' => 'Description', 'required' => false])
-            ->add('urgence', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['Oui' => 'oui', 'Non' => 'non'], 'placeholder' => '--'])
+            ->add('urgence', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['A traiter' => 'a_traiter', 'En cours' => 'en_cours', 'Traité' => 'traite'], 'placeholder' => '--'])
             ->add('intervenant', TextType::class, ['label' => 'Intervenant 1', 'required' => false])
             ->add('tauxIntervenant', NumberType::class, ['label' => 'Taux horaire', 'required' => false, 'scale' => 2])
             ->add('intervenant2', TextType::class, ['label' => 'Intervenant 2', 'required' => false])
@@ -42,7 +47,12 @@ class InterType extends AbstractType
             ->add('coutMatos', NumberType::class, ['label' => 'Coût matériel (€)', 'required' => false, 'scale' => 2])
             ->add('interEffect', TextareaType::class, ['label' => 'Intervention effectuée', 'required' => false])
             ->add('observation', TextareaType::class, ['label' => 'Observation', 'required' => false])
-            ->add('agentVisite', TextType::class, ['label' => 'Agent visité', 'required' => false])
+            ->add('agentVisite', ChoiceType::class, [
+                'label' => 'Agent concerné',
+                'required' => false,
+                'placeholder' => '-- Choisir --',
+                'choices' => array_combine($options['agents'], $options['agents']),
+            ])
             ->add('poleServiceVisite', TextType::class, ['label' => 'Pôle/Service', 'required' => false])
             ->add('dateVisite', TextType::class, ['label' => 'Date visite', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('rqthVisite', ChoiceType::class, ['label' => 'RQTH', 'required' => false, 'choices' => ['Oui' => 'oui', 'Non' => 'non'], 'placeholder' => '--'])
@@ -56,6 +66,10 @@ class InterType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Inter::class]);
+        $resolver->setDefaults([
+            'data_class' => Inter::class,
+            'agents' => [],
+            'services' => [],
+        ]);
     }
 }

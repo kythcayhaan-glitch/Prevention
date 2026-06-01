@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Inter;
 use App\Form\InterType;
 use App\Repository\InterRepository;
+use App\Repository\AgentRepository;
+use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,10 +25,12 @@ class InterController extends AbstractController
     }
 
     #[Route('/nouveau', name: 'app_inter_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, AgentRepository $agentRepo, ServiceRepository $serviceRepo): Response
     {
         $inter = new Inter();
-        $form = $this->createForm(InterType::class, $inter);
+        $agents = $this->buildAgentsList($agentRepo);
+        $services = $this->buildServicesList($serviceRepo);
+        $form = $this->createForm(InterType::class, $inter, ['agents' => $agents, 'services' => $services]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -50,9 +54,11 @@ class InterController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'app_inter_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Inter $inter, EntityManagerInterface $em): Response
+    public function edit(Request $request, Inter $inter, EntityManagerInterface $em, AgentRepository $agentRepo, ServiceRepository $serviceRepo): Response
     {
-        $form = $this->createForm(InterType::class, $inter);
+        $agents = $this->buildAgentsList($agentRepo);
+        $services = $this->buildServicesList($serviceRepo);
+        $form = $this->createForm(InterType::class, $inter, ['agents' => $agents, 'services' => $services]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -66,6 +72,27 @@ class InterController extends AbstractController
             'title' => 'Modifier l\'intervention',
             'inter' => $inter,
         ]);
+    }
+
+    private function buildServicesList(ServiceRepository $serviceRepo): array
+    {
+        $services = [];
+        foreach ($serviceRepo->findBy([], ['service' => 'ASC']) as $s) {
+            $services[] = $s->getService();
+        }
+        return $services;
+    }
+
+    private function buildAgentsList(AgentRepository $agentRepo): array
+    {
+        $agents = [];
+        foreach ($agentRepo->findBy([], ['nom' => 'ASC']) as $agent) {
+            $nom = $agent->getNomComplet();
+            if ($nom !== '') {
+                $agents[] = $nom;
+            }
+        }
+        return $agents;
     }
 
     #[Route('/{id}/supprimer', name: 'app_inter_delete', methods: ['POST'])]

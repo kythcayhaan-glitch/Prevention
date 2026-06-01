@@ -13,19 +13,26 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="mainTable">
                 <thead><tr>
-                    <th>#</th><th>Date</th><th>Type</th><th>Service</th>
-                    <th>Description</th><th>Urgence</th><th>Par</th><th>Actions</th>
+                    <th>#</th>
+                    <th class="sortable" data-col="1" data-type="date">Date <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                    <th>Service</th>
+                    <th class="sortable" data-col="3" data-type="text">Agent <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                    <th>Description</th><th>Urgence</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
                 {% for inter in inters %}
                 <tr data-href="{{ path('app_inter_show', {id: inter.id}) }}">
                     <td class="text-muted">{{ inter.id }}</td>
                     <td>{{ inter.date }}</td>
-                    <td><span class="badge bg-info text-dark">{{ inter.type }}</span></td>
                     <td>{{ inter.service }}</td>
+                    <td>{{ inter.agentVisite }}</td>
                     <td class="text-truncate" style="max-width:200px">{{ inter.panneAnnonce }}</td>
-                    <td>{% if inter.urgence == 'oui' %}<span class="badge bg-danger">Urgent</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
-                    <td>{{ inter.par }}</td>
+                    <td>
+                        {% if inter.urgence == 'a_traiter' %}<span class="badge bg-danger">A traiter</span>
+                        {% elseif inter.urgence == 'en_cours' %}<span class="badge bg-warning text-dark">En cours</span>
+                        {% elseif inter.urgence == 'traite' %}<span class="badge bg-success">Traité</span>
+                        {% else %}<span class="text-muted">—</span>{% endif %}
+                    </td>
                     <td class="text-nowrap" onclick="event.stopPropagation()">
                         <a href="{{ path('app_inter_show', {id: inter.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
                         <a href="{{ path('app_inter_edit', {id: inter.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
@@ -36,7 +43,7 @@
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="8" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune intervention.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted py-5"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucune intervention.</td></tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -49,4 +56,42 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     const f = this.value.toLowerCase();
     document.querySelectorAll('#mainTable tbody tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(f) ? '' : 'none');
 });
+
+(function () {
+    let sortCol = null, sortAsc = true;
+
+    function parseDate(str) {
+        const p = str.trim().split('/');
+        if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
+        return new Date(str);
+    }
+
+    document.querySelectorAll('#mainTable th.sortable').forEach(th => {
+        th.style.cursor = 'pointer';
+        th.addEventListener('click', function () {
+            const col = parseInt(this.dataset.col);
+            const type = this.dataset.type;
+            sortAsc = (sortCol === col) ? !sortAsc : true;
+            sortCol = col;
+
+            document.querySelectorAll('#mainTable th .sort-icon').forEach(i => i.className = 'bi bi-arrow-down-up sort-icon');
+            this.querySelector('.sort-icon').className = 'bi bi-arrow-' + (sortAsc ? 'up' : 'down') + ' sort-icon';
+
+            const tbody = document.querySelector('#mainTable tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            rows.sort((a, b) => {
+                const va = a.cells[col] ? a.cells[col].textContent.trim() : '';
+                const vb = b.cells[col] ? b.cells[col].textContent.trim() : '';
+                let cmp;
+                if (type === 'date') {
+                    cmp = parseDate(va) - parseDate(vb);
+                } else {
+                    cmp = va.localeCompare(vb, 'fr');
+                }
+                return sortAsc ? cmp : -cmp;
+            });
+            rows.forEach(r => tbody.appendChild(r));
+        });
+    });
+})();
 </script>{% endblock %}

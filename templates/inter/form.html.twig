@@ -11,8 +11,9 @@
     <div class="card-body row g-3">
         <div class="col-md-3">{{ form_row(form.date, {attr: {class: 'form-control'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.type, {attr: {class: 'form-select'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-control'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.urgence, {attr: {class: 'form-select'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control', rows: 3}}) }}</div>
         <div class="col-12">{{ form_row(form.interEffect, {attr: {class: 'form-control', rows: 3}}) }}</div>
         <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control', rows: 2}}) }}</div>
@@ -35,7 +36,6 @@
 <div class="card mb-3">
     <div class="card-header bg-primary text-white">Visite / RQTH (si applicable)</div>
     <div class="card-body row g-3">
-        <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-control'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.poleServiceVisite, {attr: {class: 'form-control'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.dateVisite, {attr: {class: 'form-control'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.rqthVisite, {attr: {class: 'form-select'}}) }}</div>
