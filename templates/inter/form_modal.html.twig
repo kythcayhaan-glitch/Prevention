@@ -1,0 +1,37 @@
+<style>
+.form-control-sm, .form-select-sm {
+    background-color: #eaf4fb;
+    border-color: #aed6f1;
+    color: #154360;
+}
+.form-control-sm:focus, .form-select-sm:focus {
+    background-color: #d6eaf8;
+    border-color: #2980b9;
+    box-shadow: 0 0 0 .2rem rgba(41,128,185,.2);
+}
+textarea.form-control-sm { background-color: #fdfefe; border-color: #aed6f1; }
+textarea.form-control-sm:focus { background-color: #fff; border-color: #2980b9; }
+</style>
+
+{{ form_start(form, {attr: {id: 'form-new-inter'}}) }}
+<div class="row g-2">
+    <div class="col-md-5">
+        {{ form_label(form.agentVisite) }}
+        <div class="input-group">
+            {{ form_widget(form.agentVisite, {attr: {class: 'form-select form-select-sm'}}) }}
+        </div>
+    </div>
+    <div class="w-100"></div>
+    <div class="col-auto">{{ form_row(form.date, {attr: {class: 'form-control form-control-sm date-picker', style: 'width:130px'}}) }}</div>
+    <div class="col-md-3">{{ form_row(form.type, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+    <div class="w-100"></div>
+    <div class="col-md-4">{{ form_row(form.service, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+    <div class="col-auto">{{ form_row(form.urgence, {attr: {class: 'form-select form-select-sm', style: 'width:130px'}}) }}</div>
+    <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}</div>
+    <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
+</div>
+{{ form_end(form) }}
+
+<script>
+if (typeof initDatePickers === 'function') initDatePickers(document.getElementById('form-new-inter'));
+</script>

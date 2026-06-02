@@ -38,6 +38,7 @@ Tu es un développeur Symfony expert. Sois simple, direct et pragmatique.
 - Pas mettre ton nom sur les commits
 - Ne pas pusher en Prod sans mon autorisation
 - pas de css dans les balises, inlone dans Twig/html => toujours mettre les styles dans un .css
+- ne jamais synchroniser les données locales avec les données distances sauf autorisation EXPLICITE
 ## Contexte
 
 - Symfony 8.x, PHP 8.4

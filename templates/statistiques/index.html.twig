@@ -5,14 +5,21 @@
 <style>
 .stat-card { border: none; border-radius: 8px; }
 .stat-card .card-header { font-weight: 600; border-radius: 8px 8px 0 0; }
-.chart-container { position: relative; height: 220px; }
+.chart-container { position: relative; height: 320px; }
 .alert-expiring { border-left: 4px solid #e67e22; }
+.html2pdf__page-break { page-break-before: always; }
+/* Mode PDF : 2 rubriques par ligne */
+.pdf-export .stat-col { flex: 0 0 50% !important; max-width: 50% !important; }
 </style>
 {% endblock %}
 
 {% block body %}
-<h2 class="mb-4"><i class="bi bi-bar-chart-line"></i> Statistiques</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-bar-chart-line"></i> Statistiques</h2>
+    <button id="btn-pdf" class="btn btn-danger"><i class="bi bi-file-earmark-pdf me-1"></i> Exporter en PDF</button>
+</div>
 
+<div id="stats-content">
 {# ALERTES #}
 {% if rqth_expiring is not empty %}
 <div class="alert alert-warning alert-expiring mb-4">
@@ -28,13 +35,13 @@
 {# RQTH #}
 <h4 class="mb-3 mt-2"><i class="bi bi-person-badge text-success me-2"></i>RQTH</h4>
 <div class="row g-3 mb-4">
-    <div class="col-md-4">
+    <div class="col-md-4 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-success text-white">Répartition par état</div>
             <div class="card-body"><div class="chart-container"><canvas id="rqthEtat"></canvas></div></div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-8 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-success text-white">Par pôle / service (top 10)</div>
             <div class="card-body"><div class="chart-container"><canvas id="rqthService"></canvas></div></div>
@@ -42,16 +49,17 @@
     </div>
 </div>
 
+<div class="html2pdf__page-break"></div>
 {# FIPHFP #}
 <h4 class="mb-3"><i class="bi bi-cash-coin text-warning me-2"></i>FIPHFP</h4>
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
+    <div class="col-md-3 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-warning text-dark">Répartition par état</div>
             <div class="card-body"><div class="chart-container"><canvas id="fiphfpEtat"></canvas></div></div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-warning text-dark">Montants globaux (€)</div>
             <div class="card-body d-flex flex-column justify-content-center gap-2">
@@ -61,13 +69,13 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-warning text-dark">Reste à charge pour</div>
             <div class="card-body"><div class="chart-container"><canvas id="fiphfpReste"></canvas></div></div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-warning text-dark">Top 5 objets</div>
             <div class="card-body p-0">
@@ -81,16 +89,17 @@
     </div>
 </div>
 
+<div class="html2pdf__page-break"></div>
 {# INTERVENTIONS #}
 <h4 class="mb-3"><i class="bi bi-tools text-danger me-2"></i>Interventions</h4>
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
+    <div class="col-md-3 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-danger text-white">Par urgence</div>
             <div class="card-body"><div class="chart-container"><canvas id="interUrgence"></canvas></div></div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-danger text-white">Top 5 agents concernés</div>
             <div class="card-body p-0">
@@ -102,13 +111,13 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-5 stat-col">
         <div class="card stat-card shadow-sm h-100">
             <div class="card-header bg-danger text-white">Évolution mensuelle (12 derniers mois)</div>
             <div class="card-body"><div class="chart-container"><canvas id="interMonth"></canvas></div></div>
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-12 stat-col">
         <div class="card stat-card shadow-sm">
             <div class="card-header bg-danger text-white">Par service (top 10)</div>
             <div class="card-body"><div class="chart-container" style="height:180px"><canvas id="interService"></canvas></div></div>
@@ -116,10 +125,12 @@
     </div>
 </div>
 
+</div>{# fin stats-content #}
 {% endblock %}
 
 {% block javascripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 const COLORS = ['#27ae60','#2980b9','#8e44ad','#e67e22','#c0392b','#16a085','#f39c12','#2c3e50','#1abc9c','#e74c3c'];
 
@@ -144,6 +155,37 @@ function line(id, labels, data) {
         options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, maintainAspectRatio: false }
     });
 }
+
+document.getElementById('btn-pdf').addEventListener('click', function () {
+    const btn = this;
+    const content = document.getElementById('stats-content');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Génération…';
+
+    // Force 2 colonnes par ligne pour le PDF puis redimensionne les charts
+    content.classList.add('pdf-export');
+    Object.values(Chart.instances).forEach(c => c.resize());
+
+    setTimeout(() => {
+        html2pdf()
+            .set({
+                margin: [8, 8, 8, 8],
+                image: { type: 'jpeg', quality: 0.97 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                pagebreak: { mode: 'legacy' }
+            })
+            .from(content)
+            .outputPdf('bloburl')
+            .then(url => {
+                window.open(url, '_blank');
+                content.classList.remove('pdf-export');
+                Object.values(Chart.instances).forEach(c => c.resize());
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-file-earmark-pdf me-1"></i> Exporter en PDF';
+            });
+    }, 300);
+});
 
 // RQTH
 pie('rqthEtat',
