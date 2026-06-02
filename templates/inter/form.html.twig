@@ -1,5 +1,40 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+.sticky-save {
+    position: sticky;
+    bottom: 0;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(4px);
+    padding: .75rem 1rem;
+    border-top: 1px solid #dee2e6;
+    z-index: 100;
+    margin-top: 1rem;
+}
+.form-control-sm, .form-select-sm {
+    background-color: #eaf4fb;
+    border-color: #aed6f1;
+    color: #154360;
+}
+.form-control-sm:focus, .form-select-sm:focus {
+    background-color: #d6eaf8;
+    border-color: #2980b9;
+    box-shadow: 0 0 0 .2rem rgba(41,128,185,.2);
+}
+textarea.form-control-sm {
+    background-color: #fdfefe;
+    border-color: #aed6f1;
+}
+textarea.form-control-sm:focus {
+    background-color: #fff;
+    border-color: #2980b9;
+    box-shadow: 0 0 0 .2rem rgba(41,128,185,.2);
+}
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-tools"></i> {{ title }}</h2>
@@ -9,52 +44,54 @@
 <div class="card mb-3">
     <div class="card-header bg-danger text-white">Informations générales</div>
     <div class="card-body row g-3">
-        <div class="col-md-3">{{ form_row(form.date, {attr: {class: 'form-control'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.type, {attr: {class: 'form-select'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-select'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.urgence, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-md-3">
             {{ form_label(form.agentVisite) }}
             <div class="input-group">
-                {{ form_widget(form.agentVisite, {attr: {class: 'form-select'}}) }}
-                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalNouvelAgent" title="Créer un nouvel agent"><i class="bi bi-plus-lg"></i></button>
+                {{ form_widget(form.agentVisite, {attr: {class: 'form-select form-select-sm'}}) }}
+                <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalNouvelAgent" title="Créer un nouvel agent"><i class="bi bi-plus-lg"></i></button>
             </div>
             {{ form_errors(form.agentVisite) }}
         </div>
-        <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control', rows: 3}}) }}</div>
+        <div class="col-12"></div>
+        <div class="col-auto">{{ form_row(form.date, {attr: {class: 'form-control form-control-sm date-picker', style: 'width:130px'}}) }}</div>
+        <div class="col-md-2">{{ form_row(form.type, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+        <div class="col-12"></div>
+        <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+        <div class="col-auto">{{ form_row(form.urgence, {attr: {class: 'form-select form-select-sm', style: 'width:130px'}}) }}</div>
+        <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}</div>
         <div class="col-12">
             <label class="form-label fw-semibold">Interventions effectuées
                 <button type="button" class="btn btn-sm btn-success ms-2" id="add-action"><i class="bi bi-plus-lg"></i></button>
             </label>
             <div id="actions-collection" class="accordion" data-prototype="{{ form_widget(form.actions.vars.prototype)|e('html_attr') }}">
+                {% set colors = ['#2980b9','#27ae60','#8e44ad','#e67e22','#16a085','#c0392b','#2471a3','#1e8449'] %}
                 {% for action in form.actions %}
                 {% set uid = 'action-' ~ loop.index %}
-                <div class="action-item accordion-item">
-                    <h2 class="accordion-header d-flex align-items-center">
-                        <button class="accordion-button collapsed flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#{{ uid }}">
+                {% set color = colors[(loop.index0) % colors|length] %}
+                <div class="action-item accordion-item" style="border-left: 4px solid {{ color }}">
+                    <h2 class="accordion-header d-flex align-items-center" style="background: {{ color }}15">
+                        <button class="accordion-button collapsed flex-grow-1 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#{{ uid }}" style="background: transparent; color: {{ color }}; font-weight: 600; box-shadow: none;">
+                            <i class="bi bi-calendar2-check me-2"></i>
                             {{ action.vars.data.date ?: 'Intervention ' ~ loop.index }}
                             {% if action.vars.data.description %}
-                                <span class="text-muted small ms-2 text-truncate" style="max-width:300px">— {{ action.vars.data.description|slice(0,60) }}…</span>
+                                <span class="ms-2 text-truncate fw-normal" style="max-width:350px; color:#555; font-size:.85rem">— {{ action.vars.data.description|slice(0,70) }}…</span>
                             {% endif %}
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action"><i class="bi bi-trash"></i></button>
                     </h2>
                     <div id="{{ uid }}" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <div class="row g-2">
-                                <div class="col-md-2">{{ form_row(action.date, {attr: {class: 'form-control date-picker'}}) }}</div>
-                                <div class="col-md-10">{{ form_row(action.description, {attr: {class: 'form-control', rows: 3}}) }}</div>
-                            </div>
+                        <div class="accordion-body py-2" style="border-top: 1px solid {{ color }}30">
+                            {{ form_row(action.description, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
-        <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control', rows: 2}}) }}</div>
+        <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control form-control-sm', rows: 2}}) }}</div>
     </div>
 </div>
-<div class="mt-3">
+<div class="sticky-save">
     <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
     <a href="{{ path('app_inter_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
 </div>
