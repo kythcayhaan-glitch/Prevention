@@ -54,35 +54,33 @@ textarea.form-control-sm:focus {
         </div>
         <div class="w-100"></div>
         <div class="col-auto">{{ form_row(form.date, {attr: {class: 'form-control form-control-sm date-picker', style: 'width:130px'}}) }}</div>
-        <div class="col-md-2">{{ form_row(form.type, {attr: {class: 'form-select form-select-sm'}}) }}</div>
         <div class="w-100"></div>
         <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-select form-select-sm'}}) }}</div>
-        <div class="col-auto">{{ form_row(form.urgence, {attr: {class: 'form-select form-select-sm', style: 'width:130px'}}) }}</div>
         <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}</div>
         <div class="col-12">
             <label class="form-label fw-semibold">Interventions effectuées
-                <button type="button" class="btn btn-sm btn-success ms-2" id="add-action"><i class="bi bi-plus-lg"></i></button>
+                <button type="button" class="btn btn-sm btn-success ms-2" id="add-action" data-bs-toggle="modal" data-bs-target="#modalNouvelleAction"><i class="bi bi-plus-lg"></i></button>
                 <button type="button" class="btn btn-sm btn-outline-secondary ms-1" id="toggle-all-actions" title="Tout ouvrir / fermer"><i class="bi bi-chevron-expand"></i></button>
             </label>
-            <div id="actions-collection" class="accordion" data-prototype="{{ form_widget(form.actions.vars.prototype)|e('html_attr') }}">
-                {% set colors = ['#2980b9','#27ae60','#8e44ad','#e67e22','#16a085','#c0392b','#2471a3','#1e8449'] %}
-                {% for action in form.actions %}
-                {% set uid = 'action-' ~ loop.index %}
+            {% set colors = ['#2980b9','#27ae60','#8e44ad','#e67e22','#16a085','#c0392b','#2471a3','#1e8449'] %}
+            <div id="actions-collection" class="accordion">
+                {% for action in inter.actions %}
+                {% set uid = 'action-' ~ action.id %}
                 {% set color = colors[(loop.index0) % colors|length] %}
-                <div class="action-item accordion-item" style="border-left: 4px solid {{ color }}">
+                <div class="action-item accordion-item" data-action-id="{{ action.id }}" style="border-left: 4px solid {{ color }}">
                     <h2 class="accordion-header d-flex align-items-center" style="background: {{ color }}15">
                         <button class="accordion-button collapsed flex-grow-1 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#{{ uid }}" style="background: transparent; color: {{ color }}; font-weight: 600; box-shadow: none;">
                             <i class="bi bi-calendar2-check me-2"></i>
-                            {{ action.vars.data.date ?: 'Intervention ' ~ loop.index }}
-                            {% if action.vars.data.description %}
-                                <span class="ms-2 text-truncate fw-normal" style="max-width:350px; color:#555; font-size:.85rem">— {{ action.vars.data.description|slice(0,70) }}…</span>
+                            {{ action.date ?: 'Intervention ' ~ loop.index }}
+                            {% if action.description %}
+                                <span class="ms-2 text-truncate fw-normal" style="max-width:350px; color:#555; font-size:.85rem">— {{ action.description|slice(0,70) }}…</span>
                             {% endif %}
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action"><i class="bi bi-trash"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action" data-delete-url="{{ path('app_inter_action_delete', {actionId: action.id}) }}"><i class="bi bi-trash"></i></button>
                     </h2>
                     <div id="{{ uid }}" class="accordion-collapse collapse">
                         <div class="accordion-body py-2" style="border-top: 1px solid {{ color }}30">
-                            {{ form_row(action.description, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}
+                            <p class="mb-0" style="white-space: pre-line">{{ action.description }}</p>
                         </div>
                     </div>
                 </div>
@@ -96,7 +94,33 @@ textarea.form-control-sm:focus {
     <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
     <a href="{{ path('app_inter_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
 </div>
-{{ form_end(form) }}
+{{ form_row(form._token) }}
+{{ form_end(form, {render_rest: false}) }}
+
+<div class="modal fade" id="modalNouvelleAction" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i> Nouvelle intervention effectuée</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Date</label>
+                    <input type="text" id="modal-action-date" class="form-control date-picker" placeholder="DD/MM/YYYY" style="width:160px">
+                </div>
+                <div>
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea id="modal-action-text" class="form-control" rows="8" placeholder="Décrivez l'intervention effectuée..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-success" id="btn-save-action"><i class="bi bi-check-lg"></i> Ajouter</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="modalNouvelAgent" tabindex="-1">
     <div class="modal-dialog modal-sm">
@@ -156,59 +180,82 @@ document.getElementById('btn-save-agent').addEventListener('click', function () 
 
 (function () {
     const collection = document.getElementById('actions-collection');
-    let index = collection.querySelectorAll('.action-item').length;
+    const actionAddUrl = '{{ action_add_url is defined ? action_add_url : '' }}';
+    const colors = ['#2980b9','#27ae60','#8e44ad','#e67e22','#16a085','#c0392b','#2471a3','#1e8449'];
 
-    function addItem() {
-        const uid = 'action-new-' + index;
-        const proto = collection.dataset.prototype.replace(/__name__/g, index++);
-        const div = document.createElement('div');
-        div.className = 'action-item accordion-item';
-        div.innerHTML = `
-            <h2 class="accordion-header d-flex align-items-center">
-                <button class="accordion-button flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#${uid}">
-                    Nouvelle intervention
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action"><i class="bi bi-trash"></i></button>
-            </h2>
-            <div id="${uid}" class="accordion-collapse collapse show">
-                <div class="accordion-body"><div class="row g-2">${proto}</div></div>
-            </div>`;
-        collection.appendChild(div);
-        if (typeof initDatePickers === 'function') initDatePickers(div);
-        div.querySelector('.remove-action').addEventListener('click', () => div.remove());
-        initAutoResize(div);
+    function colorFor(index) { return colors[index % colors.length]; }
+
+    function attachDelete(btn) {
+        btn.addEventListener('click', function () {
+            if (!confirm('Supprimer cette intervention effectuée ?')) return;
+            const item = this.closest('.action-item');
+            const url = this.dataset.deleteUrl;
+            if (!url) { item.remove(); return; }
+            fetch(url, { method: 'POST' }).then(() => item.remove());
+        });
     }
 
-    document.getElementById('add-action').addEventListener('click', addItem);
+    collection.querySelectorAll('.remove-action').forEach(attachDelete);
+
+    function addItemToDOM(data) {
+        const idx = collection.querySelectorAll('.action-item').length;
+        const color = colorFor(idx);
+        const uid = 'action-' + data.id;
+        const div = document.createElement('div');
+        div.className = 'action-item accordion-item';
+        div.dataset.actionId = data.id;
+        div.style.cssText = `border-left: 4px solid ${color}`;
+        div.innerHTML = `
+            <h2 class="accordion-header d-flex align-items-center" style="background:${color}15">
+                <button class="accordion-button flex-grow-1 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#${uid}"
+                    style="background:transparent;color:${color};font-weight:600;box-shadow:none;">
+                    <i class="bi bi-calendar2-check me-2"></i>
+                    ${data.date || 'Intervention'}
+                    <span class="ms-2 text-truncate fw-normal" style="max-width:350px;color:#555;font-size:.85rem">
+                        — ${data.description.substring(0, 70)}…
+                    </span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action" data-delete-url="${data.deleteUrl}"><i class="bi bi-trash"></i></button>
+            </h2>
+            <div id="${uid}" class="accordion-collapse collapse show" style="border-top:1px solid ${color}30">
+                <div class="accordion-body py-2"><p class="mb-0" style="white-space:pre-line">${data.description}</p></div>
+            </div>`;
+        collection.appendChild(div);
+        attachDelete(div.querySelector('.remove-action'));
+    }
+
+    document.getElementById('btn-save-action').addEventListener('click', function () {
+        const text = document.getElementById('modal-action-text').value.trim();
+        const date = document.getElementById('modal-action-date').value.trim();
+        if (!text || !actionAddUrl) return;
+        const fd = new FormData();
+        fd.append('description', text);
+        fd.append('date', date);
+        fetch(actionAddUrl, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) return;
+                addItemToDOM(data);
+                document.getElementById('modal-action-text').value = '';
+                document.getElementById('modal-action-date').value = '';
+                bootstrap.Modal.getInstance(document.getElementById('modalNouvelleAction')).hide();
+            });
+    });
+
+    document.getElementById('modalNouvelleAction').addEventListener('shown.bs.modal', function () {
+        document.getElementById('modal-action-text').value = '';
+        document.getElementById('modal-action-date').value = '';
+        if (typeof initDatePickers === 'function') initDatePickers(this);
+    });
 
     let allOpen = false;
     document.getElementById('toggle-all-actions').addEventListener('click', function () {
         const panels = collection.querySelectorAll('.accordion-collapse');
         allOpen = !allOpen;
         panels.forEach(p => {
-            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(p, {toggle: false});
-            allOpen ? bsCollapse.show() : bsCollapse.hide();
+            bootstrap.Collapse.getOrCreateInstance(p, {toggle: false})[allOpen ? 'show' : 'hide']();
         });
         this.querySelector('i').className = allOpen ? 'bi bi-chevron-contract' : 'bi bi-chevron-expand';
     });
-
-    collection.querySelectorAll('.remove-action').forEach(btn => {
-        btn.addEventListener('click', () => btn.closest('.action-item').remove());
-    });
-
-    function autoResize(ta) {
-        const lines = (ta.value.match(/\n/g) || []).length + 1;
-        ta.rows = Math.max(2, lines);
-    }
-
-    function initAutoResize(root) {
-        root.querySelectorAll('textarea').forEach(ta => {
-            autoResize(ta);
-            ta.addEventListener('input', () => autoResize(ta));
-        });
-    }
-
-    initAutoResize(collection);
-
 })();
 </script>{% endblock %}

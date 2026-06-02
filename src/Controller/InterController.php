@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Inter;
+use App\Entity\InterAction;
+use App\Repository\InterActionRepository;
 use App\Form\InterType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\InterRepository;
 use App\Repository\AgentRepository;
 use App\Repository\ServiceRepository;
@@ -77,6 +80,7 @@ class InterController extends AbstractController
             'form' => $form,
             'title' => 'Modifier l\'intervention',
             'inter' => $inter,
+            'action_add_url' => $this->generateUrl('app_inter_action_add', ['id' => $inter->getId()]),
         ]);
     }
 
@@ -99,6 +103,44 @@ class InterController extends AbstractController
             }
         }
         return $agents;
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/{id}/action/ajouter', name: 'app_inter_action_add', methods: ['POST'])]
+    public function addAction(Request $request, Inter $inter, EntityManagerInterface $em): JsonResponse
+    {
+        $description = trim($request->request->get('description', ''));
+        $date = trim($request->request->get('date', ''));
+
+        if (!$description) {
+            return $this->json(['error' => 'Description vide'], 400);
+        }
+
+        $action = new InterAction();
+        $action->setInter($inter);
+        $action->setDescription($description);
+        $action->setDate($date ?: null);
+        $em->persist($action);
+        $em->flush();
+
+        return $this->json([
+            'id' => $action->getId(),
+            'date' => $action->getDate(),
+            'description' => $action->getDescription(),
+            'deleteUrl' => $this->generateUrl('app_inter_action_delete', ['actionId' => $action->getId()]),
+        ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/action/{actionId}/supprimer', name: 'app_inter_action_delete', methods: ['POST'])]
+    public function deleteAction(int $actionId, InterActionRepository $repo, EntityManagerInterface $em): JsonResponse
+    {
+        $action = $repo->find($actionId);
+        if ($action) {
+            $em->remove($action);
+            $em->flush();
+        }
+        return $this->json(['ok' => true]);
     }
 
     #[IsGranted('ROLE_ADMIN')]

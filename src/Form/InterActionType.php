@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\InterAction;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,6 +14,7 @@ class InterActionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('date', HiddenType::class, ['required' => false])
             ->add('description', TextareaType::class, ['label' => false, 'required' => false, 'attr' => ['class' => 'form-control', 'rows' => 3, 'placeholder' => 'Description de l\'intervention...']])
         ;
     }

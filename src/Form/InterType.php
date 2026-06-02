@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Inter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,18 +16,6 @@ class InterType extends AbstractType
     {
         $builder
             ->add('date', TextType::class, ['label' => 'Date', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
-            ->add('type', ChoiceType::class, [
-                'label' => 'Type',
-                'required' => false,
-                'choices' => [
-                    'Intervention' => 'Intervention',
-                    'Visite de prévention' => 'Visite de prévention',
-                    'RQTH' => 'RQTH',
-                    'FIPHFP' => 'FIPHFP',
-                    'EPI' => 'EPI',
-                ],
-                'placeholder' => '-- Choisir --',
-            ])
             ->add('service', ChoiceType::class, [
                 'label' => 'Service',
                 'required' => false,
@@ -36,15 +23,7 @@ class InterType extends AbstractType
                 'choices' => array_combine($options['services'], $options['services']),
             ])
             ->add('panneAnnonce', TextareaType::class, ['label' => 'Description', 'required' => false])
-            ->add('urgence', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['A traiter' => 'a_traiter', 'En cours' => 'en_cours', 'Traité' => 'traite'], 'placeholder' => '--'])
 ->add('observation', TextareaType::class, ['label' => 'Observation', 'required' => false])
-            ->add('actions', CollectionType::class, [
-                'entry_type' => InterActionType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'label' => false,
-            ])
             ->add('agentVisite', ChoiceType::class, [
                 'label' => 'Agent concerné',
                 'required' => false,
