@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/rqth')]
 class RqthController extends AbstractController
@@ -23,6 +24,7 @@ class RqthController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/nouveau', name: 'app_rqth_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -50,6 +52,7 @@ class RqthController extends AbstractController
         return $this->render('rqth/show.html.twig', ['rqth' => $rqth]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/modifier', name: 'app_rqth_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Rqth $rqth, EntityManagerInterface $em): Response
     {
@@ -70,6 +73,7 @@ class RqthController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/document/{docId}/supprimer', name: 'app_rqth_document_delete', methods: ['POST'])]
     public function deleteDocument(Request $request, Rqth $rqth, int $docId, EntityManagerInterface $em): Response
     {
@@ -91,6 +95,7 @@ class RqthController extends AbstractController
         return $this->redirectToRoute('app_rqth_show', ['id' => $rqth->getId()]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/supprimer', name: 'app_rqth_delete', methods: ['POST'])]
     public function delete(Request $request, Rqth $rqth, EntityManagerInterface $em): Response
     {

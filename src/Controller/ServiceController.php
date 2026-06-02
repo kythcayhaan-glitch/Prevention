@@ -24,6 +24,7 @@ class ServiceController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/nouveau', name: 'app_service_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -41,6 +42,7 @@ class ServiceController extends AbstractController
         return $this->render('service/form.html.twig', ['form' => $form, 'title' => 'Nouveau service']);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/modifier', name: 'app_service_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Service $service, EntityManagerInterface $em): Response
     {
@@ -56,6 +58,7 @@ class ServiceController extends AbstractController
         return $this->render('service/form.html.twig', ['form' => $form, 'title' => 'Modifier le service']);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/supprimer', name: 'app_service_delete', methods: ['POST'])]
     public function delete(Request $request, Service $service, EntityManagerInterface $em): Response
     {

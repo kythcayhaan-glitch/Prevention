@@ -23,7 +23,7 @@
         <h2 class="mb-0"><i class="bi bi-tools"></i> Interventions</h2>
         <small class="inter-count" id="rowCount"></small>
     </div>
-    <a href="{{ path('app_inter_new') }}" class="btn btn-danger"><i class="bi bi-plus-lg"></i> Nouvelle intervention</a>
+    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_inter_new') }}" class="btn btn-danger"><i class="bi bi-plus-lg"></i> Nouvelle intervention</a>{% endif %}
 </div>
 
 <div class="card shadow-sm">
@@ -53,7 +53,7 @@
                 </thead>
                 <tbody>
                 {% for inter in inters %}
-                <tr data-href="{{ path('app_inter_show', {id: inter.id}) }}">
+                <tr data-href="{{ is_granted('ROLE_ADMIN') ? path('app_inter_edit', {id: inter.id}) : path('app_inter_show', {id: inter.id}) }}">
                     <td class="text-muted small">{{ inter.id }}</td>
                     <td class="fw-semibold">{{ inter.date }}</td>
                     <td>{{ inter.service }}</td>
@@ -67,11 +67,13 @@
                     </td>
                     <td onclick="event.stopPropagation()">
                         <a href="{{ path('app_inter_show', {id: inter.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_inter_edit', {id: inter.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
                         <form method="post" action="{{ path('app_inter_delete', {id: inter.id}) }}" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inter.id) }}">
                             <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% else %}

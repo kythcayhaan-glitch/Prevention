@@ -3,7 +3,7 @@
 {% block body %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-person-badge"></i> Dossiers RQTH</h2>
-    <a href="{{ path('app_rqth_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau RQTH</a>
+    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_rqth_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau RQTH</a>{% endif %}
 </div>
 <div class="card">
     <div class="card-body p-0">
@@ -33,11 +33,13 @@
                     <td>{{ rqth.dateFinAttributionRqth }}</td>
                     <td class="text-nowrap" onclick="event.stopPropagation()">
                         <a href="{{ path('app_rqth_show', {id: rqth.id}) }}" class="btn btn-sm btn-outline-primary" title="Consulter"><i class="bi bi-eye"></i></a>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_rqth_edit', {id: rqth.id}) }}" class="btn btn-sm btn-outline-secondary" title="Modifier"><i class="bi bi-pencil"></i></a>
                         <form method="post" action="{{ path('app_rqth_delete', {id: rqth.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rqth.id) }}">
                             <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% else %}

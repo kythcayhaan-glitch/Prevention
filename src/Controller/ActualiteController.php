@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/actualites')]
 class ActualiteController extends AbstractController
@@ -30,6 +31,7 @@ class ActualiteController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/nouveau', name: 'app_actualite_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -51,6 +53,7 @@ class ActualiteController extends AbstractController
         return $this->render('actualite/form.html.twig', ['actu' => null]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/modifier', name: 'app_actualite_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Actualite $actu, EntityManagerInterface $em): Response
     {
@@ -67,6 +70,7 @@ class ActualiteController extends AbstractController
         return $this->render('actualite/form.html.twig', ['actu' => $actu]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/supprimer', name: 'app_actualite_delete', methods: ['POST'])]
     public function delete(Request $request, Actualite $actu, EntityManagerInterface $em): Response
     {

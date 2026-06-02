@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/agent')]
 class AgentController extends AbstractController
 {
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/creer', name: 'app_agent_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $em, AgentRepository $repo): JsonResponse
     {

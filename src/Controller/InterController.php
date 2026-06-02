@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/intervention')]
 class InterController extends AbstractController
@@ -24,6 +25,7 @@ class InterController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/nouveau', name: 'app_inter_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em, AgentRepository $agentRepo, ServiceRepository $serviceRepo): Response
     {
@@ -53,6 +55,7 @@ class InterController extends AbstractController
         return $this->render('inter/show.html.twig', ['inter' => $inter]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/modifier', name: 'app_inter_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Inter $inter, EntityManagerInterface $em, AgentRepository $agentRepo, ServiceRepository $serviceRepo): Response
     {
@@ -98,6 +101,7 @@ class InterController extends AbstractController
         return $agents;
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/supprimer', name: 'app_inter_delete', methods: ['POST'])]
     public function delete(Request $request, Inter $inter, EntityManagerInterface $em): Response
     {
