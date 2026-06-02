@@ -115,7 +115,7 @@ document.getElementById('btn-save-agent').addEventListener('click', function () 
             document.getElementById('agent-prenom').value = '';
         });
 });
-</script>
+
 (function () {
     const collection = document.getElementById('actions-collection');
     let index = collection.querySelectorAll('.action-item').length;
@@ -138,6 +138,7 @@ document.getElementById('btn-save-agent').addEventListener('click', function () 
         collection.appendChild(div);
         if (typeof initDatePickers === 'function') initDatePickers(div);
         div.querySelector('.remove-action').addEventListener('click', () => div.remove());
+        initAutoResize(div);
     }
 
     document.getElementById('add-action').addEventListener('click', addItem);
@@ -145,5 +146,20 @@ document.getElementById('btn-save-agent').addEventListener('click', function () 
     collection.querySelectorAll('.remove-action').forEach(btn => {
         btn.addEventListener('click', () => btn.closest('.action-item').remove());
     });
+
+    function autoResize(ta) {
+        const lines = (ta.value.match(/\n/g) || []).length + 1;
+        ta.rows = Math.max(2, lines);
+    }
+
+    function initAutoResize(root) {
+        root.querySelectorAll('textarea').forEach(ta => {
+            autoResize(ta);
+            ta.addEventListener('input', () => autoResize(ta));
+        });
+    }
+
+    initAutoResize(collection);
+
 })();
 </script>{% endblock %}

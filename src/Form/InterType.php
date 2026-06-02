@@ -37,8 +37,7 @@ class InterType extends AbstractType
             ])
             ->add('panneAnnonce', TextareaType::class, ['label' => 'Description', 'required' => false])
             ->add('urgence', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['A traiter' => 'a_traiter', 'En cours' => 'en_cours', 'Traité' => 'traite'], 'placeholder' => '--'])
-            ->add('interEffect', TextareaType::class, ['label' => 'Intervention effectuée', 'required' => false])
-            ->add('observation', TextareaType::class, ['label' => 'Observation', 'required' => false])
+->add('observation', TextareaType::class, ['label' => 'Observation', 'required' => false])
             ->add('actions', CollectionType::class, [
                 'entry_type' => InterActionType::class,
                 'allow_add' => true,
