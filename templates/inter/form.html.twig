@@ -13,7 +13,14 @@
         <div class="col-md-3">{{ form_row(form.type, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-md-3">{{ form_row(form.urgence, {attr: {class: 'form-select'}}) }}</div>
-        <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-select'}}) }}</div>
+        <div class="col-md-3">
+            {{ form_label(form.agentVisite) }}
+            <div class="input-group">
+                {{ form_widget(form.agentVisite, {attr: {class: 'form-select'}}) }}
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalNouvelAgent" title="Créer un nouvel agent"><i class="bi bi-plus-lg"></i></button>
+            </div>
+            {{ form_errors(form.agentVisite) }}
+        </div>
         <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control', rows: 3}}) }}</div>
         <div class="col-12">
             <label class="form-label fw-semibold">Interventions effectuées
@@ -52,9 +59,63 @@
     <a href="{{ path('app_inter_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
 </div>
 {{ form_end(form) }}
+
+<div class="modal fade" id="modalNouvelAgent" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nouvel agent</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label class="form-label">Nom <span class="text-danger">*</span></label>
+                    <input type="text" id="agent-nom" class="form-control text-uppercase" placeholder="NOM">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Prénom</label>
+                    <input type="text" id="agent-prenom" class="form-control" placeholder="Prénom">
+                </div>
+                <div id="agent-error" class="text-danger small d-none"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-success" id="btn-save-agent">Créer</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}<script>
+const createAgentUrl = '{{ path('app_agent_create') }}';
+
+document.getElementById('btn-save-agent').addEventListener('click', function () {
+    const nom = document.getElementById('agent-nom').value.trim().toUpperCase();
+    const prenom = document.getElementById('agent-prenom').value.trim();
+    const errEl = document.getElementById('agent-error');
+
+    if (!nom) { errEl.textContent = 'Le nom est requis.'; errEl.classList.remove('d-none'); return; }
+    errEl.classList.add('d-none');
+
+    const fd = new FormData();
+    fd.append('nom', nom);
+    fd.append('prenom', prenom);
+
+    fetch(createAgentUrl, { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) { errEl.textContent = data.error; errEl.classList.remove('d-none'); return; }
+            const select = document.querySelector('[name$="[agentVisite]"], #inter_agentVisite');
+            const opt = new Option(data.label, data.value, true, true);
+            select.appendChild(opt);
+            select.value = data.value;
+            bootstrap.Modal.getInstance(document.getElementById('modalNouvelAgent')).hide();
+            document.getElementById('agent-nom').value = '';
+            document.getElementById('agent-prenom').value = '';
+        });
+});
+</script>
 (function () {
     const collection = document.getElementById('actions-collection');
     let index = collection.querySelectorAll('.action-item').length;

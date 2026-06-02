@@ -2,11 +2,20 @@
 
 {% block title %}Connexion{% endblock %}
 
-{% block body %}
-<div class="d-flex justify-content-center align-items-start gap-4 flex-wrap" style="min-height: 80vh; padding-top: 5vh;">
+{% block stylesheets %}
+<style>
+.login-wrap { min-height: 80vh; padding-top: 5vh; }
+.login-card { width: 380px; }
+.maj-card { width: 640px; max-height: 35vh; overflow-y: auto; }
+.maj-date { font-size: .75rem; }
+.maj-contenu { font-size: .875rem; white-space: pre-line; }
+</style>
+{% endblock %}
 
-    {# Formulaire de connexion #}
-    <div class="card" style="width: 380px; flex-shrink:0;">
+{% block body %}
+<div class="d-flex flex-column align-items-center login-wrap gap-4">
+
+    <div class="card login-card">
         <div class="card-header bg-primary text-white text-center py-3">
             <big>Gestion Prévention</big>
             <h4 class="mb-0"><i class="bi bi-shield-lock"></i> Connexion</h4>
@@ -15,7 +24,6 @@
             {% if error %}
                 <div class="alert alert-danger">Login incorrect.</div>
             {% endif %}
-
             <form method="post" action="{{ path('app_login') }}">
                 <div class="mb-3">
                     <label for="login" class="form-label fw-bold">Identifiant</label>
@@ -38,9 +46,8 @@
         </div>
     </div>
 
-    {# Encart mises à jour #}
     {% if actualites is not empty %}
-    <div class="card" style="width: 420px; flex-shrink:0; max-height: 70vh; overflow-y: auto;">
+    <div class="card maj-card">
         <div class="card-header bg-info text-white">
             <i class="bi bi-megaphone"></i> Mises à jour
         </div>
@@ -48,14 +55,10 @@
             {% for actu in actualites %}
             <div class="px-3 py-2 {% if not loop.last %}border-bottom{% endif %}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    {% if actu.titre %}
-                        <strong class="small">{{ actu.titre }}</strong>
-                    {% else %}
-                        <span></span>
-                    {% endif %}
-                    <span class="text-muted" style="font-size:.75rem">{{ actu.dateCreation|date('d/m/Y') }}</span>
+                    {% if actu.titre %}<strong class="small">{{ actu.titre }}</strong>{% else %}<span></span>{% endif %}
+                    <span class="text-muted maj-date">{{ actu.dateCreation|date('d/m/Y') }}</span>
                 </div>
-                <div style="font-size:.875rem; white-space: pre-line;">{{ actu.contenu }}</div>
+                <div class="maj-contenu">{{ actu.contenu }}</div>
             </div>
             {% endfor %}
         </div>
