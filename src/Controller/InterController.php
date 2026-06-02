@@ -67,7 +67,7 @@ class InterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'Intervention modifiée avec succès.');
-            return $this->redirectToRoute('app_inter_show', ['id' => $inter->getId()]);
+            return $this->redirectToRoute('app_inter_edit', ['id' => $inter->getId()]);
         }
 
         return $this->render('inter/form.html.twig', [

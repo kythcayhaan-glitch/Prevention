@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InterRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InterRepository::class)]
@@ -137,6 +139,14 @@ class Inter
     #[ORM\Column(length: 60, nullable: true)]
     private ?string $par = null;
 
+    #[ORM\OneToMany(mappedBy: 'inter', targetEntity: InterAction::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $actions;
+
+    public function __construct()
+    {
+        $this->actions = new ArrayCollection();
+    }
+
     public function getId(): ?int { return $this->id; }
 
     public function getDate(): ?string { return $this->date; }
@@ -261,4 +271,21 @@ class Inter
 
     public function getPar(): ?string { return $this->par; }
     public function setPar(?string $par): static { $this->par = $par; return $this; }
+
+    public function getActions(): Collection { return $this->actions; }
+
+    public function addAction(InterAction $action): static
+    {
+        if (!$this->actions->contains($action)) {
+            $this->actions->add($action);
+            $action->setInter($this);
+        }
+        return $this;
+    }
+
+    public function removeAction(InterAction $action): static
+    {
+        $this->actions->removeElement($action);
+        return $this;
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Inter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,6 +39,13 @@ class InterType extends AbstractType
             ->add('urgence', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['A traiter' => 'a_traiter', 'En cours' => 'en_cours', 'Traité' => 'traite'], 'placeholder' => '--'])
             ->add('interEffect', TextareaType::class, ['label' => 'Intervention effectuée', 'required' => false])
             ->add('observation', TextareaType::class, ['label' => 'Observation', 'required' => false])
+            ->add('actions', CollectionType::class, [
+                'entry_type' => InterActionType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+            ])
             ->add('agentVisite', ChoiceType::class, [
                 'label' => 'Agent concerné',
                 'required' => false,

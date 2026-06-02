@@ -16,19 +16,32 @@
         <div class="col-md-3">{{ form_row(form.agentVisite, {attr: {class: 'form-select'}}) }}</div>
         <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control', rows: 3}}) }}</div>
         <div class="col-12">
-            <div class="accordion" id="accordionInterEffect">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInterEffect" aria-expanded="false">
-                            Intervention effectuée
+            <label class="form-label fw-semibold">Interventions effectuées
+                <button type="button" class="btn btn-sm btn-success ms-2" id="add-action"><i class="bi bi-plus-lg"></i></button>
+            </label>
+            <div id="actions-collection" class="accordion" data-prototype="{{ form_widget(form.actions.vars.prototype)|e('html_attr') }}">
+                {% for action in form.actions %}
+                {% set uid = 'action-' ~ loop.index %}
+                <div class="action-item accordion-item">
+                    <h2 class="accordion-header d-flex align-items-center">
+                        <button class="accordion-button collapsed flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#{{ uid }}">
+                            {{ action.vars.data.date ?: 'Intervention ' ~ loop.index }}
+                            {% if action.vars.data.description %}
+                                <span class="text-muted small ms-2 text-truncate" style="max-width:300px">— {{ action.vars.data.description|slice(0,60) }}…</span>
+                            {% endif %}
                         </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action"><i class="bi bi-trash"></i></button>
                     </h2>
-                    <div id="collapseInterEffect" class="accordion-collapse collapse" data-bs-parent="#accordionInterEffect">
-                        <div class="accordion-body p-2">
-                            {{ form_row(form.interEffect, {label: false, attr: {class: 'form-control', rows: 5}}) }}
+                    <div id="{{ uid }}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="row g-2">
+                                <div class="col-md-2">{{ form_row(action.date, {attr: {class: 'form-control date-picker'}}) }}</div>
+                                <div class="col-md-10">{{ form_row(action.description, {attr: {class: 'form-control', rows: 3}}) }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
         <div class="col-12">{{ form_row(form.observation, {attr: {class: 'form-control', rows: 2}}) }}</div>
@@ -40,3 +53,36 @@
 </div>
 {{ form_end(form) }}
 {% endblock %}
+
+{% block javascripts %}<script>
+(function () {
+    const collection = document.getElementById('actions-collection');
+    let index = collection.querySelectorAll('.action-item').length;
+
+    function addItem() {
+        const uid = 'action-new-' + index;
+        const proto = collection.dataset.prototype.replace(/__name__/g, index++);
+        const div = document.createElement('div');
+        div.className = 'action-item accordion-item';
+        div.innerHTML = `
+            <h2 class="accordion-header d-flex align-items-center">
+                <button class="accordion-button flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#${uid}">
+                    Nouvelle intervention
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2 me-2 remove-action"><i class="bi bi-trash"></i></button>
+            </h2>
+            <div id="${uid}" class="accordion-collapse collapse show">
+                <div class="accordion-body"><div class="row g-2">${proto}</div></div>
+            </div>`;
+        collection.appendChild(div);
+        if (typeof initDatePickers === 'function') initDatePickers(div);
+        div.querySelector('.remove-action').addEventListener('click', () => div.remove());
+    }
+
+    document.getElementById('add-action').addEventListener('click', addItem);
+
+    collection.querySelectorAll('.remove-action').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('.action-item').remove());
+    });
+})();
+</script>{% endblock %}
