@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}Statistiques{% endblock %}
+{% block body %}
+<h2 class="mb-4"><i class="bi bi-bar-chart-line"></i> Statistiques</h2>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 bg-success text-white text-center py-4">
+            <div class="fs-1 fw-bold">{{ nb_rqth }}</div>
+            <div><i class="bi bi-person-badge me-1"></i> Dossiers RQTH</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-warning text-dark text-center py-4">
+            <div class="fs-1 fw-bold">{{ nb_fiphfp }}</div>
+            <div><i class="bi bi-cash-coin me-1"></i> Demandes FIPHFP</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-danger text-white text-center py-4">
+            <div class="fs-1 fw-bold">{{ nb_inter }}</div>
+            <div><i class="bi bi-tools me-1"></i> Interventions</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
