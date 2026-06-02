@@ -56,6 +56,18 @@ class Fiphfp
     #[ORM\Column(nullable: true)]
     private ?int $urgenceFiphfp = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $aideCpam = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $aideMutuelle = null;
+
+    #[ORM\Column(name: 'reste_a_charge', nullable: true)]
+    private ?int $resteACharge = null;
+
+    #[ORM\Column(name: 'type_reste_a_charge', length: 30, nullable: true)]
+    private ?string $typeResteACharge = null;
+
     public function getId(): ?int { return $this->id; }
 
     public function getGenre(): ?string { return $this->genre; }
@@ -99,4 +111,16 @@ class Fiphfp
 
     public function getUrgenceFiphfp(): ?int { return $this->urgenceFiphfp; }
     public function setUrgenceFiphfp(?int $urgenceFiphfp): static { $this->urgenceFiphfp = $urgenceFiphfp; return $this; }
+
+    public function getAideCpam(): ?int { return $this->aideCpam; }
+    public function setAideCpam(?int $aideCpam): static { $this->aideCpam = $aideCpam; return $this; }
+
+    public function getAideMutuelle(): ?int { return $this->aideMutuelle; }
+    public function setAideMutuelle(?int $aideMutuelle): static { $this->aideMutuelle = $aideMutuelle; return $this; }
+
+    public function getResteACharge(): ?int { return $this->resteACharge; }
+    public function setResteACharge(?int $resteACharge): static { $this->resteACharge = $resteACharge; return $this; }
+
+    public function getTypeResteACharge(): ?string { return $this->typeResteACharge; }
+    public function setTypeResteACharge(?string $typeResteACharge): static { $this->typeResteACharge = $typeResteACharge; return $this; }
 }

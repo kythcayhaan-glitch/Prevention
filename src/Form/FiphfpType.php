@@ -41,9 +41,21 @@ class FiphfpType extends AbstractType
                 'placeholder' => '-- Choisir --',
             ])
             ->add('detailDemandeFiphfp', TextareaType::class, ['label' => 'Détail', 'required' => false])
-            ->add('montantDepenseFiphfp', IntegerType::class, ['label' => 'Montant dépensé (€)', 'required' => false])
+            ->add('montantDepenseFiphfp', IntegerType::class, ['label' => 'Montant de la dépense (€)', 'required' => false])
             ->add('montantDemandeFiphfp', IntegerType::class, ['label' => 'Montant demandé (€)', 'required' => false])
+            ->add('aideCpam', IntegerType::class, ['label' => 'Aide CPAM (€)', 'required' => false])
+            ->add('aideMutuelle', IntegerType::class, ['label' => 'Aide mutuelle (€)', 'required' => false])
             ->add('montantAccordeFiphfp', IntegerType::class, ['label' => 'Montant accordé (€)', 'required' => false])
+            ->add('resteACharge', IntegerType::class, ['label' => 'Reste à charge (€)', 'required' => false, 'attr' => ['readonly' => true]])
+            ->add('typeResteACharge', ChoiceType::class, [
+                'label' => 'Reste à charge pour',
+                'required' => false,
+                'placeholder' => '-- Choisir --',
+                'choices' => [
+                    "L'agent" => 'agent',
+                    'La collectivité' => 'collectivite',
+                ],
+            ])
             ->add('accordPayeLe', TextType::class, ['label' => 'Accord payé le', 'required' => false, 'attr' => ['placeholder' => 'DD/MM/YYYY', 'class' => 'form-control date-picker']])
             ->add('urgenceFiphfp', ChoiceType::class, ['label' => 'Urgence', 'required' => false, 'choices' => ['Oui' => 1, 'Non' => 0], 'placeholder' => '--'])
         ;

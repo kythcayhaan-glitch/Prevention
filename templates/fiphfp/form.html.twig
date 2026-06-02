@@ -1,34 +1,95 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+.fiphfp-form .form-control, .fiphfp-form .form-select {
+    background-color: #eaf4fb;
+    border-color: #aed6f1;
+    color: #154360;
+    font-size: .9rem;
+}
+.fiphfp-form .form-control:focus, .fiphfp-form .form-select:focus {
+    background-color: #d6eaf8;
+    border-color: #2980b9;
+    box-shadow: 0 0 0 .2rem rgba(41,128,185,.2);
+}
+.fiphfp-form .card-header { font-weight: 600; font-size: .9rem; }
+.sticky-save {
+    position: sticky;
+    bottom: 0;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(4px);
+    padding: .75rem 1rem;
+    border-top: 1px solid #dee2e6;
+    z-index: 100;
+    margin-top: 1rem;
+}
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h2><i class="bi bi-cash-coin"></i> {{ title }}</h2>
     <a href="{{ path('app_fiphfp_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
 </div>
-<div class="card">
-    <div class="card-body">
-        {{ form_start(form) }}
-        <div class="row g-3">
-            <div class="col-md-2">{{ form_row(form.genre, {attr: {class: 'form-select genre-autofill'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.agentFiphfp, {attr: {class: 'form-control', style: 'text-transform:uppercase'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.prenomFiphfp, {attr: {class: 'form-control prenom-genre-trigger'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.poleFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.demandeFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.dateDemandeFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.objetFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-4">{{ form_row(form.etatDemandeFiphfp, {attr: {class: 'form-select'}}) }}</div>
-            <div class="col-12">{{ form_row(form.detailDemandeFiphfp, {attr: {class: 'form-control', rows: 3}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.montantDepenseFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.montantDemandeFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.montantAccordeFiphfp, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.accordPayeLe, {attr: {class: 'form-control'}}) }}</div>
-            <div class="col-md-3">{{ form_row(form.urgenceFiphfp, {attr: {class: 'form-select'}}) }}</div>
-        </div>
-        <div class="mt-3">
-            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
-            <a href="{{ path('app_fiphfp_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
-        </div>
-        {{ form_end(form) }}
+
+{{ form_start(form, {attr: {class: 'fiphfp-form'}}) }}
+
+<div class="card mb-3">
+    <div class="card-header bg-warning text-dark"><i class="bi bi-person me-1"></i> Agent</div>
+    <div class="card-body row g-2">
+        <div class="col-auto">{{ form_row(form.genre, {attr: {class: 'form-select form-select-sm genre-autofill', style: 'width:110px'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.agentFiphfp, {attr: {class: 'form-control form-control-sm', style: 'text-transform:uppercase'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.prenomFiphfp, {attr: {class: 'form-control form-control-sm prenom-genre-trigger'}}) }}</div>
+        <div class="col-md-4">{{ form_row(form.poleFiphfp, {attr: {class: 'form-control form-control-sm'}}) }}</div>
     </div>
 </div>
+
+<div class="card mb-3">
+    <div class="card-header bg-primary text-white"><i class="bi bi-file-earmark-text me-1"></i> Demande</div>
+    <div class="card-body row g-2">
+        <div class="col-md-3">{{ form_row(form.demandeFiphfp, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+        <div class="col-auto">{{ form_row(form.dateDemandeFiphfp, {attr: {class: 'form-control form-control-sm date-picker', style: 'width:140px'}}) }}</div>
+        <div class="col-md-4">{{ form_row(form.objetFiphfp, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.etatDemandeFiphfp, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+        <div class="col-12">{{ form_row(form.detailDemandeFiphfp, {attr: {class: 'form-control form-control-sm', rows: 4}}) }}</div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header bg-success text-white"><i class="bi bi-currency-euro me-1"></i> Montants</div>
+    <div class="card-body row g-2">
+        <div class="col-md-3">{{ form_row(form.montantDepenseFiphfp, {attr: {class: 'form-control form-control-sm montant-calc', id: 'montant_depense'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.montantDemandeFiphfp, {attr: {class: 'form-control form-control-sm'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.aideCpam, {attr: {class: 'form-control form-control-sm montant-calc', id: 'aide_cpam'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.aideMutuelle, {attr: {class: 'form-control form-control-sm montant-calc', id: 'aide_mutuelle'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.montantAccordeFiphfp, {attr: {class: 'form-control form-control-sm montant-calc', id: 'montant_accorde'}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.resteACharge, {attr: {class: 'form-control form-control-sm bg-light fw-bold', readonly: true}}) }}</div>
+        <div class="col-md-3">{{ form_row(form.typeResteACharge, {attr: {class: 'form-select form-select-sm'}}) }}</div>
+        <div class="col-auto">{{ form_row(form.accordPayeLe, {attr: {class: 'form-control form-control-sm date-picker', style: 'width:140px'}}) }}</div>
+    </div>
+</div>
+
+<div class="sticky-save">
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Enregistrer</button>
+    <a href="{{ path('app_fiphfp_index') }}" class="btn btn-outline-secondary ms-2">Annuler</a>
+</div>
+
+{{ form_row(form._token) }}
+{{ form_end(form, {render_rest: false}) }}
 {% endblock %}
+
+{% block javascripts %}<script>
+function calcResteACharge() {
+    const depense  = parseInt(document.getElementById('fiphfp_montantDepenseFiphfp')?.value) || 0;
+    const accorde  = parseInt(document.getElementById('fiphfp_montantAccordeFiphfp')?.value) || 0;
+    const cpam     = parseInt(document.getElementById('fiphfp_aideCpam')?.value) || 0;
+    const mutuelle = parseInt(document.getElementById('fiphfp_aideMutuelle')?.value) || 0;
+    const el = document.getElementById('fiphfp_resteACharge');
+    if (el) el.value = depense - accorde - cpam - mutuelle;
+}
+['fiphfp_montantDepenseFiphfp','fiphfp_montantAccordeFiphfp','fiphfp_aideCpam','fiphfp_aideMutuelle']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', calcResteACharge); });
+calcResteACharge();
+</script>{% endblock %}
