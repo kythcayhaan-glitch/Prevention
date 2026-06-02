@@ -43,7 +43,7 @@ textarea.form-control-sm:focus {
 {{ form_start(form) }}
 <div class="card mb-3">
     <div class="card-header bg-danger text-white">Informations générales</div>
-    <div class="card-body row g-3">
+    <div class="card-body row g-2">
         <div class="col-md-3">
             {{ form_label(form.agentVisite) }}
             <div class="input-group">
@@ -52,10 +52,10 @@ textarea.form-control-sm:focus {
             </div>
             {{ form_errors(form.agentVisite) }}
         </div>
-        <div class="col-12"></div>
+        <div class="w-100"></div>
         <div class="col-auto">{{ form_row(form.date, {attr: {class: 'form-control form-control-sm date-picker', style: 'width:130px'}}) }}</div>
         <div class="col-md-2">{{ form_row(form.type, {attr: {class: 'form-select form-select-sm'}}) }}</div>
-        <div class="col-12"></div>
+        <div class="w-100"></div>
         <div class="col-md-3">{{ form_row(form.service, {attr: {class: 'form-select form-select-sm'}}) }}</div>
         <div class="col-auto">{{ form_row(form.urgence, {attr: {class: 'form-select form-select-sm', style: 'width:130px'}}) }}</div>
         <div class="col-12">{{ form_row(form.panneAnnonce, {attr: {class: 'form-control form-control-sm', rows: 3}}) }}</div>
