@@ -15,10 +15,25 @@ class StatistiquesController extends AbstractController
     #[Route('/', name: 'app_statistiques')]
     public function index(InterRepository $interRepo, RqthRepository $rqthRepo, FiphfpRepository $fiphfpRepo): Response
     {
+        $interMonths = array_reverse($interRepo->countByMonth(), true);
+
         return $this->render('statistiques/index.html.twig', [
-            'nb_inter'  => $interRepo->count([]),
-            'nb_rqth'   => $rqthRepo->count([]),
-            'nb_fiphfp' => $fiphfpRepo->count([]),
+            // RQTH
+            'rqth_by_etat'    => $rqthRepo->countByEtat(),
+            'rqth_by_service' => $rqthRepo->countByService(),
+            'rqth_expiring'   => $rqthRepo->findExpiringWithin(3),
+
+            // FIPHFP
+            'fiphfp_by_etat'  => $fiphfpRepo->countByEtat(),
+            'fiphfp_montants' => $fiphfpRepo->sumMontants(),
+            'fiphfp_by_reste' => $fiphfpRepo->countByTypeReste(),
+            'fiphfp_objets'   => $fiphfpRepo->topObjets(),
+
+            // Interventions
+            'inter_by_urgence' => $interRepo->countByUrgence(),
+            'inter_by_service' => $interRepo->countByService(),
+            'inter_by_month'   => $interMonths,
+            'inter_top_agents' => $interRepo->topAgents(),
         ]);
     }
 }
