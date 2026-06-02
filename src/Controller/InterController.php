@@ -56,6 +56,9 @@ class InterController extends AbstractController
     #[Route('/{id}/modifier', name: 'app_inter_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Inter $inter, EntityManagerInterface $em, AgentRepository $agentRepo, ServiceRepository $serviceRepo): Response
     {
+        if (!$inter->getAgentVisite() && $inter->getUserInter()) {
+            $inter->setAgentVisite($inter->getUserInter());
+        }
         $agents = $this->buildAgentsList($agentRepo);
         $services = $this->buildServicesList($serviceRepo);
         $form = $this->createForm(InterType::class, $inter, ['agents' => $agents, 'services' => $services]);
