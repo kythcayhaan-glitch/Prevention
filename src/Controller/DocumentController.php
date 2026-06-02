@@ -71,11 +71,23 @@ class DocumentController extends AbstractController
             throw $this->createNotFoundException('Fichier introuvable.');
         }
 
+        $ext = strtolower(pathinfo($doc->getNomFichier(), PATHINFO_EXTENSION));
+        $mimeMap = [
+            'pdf'  => 'application/pdf',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png'  => 'image/png',
+            'gif'  => 'image/gif',
+            'doc'  => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls'  => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+        $mime = $mimeMap[$ext] ?? 'application/octet-stream';
+
         $response = new BinaryFileResponse($path);
-        $response->headers->set('Content-Disposition',
-            'attachment; filename="' . addslashes($doc->getNom() . '.' . pathinfo($doc->getNomFichier(), PATHINFO_EXTENSION)) . '"'
-        );
-        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Type', $mime);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $doc->getNom() . '.' . $ext);
         return $response;
     }
 
