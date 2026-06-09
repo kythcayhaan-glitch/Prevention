@@ -180,6 +180,70 @@
     </div>
 </div>
 <div class="mt-2 text-muted small">{{ permis|length }} agent(s)</div>
+
+{# ── Documents ── #}
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-folder2-open"></i> Documents</span>
+        {% if is_granted('ROLE_ADMIN') %}
+        <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#formUploadPermis">
+            <i class="bi bi-upload"></i> Ajouter
+        </button>
+        {% endif %}
+    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="collapse" id="formUploadPermis">
+        <div class="card-body border-bottom">
+            <form method="post" action="{{ path('app_permis_doc_upload') }}" enctype="multipart/form-data" class="d-flex gap-2 align-items-end flex-wrap">
+                <div>
+                    <label class="form-label mb-1 small">Nom du document</label>
+                    <input type="text" name="nom" class="form-control form-control-sm" placeholder="Laisser vide = nom du fichier" style="width:250px">
+                </div>
+                <div>
+                    <label class="form-label mb-1 small">Fichier</label>
+                    <input type="file" name="fichier" class="form-control form-control-sm" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i> Enregistrer</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <div class="card-body p-0">
+        {% if documents is empty %}
+            <p class="text-muted text-center py-4 mb-0"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Aucun document.</p>
+        {% else %}
+        <table class="table table-hover mb-0">
+            <thead><tr><th>Nom</th><th>Taille</th><th>Ajouté le</th><th></th></tr></thead>
+            <tbody>
+            {% for doc in documents %}
+            {% set ext = doc.nomFichier|split('.')|last|lower %}
+            {% set icon = 'bi-file-earmark' %}{% set iconColor = 'text-secondary' %}
+            {% if ext in ['pdf'] %}{% set icon = 'bi-file-earmark-pdf' %}{% set iconColor = 'text-danger' %}
+            {% elseif ext in ['doc','docx'] %}{% set icon = 'bi-file-earmark-word' %}{% set iconColor = 'text-primary' %}
+            {% elseif ext in ['xls','xlsx'] %}{% set icon = 'bi-file-earmark-excel' %}{% set iconColor = 'text-success' %}
+            {% elseif ext in ['jpg','jpeg','png','gif'] %}{% set icon = 'bi-file-earmark-image' %}{% set iconColor = 'text-warning' %}
+            {% elseif ext in ['zip','rar','7z'] %}{% set icon = 'bi-file-earmark-zip' %}{% set iconColor = 'text-dark' %}
+            {% endif %}
+            <tr style="cursor:pointer" onclick="window.open('{{ path('app_permis_doc_download', {id: doc.id}) }}', '_blank')">
+                <td><i class="bi {{ icon }} {{ iconColor }} me-1 fs-5"></i>{{ doc.nom }} <span class="badge bg-secondary ms-1" style="font-size:.7rem">{{ ext|upper }}</span></td>
+                <td class="text-muted small">{{ doc.taille ? (doc.taille / 1024)|round ~ ' Ko' : '—' }}</td>
+                <td class="text-muted small">{{ doc.dateAjout|date('d/m/Y') }}</td>
+                <td class="text-end" onclick="event.stopPropagation()">
+                    <a href="{{ path('app_permis_doc_download', {id: doc.id}) }}" target="_blank" class="btn btn-sm btn-outline-primary" title="Ouvrir"><i class="bi bi-box-arrow-up-right"></i></a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <form method="post" action="{{ path('app_permis_doc_delete', {id: doc.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer ce document ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-doc-' ~ doc.id) }}">
+                        <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
