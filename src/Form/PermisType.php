@@ -18,6 +18,13 @@ class PermisType extends AbstractType
         $mm = ['class' => 'form-control form-control-sm', 'placeholder' => 'MM/AAAA'];
 
         $builder
+            ->add('genre', ChoiceType::class, [
+                'label'       => 'Genre',
+                'required'    => false,
+                'choices'     => ['Monsieur' => 'Monsieur', 'Madame' => 'Madame'],
+                'placeholder' => '-- Genre --',
+                'attr'        => ['class' => 'form-select form-select-sm'],
+            ])
             ->add('nom', TextType::class, [
                 'label' => 'Nom',
                 'attr' => ['class' => 'form-control form-control-sm', 'style' => 'text-transform:uppercase'],

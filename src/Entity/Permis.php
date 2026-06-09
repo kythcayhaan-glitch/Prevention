@@ -14,6 +14,9 @@ class Permis
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $genre = null;
+
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
@@ -69,6 +72,9 @@ class Permis
     private ?string $notes = null;
 
     public function getId(): ?int { return $this->id; }
+
+    public function getGenre(): ?string { return $this->genre; }
+    public function setGenre(?string $genre): static { $this->genre = $genre; return $this; }
 
     public function getNom(): ?string { return $this->nom; }
     public function setNom(?string $nom): static { $this->nom = $nom ? strtoupper($nom) : $nom; return $this; }

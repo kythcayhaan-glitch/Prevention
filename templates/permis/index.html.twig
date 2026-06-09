@@ -84,6 +84,68 @@
 </div>
 {% endif %}
 
+{# ── Modale convocation ── #}
+<div class="modal fade" id="modalConvocation" tabindex="-1" aria-labelledby="modalConvocationLabel" aria-modal="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#b71c1c;color:#fff">
+                <h5 class="modal-title" id="modalConvocationLabel">
+                    <i class="bi bi-file-earmark-pdf"></i> Convocation — <span id="convNom"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formConvocation" method="post" target="_blank">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Permis concerné(s)</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check" id="wrap-c">
+                                <input class="form-check-input" type="checkbox" name="types[]" value="C" id="chk-c">
+                                <label class="form-check-label" for="chk-c">Permis C</label>
+                            </div>
+                            <div class="form-check" id="wrap-d">
+                                <input class="form-check-input" type="checkbox" name="types[]" value="D" id="chk-d">
+                                <label class="form-check-label" for="chk-d">Permis D</label>
+                            </div>
+                            <div class="form-check" id="wrap-e">
+                                <input class="form-check-input" type="checkbox" name="types[]" value="E" id="chk-e">
+                                <label class="form-check-label" for="chk-e">Permis E</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Formations</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check" id="wrap-fimo">
+                                <input class="form-check-input" type="checkbox" name="types[]" value="FIMO" id="chk-fimo">
+                                <label class="form-check-label" for="chk-fimo">FIMO</label>
+                            </div>
+                            <div class="form-check" id="wrap-fco">
+                                <input class="form-check-input" type="checkbox" name="types[]" value="FCO" id="chk-fco">
+                                <label class="form-check-label" for="chk-fco">FCO</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Date du rendez-vous</label>
+                        <input type="text" name="date" id="convDate" class="form-control date-picker" placeholder="JJ/MM/AAAA" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Heure</label>
+                        <input type="time" name="heure" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-file-earmark-pdf"></i> Générer le PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0"><i class="bi bi-card-checklist"></i> Permis de conduire</h4>
     <div class="d-flex align-items-center gap-3">
@@ -118,8 +180,8 @@
                     <th colspan="2" class="group-header" style="background:#1565c0">Permis C</th>
                     <th colspan="2" class="group-header" style="background:#283593">Permis D</th>
                     <th colspan="2" class="group-header" style="background:#4527a0">Permis E</th>
-                    <th colspan="3" class="group-header" style="background:#2e7d32">FIMO</th>
-                    <th colspan="2" class="group-header" style="background:#1b5e20">FCO</th>
+                    <th colspan="2" class="group-header" style="background:#2e7d32">FIMO</th>
+                    <th colspan="3" class="group-header" style="background:#1b5e20">FCO</th>
                     <th colspan="2" class="group-header" style="background:#b71c1c">Visite médicale</th>
                     <th rowspan="2"></th>
                 </tr>
@@ -127,10 +189,9 @@
                     <th>Obtention</th><th>Validité</th>
                     <th>Obtention</th><th>Validité</th>
                     <th>Obtention</th><th>Validité</th>
-                    <th>Type</th><th>Obtention</th><th>Prochaine</th>
                     <th>Obtention</th><th>Prochaine</th>
+                    <th>Type</th><th>Obtention</th><th>Prochaine</th>
                     <th>Réalisée</th><th>Prochaine</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -147,6 +208,9 @@
                     <td>{{ _self.date_cell(p.permisEObtention, p.permisEObtention|date_status) }}</td>
                     <td>{{ _self.date_cell(p.permisEValidite, p.permisEValidite|date_status) }}</td>
                     {# FIMO #}
+                    <td>{{ _self.date_cell(p.fimoObtention, null) }}</td>
+                    <td>{{ _self.date_cell(p.fimoProchaine, p.fimoProchaine|date_status) }}</td>
+                    {# FCO #}
                     <td>
                         {% if p.fimoType %}
                             <span class="fimo-type">{{ p.fimoType }}</span>
@@ -154,9 +218,6 @@
                             <span class="badge-none">—</span>
                         {% endif %}
                     </td>
-                    <td>{{ _self.date_cell(p.fimoObtention, null) }}</td>
-                    <td>{{ _self.date_cell(p.fimoProchaine, p.fimoProchaine|date_status) }}</td>
-                    {# FCO #}
                     <td>{{ _self.date_cell(p.fcoObtention, null) }}</td>
                     <td>{{ _self.date_cell(p.fcoProchaine, p.fcoProchaine|date_status) }}</td>
                     {# Visite médicale #}
@@ -165,9 +226,26 @@
                     {# Actions #}
                     <td onclick="event.stopPropagation()">
                         {% if is_granted('ROLE_ADMIN') %}
+                        <button type="button" class="btn btn-outline-danger btn-sm btn-convocation"
+                            title="Convocation"
+                            data-url="{{ path('app_permis_convocation', {id: p.id}) }}"
+                            data-nom="{{ p.genre ? p.genre ~ ' ' }}{{ p.nomComplet }}"
+                            data-has-c="{{ p.permisCObtention ? '1' : '0' }}"
+                            data-has-d="{{ p.permisDObtention ? '1' : '0' }}"
+                            data-has-e="{{ p.permisEObtention ? '1' : '0' }}"
+                            data-status-c="{{ p.permisCValidite|date_status }}"
+                            data-status-d="{{ p.permisDValidite|date_status }}"
+                            data-status-e="{{ p.permisEValidite|date_status }}"
+                            data-has-fimo="{{ p.fimoProchaine ? '1' : '0' }}"
+                            data-status-fimo="{{ p.fimoProchaine|date_status }}"
+                            data-has-fco="{{ p.fcoProchaine ? '1' : '0' }}"
+                            data-status-fco="{{ p.fcoProchaine|date_status }}"
+                            data-bs-toggle="modal" data-bs-target="#modalConvocation">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </button>
                         <form method="post" action="{{ path('app_permis_delete', {id: p.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer cet agent ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ p.id) }}">
-                            <button class="btn btn-outline-danger btn-sm" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-outline-secondary btn-sm" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>
                         {% endif %}
                     </td>
@@ -259,5 +337,38 @@ document.addEventListener('DOMContentLoaded', function () {
     new bootstrap.Modal(document.getElementById('modalAlertes')).show();
 });
 {% endif %}
+
+document.querySelectorAll('.btn-convocation').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        document.getElementById('formConvocation').action = this.dataset.url;
+        document.getElementById('convNom').textContent = this.dataset.nom;
+        document.getElementById('convDate').value = '';
+        if (window._flatpickrConv) window._flatpickrConv.clear();
+
+        ['C', 'D', 'E'].forEach(function (t) {
+            var key = t.toLowerCase();
+            var has    = btn.dataset['has' + t] === '1';
+            var status = btn.dataset['status' + t];
+            var wrap   = document.getElementById('wrap-' + key);
+            var chk    = document.getElementById('chk-' + key);
+            wrap.style.display = has ? '' : 'none';
+            chk.checked  = has && (status === 'expired' || status === 'soon');
+            chk.disabled = !has;
+        });
+
+        [{id: 'fimo', attr: 'Fimo'}, {id: 'fco', attr: 'Fco'}].forEach(function (item) {
+            var has    = btn.dataset['has' + item.attr] === '1';
+            var status = btn.dataset['status' + item.attr];
+            var wrap   = document.getElementById('wrap-' + item.id);
+            var chk    = document.getElementById('chk-' + item.id);
+            wrap.style.display = has ? '' : 'none';
+            chk.checked  = has && (status === 'expired' || status === 'soon');
+            chk.disabled = !has;
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    window._flatpickrConv = flatpickr('#convDate', { locale: 'fr', dateFormat: 'd/m/Y', allowInput: true });
+});
 </script>
 {% endblock %}

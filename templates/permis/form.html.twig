@@ -17,7 +17,11 @@
 {# Agent #}
 <p class="permis-section-title" style="background:#1565c0">Agent</p>
 <div class="permis-section-body">
-    <div class="permis-grid">
+    <div class="permis-grid-3">
+        <div>
+            <div class="permis-label">Genre</div>
+            {{ form_widget(form.genre) }}
+        </div>
         <div>
             <div class="permis-label">Nom</div>
             {{ form_widget(form.nom) }}
@@ -119,12 +123,17 @@
     </button>
     <a href="{{ path('app_permis_index') }}" class="btn btn-outline-secondary btn-sm ms-2">Annuler</a>
     {% if permis %}
-    <form method="post" action="{{ path('app_permis_delete', {id: permis.id}) }}" style="display:inline;float:right" onsubmit="return confirm('Supprimer cet agent ?')">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ permis.id) }}">
-        <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Supprimer</button>
-    </form>
+    <button type="button" class="btn btn-outline-danger btn-sm float-end" onclick="document.getElementById('form-delete-permis').submit()">
+        <i class="bi bi-trash"></i> Supprimer
+    </button>
     {% endif %}
 </div>
 
 {{ form_end(form) }}
+
+{% if permis %}
+<form id="form-delete-permis" method="post" action="{{ path('app_permis_delete', {id: permis.id}) }}" onsubmit="return confirm('Supprimer cet agent ?')">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ permis.id) }}">
+</form>
+{% endif %}
 {% endblock %}
