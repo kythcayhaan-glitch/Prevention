@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ title }}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ app.request.basePath }}/css/permis.css">
+{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-card-checklist"></i> {{ title }}</h4>
+    <a href="{{ path('app_permis_index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+</div>
+
+{{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+
+{# Agent #}
+<p class="permis-section-title" style="background:#1565c0">Agent</p>
+<div class="permis-section-body">
+    <div class="permis-grid">
+        <div>
+            <div class="permis-label">Nom</div>
+            {{ form_widget(form.nom) }}
+            {{ form_errors(form.nom) }}
+        </div>
+        <div>
+            <div class="permis-label">Prénom</div>
+            {{ form_widget(form.prenom) }}
+        </div>
+    </div>
+</div>
+
+{# Permis C / D / E #}
+<p class="permis-section-title" style="background:#283593">Permis</p>
+<div class="permis-section-body">
+    <div class="permis-grid-3">
+        <div>
+            <div class="permis-label" style="color:#1565c0">Permis C — Obtention</div>
+            {{ form_widget(form.permisCObtention) }}
+        </div>
+        <div>
+            <div class="permis-label" style="color:#1565c0">Permis C — Validité</div>
+            {{ form_widget(form.permisCValidite) }}
+        </div>
+        <div></div>
+        <div>
+            <div class="permis-label" style="color:#283593">Permis D — Obtention</div>
+            {{ form_widget(form.permisDObtention) }}
+        </div>
+        <div>
+            <div class="permis-label" style="color:#283593">Permis D — Validité</div>
+            {{ form_widget(form.permisDValidite) }}
+        </div>
+        <div></div>
+        <div>
+            <div class="permis-label" style="color:#4527a0">Permis E — Obtention</div>
+            {{ form_widget(form.permisEObtention) }}
+        </div>
+        <div>
+            <div class="permis-label" style="color:#4527a0">Permis E — Validité</div>
+            {{ form_widget(form.permisEValidite) }}
+        </div>
+        <div></div>
+    </div>
+</div>
+
+{# FIMO / FCO #}
+<p class="permis-section-title" style="background:#2e7d32">Formations (FIMO / FCO)</p>
+<div class="permis-section-body">
+    <div class="permis-grid-3">
+        <div>
+            <div class="permis-label">FIMO — Type</div>
+            {{ form_widget(form.fimoType) }}
+        </div>
+        <div>
+            <div class="permis-label">FIMO — Obtention (MM/AAAA)</div>
+            {{ form_widget(form.fimoObtention) }}
+        </div>
+        <div>
+            <div class="permis-label">FIMO — Prochaine (MM/AAAA)</div>
+            {{ form_widget(form.fimoProchaine) }}
+        </div>
+        <div></div>
+        <div>
+            <div class="permis-label">FCO — Obtention (MM/AAAA)</div>
+            {{ form_widget(form.fcoObtention) }}
+        </div>
+        <div>
+            <div class="permis-label">FCO — Prochaine (MM/AAAA)</div>
+            {{ form_widget(form.fcoProchaine) }}
+        </div>
+    </div>
+</div>
+
+{# Visite médicale #}
+<p class="permis-section-title" style="background:#b71c1c">Visite médicale</p>
+<div class="permis-section-body">
+    <div class="permis-grid">
+        <div>
+            <div class="permis-label">Réalisée le (MM/AAAA)</div>
+            {{ form_widget(form.visiteMedicaleRealisee) }}
+        </div>
+        <div>
+            <div class="permis-label">Prochaine (MM/AAAA)</div>
+            {{ form_widget(form.visiteMedicaleProchaine) }}
+        </div>
+    </div>
+</div>
+
+{# Notes #}
+<p class="permis-section-title" style="background:#546e7a">Notes</p>
+<div class="permis-section-body">
+    {{ form_widget(form.notes) }}
+</div>
+
+<div style="position:sticky;bottom:0;background:var(--theme-body-bg);padding:.75rem 0;border-top:1px solid var(--theme-card-border);z-index:10">
+    <button type="submit" class="btn btn-primary btn-sm px-4">
+        <i class="bi bi-floppy"></i> Enregistrer
+    </button>
+    <a href="{{ path('app_permis_index') }}" class="btn btn-outline-secondary btn-sm ms-2">Annuler</a>
+    {% if permis %}
+    <form method="post" action="{{ path('app_permis_delete', {id: permis.id}) }}" style="display:inline;float:right" onsubmit="return confirm('Supprimer cet agent ?')">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ permis.id) }}">
+        <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Supprimer</button>
+    </form>
+    {% endif %}
+</div>
+
+{{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,87 @@
+/* ── Tableau permis ── */
+.permis-table th {
+    font-size: .7rem;
+    white-space: nowrap;
+}
+.permis-table td {
+    font-size: .8rem;
+    white-space: nowrap;
+    padding: .25rem .6rem;
+}
+.permis-table .group-header {
+    text-align: center;
+    font-weight: 700;
+    font-size: .72rem;
+    letter-spacing: .04em;
+}
+.badge-expired {
+    background: #dc3545;
+    color: #fff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: .75rem;
+    font-weight: 600;
+}
+.badge-soon {
+    background: #fd7e14;
+    color: #fff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: .75rem;
+    font-weight: 600;
+}
+.badge-ok {
+    background: #198754;
+    color: #fff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: .75rem;
+    font-weight: 600;
+}
+.badge-none {
+    color: #adb5bd;
+    font-size: .78rem;
+}
+.fimo-type {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6c757d;
+    display: block;
+}
+
+/* ── Formulaire permis ── */
+.permis-section-title {
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #fff;
+    padding: .4rem .75rem;
+    border-radius: 4px 4px 0 0;
+    margin: 0;
+}
+.permis-section-body {
+    border: 1px solid var(--theme-card-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: .75rem;
+    background: var(--theme-card-bg);
+    margin-bottom: 1rem;
+}
+.permis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem 1rem;
+}
+.permis-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: .5rem 1rem;
+}
+.permis-label {
+    font-size: .78rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: .15rem;
+}

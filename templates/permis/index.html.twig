@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+{% block title %}Permis de conduire{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ app.request.basePath }}/css/permis.css">
+{% endblock %}
+
+{% macro date_cell(date, status) %}
+    {% if date %}
+        {% if status == 'expired' %}
+            <span class="badge-expired">{{ date }}</span>
+        {% elseif status == 'soon' %}
+            <span class="badge-soon">{{ date }}</span>
+        {% else %}
+            <span class="badge-ok">{{ date }}</span>
+        {% endif %}
+    {% else %}
+        <span class="badge-none">—</span>
+    {% endif %}
+{% endmacro %}
+
+{# ── Collecte des alertes "soon" (hors bloc pour être accessible partout) ── #}
+{% set alerts = [] %}
+{% for p in permis %}
+    {% set name = p.nom ~ (p.prenom ? ' ' ~ p.prenom) %}
+    {% if p.permisCValidite|date_status == 'soon' %}
+        {% set alerts = alerts|merge([{name: name, label: 'Permis C — Validité', date: p.permisCValidite}]) %}
+    {% endif %}
+    {% if p.permisDValidite|date_status == 'soon' %}
+        {% set alerts = alerts|merge([{name: name, label: 'Permis D — Validité', date: p.permisDValidite}]) %}
+    {% endif %}
+    {% if p.permisEValidite|date_status == 'soon' %}
+        {% set alerts = alerts|merge([{name: name, label: 'Permis E — Validité', date: p.permisEValidite}]) %}
+    {% endif %}
+    {% if p.fimoProchaine|date_status == 'soon' %}
+        {% set alerts = alerts|merge([{name: name, label: 'FIMO — Prochaine', date: p.fimoProchaine}]) %}
+    {% endif %}
+    {% if p.fcoProchaine|date_status == 'soon' %}
+        {% set alerts = alerts|merge([{name: name, label: 'FCO — Prochaine', date: p.fcoProchaine}]) %}
+    {% endif %}
+    {% if p.visiteMedicaleProchaine|date_status == 'soon' %}
+        {% set alerts = alerts|merge([{name: name, label: 'Visite médicale', date: p.visiteMedicaleProchaine}]) %}
+    {% endif %}
+{% endfor %}
+
+{% block body %}
+
+{# ── Modale alertes ── #}
+{% if alerts|length > 0 %}
+<div class="modal fade" id="modalAlertes" tabindex="-1" aria-labelledby="modalAlertesLabel" aria-modal="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#fd7e14;color:#fff">
+                <h5 class="modal-title" id="modalAlertesLabel">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ alerts|length }} échéance(s) dans moins de 3 mois
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Agent</th>
+                            <th>Rubrique</th>
+                            <th>Échéance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for a in alerts %}
+                        <tr>
+                            <td><strong>{{ a.name }}</strong></td>
+                            <td>{{ a.label }}</td>
+                            <td><span class="badge-soon">{{ a.date }}</span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-card-checklist"></i> Permis de conduire</h4>
+    <div class="d-flex align-items-center gap-3">
+        <input type="text" id="search" class="form-control table-search" placeholder="Rechercher un agent…" style="width:220px">
+        {% if alerts|length > 0 %}
+        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAlertes">
+            <i class="bi bi-exclamation-triangle-fill"></i> {{ alerts|length }} alerte(s)
+        </button>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_permis_new') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> Ajouter
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{# Légende #}
+<div class="mb-2 d-flex gap-3" style="font-size:.78rem">
+    <span><span class="badge-expired">date</span> Expiré</span>
+    <span><span class="badge-soon">date</span> &lt; 3 mois</span>
+    <span><span class="badge-ok">date</span> OK</span>
+    <span><span class="badge-none">—</span> Non renseigné</span>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0" style="overflow-x:auto">
+        <table class="table table-hover table-bordered mb-0 permis-table" id="permisTable">
+            <thead>
+                <tr>
+                    <th rowspan="2">Agent</th>
+                    <th colspan="2" class="group-header" style="background:#1565c0">Permis C</th>
+                    <th colspan="2" class="group-header" style="background:#283593">Permis D</th>
+                    <th colspan="2" class="group-header" style="background:#4527a0">Permis E</th>
+                    <th colspan="3" class="group-header" style="background:#2e7d32">FIMO</th>
+                    <th colspan="2" class="group-header" style="background:#1b5e20">FCO</th>
+                    <th colspan="2" class="group-header" style="background:#b71c1c">Visite médicale</th>
+                    <th rowspan="2"></th>
+                </tr>
+                <tr>
+                    <th>Obtention</th><th>Validité</th>
+                    <th>Obtention</th><th>Validité</th>
+                    <th>Obtention</th><th>Validité</th>
+                    <th>Type</th><th>Obtention</th><th>Prochaine</th>
+                    <th>Obtention</th><th>Prochaine</th>
+                    <th>Réalisée</th><th>Prochaine</th>
+
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in permis %}
+                <tr class="permis-row" {% if is_granted('ROLE_ADMIN') %}data-href="{{ path('app_permis_edit', {id: p.id}) }}"{% endif %}>
+                    <td><strong>{{ p.nom }}</strong>{% if p.prenom %} {{ p.prenom }}{% endif %}</td>
+                    {# Permis C #}
+                    <td>{{ _self.date_cell(p.permisCObtention, p.permisCObtention|date_status) }}</td>
+                    <td>{{ _self.date_cell(p.permisCValidite, p.permisCValidite|date_status) }}</td>
+                    {# Permis D #}
+                    <td>{{ _self.date_cell(p.permisDObtention, p.permisDObtention|date_status) }}</td>
+                    <td>{{ _self.date_cell(p.permisDValidite, p.permisDValidite|date_status) }}</td>
+                    {# Permis E #}
+                    <td>{{ _self.date_cell(p.permisEObtention, p.permisEObtention|date_status) }}</td>
+                    <td>{{ _self.date_cell(p.permisEValidite, p.permisEValidite|date_status) }}</td>
+                    {# FIMO #}
+                    <td>
+                        {% if p.fimoType %}
+                            <span class="fimo-type">{{ p.fimoType }}</span>
+                        {% else %}
+                            <span class="badge-none">—</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ _self.date_cell(p.fimoObtention, null) }}</td>
+                    <td>{{ _self.date_cell(p.fimoProchaine, p.fimoProchaine|date_status) }}</td>
+                    {# FCO #}
+                    <td>{{ _self.date_cell(p.fcoObtention, null) }}</td>
+                    <td>{{ _self.date_cell(p.fcoProchaine, p.fcoProchaine|date_status) }}</td>
+                    {# Visite médicale #}
+                    <td>{{ _self.date_cell(p.visiteMedicaleRealisee, null) }}</td>
+                    <td>{{ _self.date_cell(p.visiteMedicaleProchaine, p.visiteMedicaleProchaine|date_status) }}</td>
+                    {# Actions #}
+                    <td onclick="event.stopPropagation()">
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <form method="post" action="{{ path('app_permis_delete', {id: p.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer cet agent ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ p.id) }}">
+                            <button class="btn btn-outline-danger btn-sm" title="Supprimer"><i class="bi bi-trash"></i></button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="16" class="text-center text-muted py-4">Aucun agent enregistré.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="mt-2 text-muted small">{{ permis|length }} agent(s)</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.getElementById('search').addEventListener('input', function () {
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#permisTable .permis-row').forEach(function (row) {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
+{% if alerts|length > 0 %}
+document.addEventListener('DOMContentLoaded', function () {
+    new bootstrap.Modal(document.getElementById('modalAlertes')).show();
+});
+{% endif %}
+</script>
+{% endblock %}
