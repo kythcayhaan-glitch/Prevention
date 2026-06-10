@@ -118,7 +118,21 @@
     {{ form_widget(form.notes) }}
 </div>
 
-{# Documents — uniquement en modification #}
+<div style="position:sticky;bottom:0;background:var(--theme-body-bg);padding:.75rem 0;border-top:1px solid var(--theme-card-border);z-index:10">
+    <button type="submit" class="btn btn-primary btn-sm px-4">
+        <i class="bi bi-floppy"></i> Enregistrer
+    </button>
+    <a href="{{ path('app_permis_index') }}" class="btn btn-outline-secondary btn-sm ms-2">Annuler</a>
+    {% if permis %}
+    <button type="button" class="btn btn-outline-danger btn-sm float-end" onclick="document.getElementById('form-delete-permis').submit()">
+        <i class="bi bi-trash"></i> Supprimer
+    </button>
+    {% endif %}
+</div>
+
+{{ form_end(form) }}
+
+{# Documents — en dehors du formulaire principal #}
 {% if permis %}
 <p class="permis-section-title" style="background:#37474f">Documents</p>
 <div class="permis-section-body">
@@ -179,20 +193,6 @@
     </form>
 </div>
 {% endif %}
-
-<div style="position:sticky;bottom:0;background:var(--theme-body-bg);padding:.75rem 0;border-top:1px solid var(--theme-card-border);z-index:10">
-    <button type="submit" class="btn btn-primary btn-sm px-4">
-        <i class="bi bi-floppy"></i> Enregistrer
-    </button>
-    <a href="{{ path('app_permis_index') }}" class="btn btn-outline-secondary btn-sm ms-2">Annuler</a>
-    {% if permis %}
-    <button type="button" class="btn btn-outline-danger btn-sm float-end" onclick="document.getElementById('form-delete-permis').submit()">
-        <i class="bi bi-trash"></i> Supprimer
-    </button>
-    {% endif %}
-</div>
-
-{{ form_end(form) }}
 
 {% if permis %}
 <form id="form-delete-permis" method="post" action="{{ path('app_permis_delete', {id: permis.id}) }}" onsubmit="return confirm('Supprimer cet agent ?')">
