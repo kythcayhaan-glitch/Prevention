@@ -147,11 +147,26 @@
             </tr>
         </thead>
         <tbody>
+        {% set fileIcons = {
+            'pdf':  'bi-file-earmark-pdf text-danger',
+            'doc':  'bi-file-earmark-word text-primary',
+            'docx': 'bi-file-earmark-word text-primary',
+            'xls':  'bi-file-earmark-excel text-success',
+            'xlsx': 'bi-file-earmark-excel text-success',
+            'jpg':  'bi-file-earmark-image text-warning',
+            'jpeg': 'bi-file-earmark-image text-warning',
+            'png':  'bi-file-earmark-image text-warning',
+            'gif':  'bi-file-earmark-image text-warning',
+            'txt':  'bi-file-earmark-text text-secondary',
+            'zip':  'bi-file-earmark-zip text-secondary',
+        } %}
         {% for doc in permis.agentDocuments %}
+            {% set ext = doc.nomFichier|split('.')|last|lower %}
+            {% set iconClass = fileIcons[ext] ?? 'bi-file-earmark text-secondary' %}
             <tr>
                 <td>
                     <a href="{{ path('app_permis_doc_download', {id: doc.id}) }}" target="_blank">
-                        <i class="bi bi-file-earmark"></i> {{ doc.nom }}
+                        <i class="bi {{ iconClass }}"></i> {{ doc.nom }}
                     </a>
                 </td>
                 <td>{{ doc.taille ? (doc.taille / 1024)|round ~ ' Ko' : '—' }}</td>
