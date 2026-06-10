@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PermisRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PermisRepository::class)]
@@ -71,6 +73,14 @@ class Permis
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $notes = null;
 
+    #[ORM\OneToMany(targetEntity: PermisDocument::class, mappedBy: 'permis', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $agentDocuments;
+
+    public function __construct()
+    {
+        $this->agentDocuments = new ArrayCollection();
+    }
+
     public function getId(): ?int { return $this->id; }
 
     public function getGenre(): ?string { return $this->genre; }
@@ -125,4 +135,23 @@ class Permis
 
     public function getNotes(): ?string { return $this->notes; }
     public function setNotes(?string $v): static { $this->notes = $v; return $this; }
+
+    public function getAgentDocuments(): Collection { return $this->agentDocuments; }
+
+    public function addAgentDocument(PermisDocument $doc): static
+    {
+        if (!$this->agentDocuments->contains($doc)) {
+            $this->agentDocuments->add($doc);
+            $doc->setPermis($this);
+        }
+        return $this;
+    }
+
+    public function removeAgentDocument(PermisDocument $doc): static
+    {
+        if ($this->agentDocuments->removeElement($doc) && $doc->getPermis() === $this) {
+            $doc->setPermis(null);
+        }
+        return $this;
+    }
 }

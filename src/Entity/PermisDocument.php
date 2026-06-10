@@ -26,6 +26,10 @@ class PermisDocument
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $dateAjout;
 
+    #[ORM\ManyToOne(targetEntity: Permis::class, inversedBy: 'agentDocuments')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Permis $permis = null;
+
     public function __construct()
     {
         $this->dateAjout = new \DateTimeImmutable();
@@ -43,4 +47,7 @@ class PermisDocument
     public function setTaille(?int $taille): static { $this->taille = $taille; return $this; }
 
     public function getDateAjout(): \DateTimeImmutable { return $this->dateAjout; }
+
+    public function getPermis(): ?Permis { return $this->permis; }
+    public function setPermis(?Permis $permis): static { $this->permis = $permis; return $this; }
 }

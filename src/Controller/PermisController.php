@@ -210,6 +210,63 @@ class PermisController extends AbstractController
     // ── Documents ──
 
     #[IsGranted('ROLE_ADMIN')]
+    #[Route('/{id}/document/upload', name: 'app_permis_agent_doc_upload', methods: ['POST'])]
+    public function uploadAgentDoc(Request $request, Permis $permis, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $file = $request->files->get('fichier');
+        $nom  = trim($request->request->get('nom', ''));
+
+        if (!$file || !$file->isValid()) {
+            $this->addFlash('error', 'Fichier invalide.');
+            return $this->redirectToRoute('app_permis_edit', ['id' => $permis->getId()]);
+        }
+
+        if (!is_dir($this->uploadDir)) {
+            mkdir($this->uploadDir, 0775, true);
+        }
+
+        if (!$nom) {
+            $nom = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        }
+
+        $ext      = $file->getClientOriginalExtension();
+        $safeName = $slugger->slug($nom) . '-' . uniqid() . '.' . $ext;
+        $taille   = $file->getSize();
+        $file->move($this->uploadDir, $safeName);
+
+        $doc = new PermisDocument();
+        $doc->setNom($nom)
+            ->setNomFichier($safeName)
+            ->setTaille($taille ?: filesize($this->uploadDir . '/' . $safeName))
+            ->setPermis($permis);
+
+        $em->persist($doc);
+        $em->flush();
+
+        $this->addFlash('success', 'Document ajouté.');
+        return $this->redirectToRoute('app_permis_edit', ['id' => $permis->getId()]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/{permisId}/document/{docId}/supprimer', name: 'app_permis_agent_doc_delete', methods: ['POST'])]
+    public function deleteAgentDoc(Request $request, int $permisId, int $docId, PermisDocumentRepository $docRepository, EntityManagerInterface $em): Response
+    {
+        $doc = $docRepository->find($docId);
+
+        if ($doc && $this->isCsrfTokenValid('delete-agent-doc-' . $docId, $request->request->get('_token'))) {
+            $path = $this->uploadDir . '/' . $doc->getNomFichier();
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            $em->remove($doc);
+            $em->flush();
+            $this->addFlash('success', 'Document supprimé.');
+        }
+
+        return $this->redirectToRoute('app_permis_edit', ['id' => $permisId]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/document/upload', name: 'app_permis_doc_upload', methods: ['POST'])]
     public function uploadDoc(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {

@@ -15,7 +15,7 @@ class PermisType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $dp = ['class' => 'form-control form-control-sm date-picker', 'placeholder' => 'JJ/MM/AAAA'];
-        $mm = ['class' => 'form-control form-control-sm', 'placeholder' => 'MM/AAAA'];
+        $mm = ['class' => 'form-control form-control-sm month-picker', 'placeholder' => 'MM/AAAA'];
 
         $builder
             ->add('genre', ChoiceType::class, [

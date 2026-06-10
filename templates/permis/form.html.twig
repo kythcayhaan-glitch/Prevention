@@ -2,6 +2,7 @@
 {% block title %}{{ title }}{% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ app.request.basePath }}/css/permis.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
 {% endblock %}
 
 {% block body %}
@@ -117,6 +118,68 @@
     {{ form_widget(form.notes) }}
 </div>
 
+{# Documents — uniquement en modification #}
+{% if permis %}
+<p class="permis-section-title" style="background:#37474f">Documents</p>
+<div class="permis-section-body">
+    {% if permis.agentDocuments is not empty %}
+    <table class="table table-sm table-bordered mb-3">
+        <thead class="table-light">
+            <tr>
+                <th>Nom</th>
+                <th>Taille</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for doc in permis.agentDocuments %}
+            <tr>
+                <td>
+                    <a href="{{ path('app_permis_doc_download', {id: doc.id}) }}" target="_blank">
+                        <i class="bi bi-file-earmark"></i> {{ doc.nom }}
+                    </a>
+                </td>
+                <td>{{ doc.taille ? (doc.taille / 1024)|round ~ ' Ko' : '—' }}</td>
+                <td>{{ doc.dateAjout|date('d/m/Y') }}</td>
+                <td>
+                    <form method="post" action="{{ path('app_permis_agent_doc_delete', {permisId: permis.id, docId: doc.id}) }}"
+                          onsubmit="return confirm('Supprimer ce document ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-agent-doc-' ~ doc.id) }}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted small mb-3">Aucun document.</p>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data"
+          action="{{ path('app_permis_agent_doc_upload', {id: permis.id}) }}">
+        <div class="d-flex gap-2 align-items-end">
+            <div>
+                <label class="form-label form-label-sm mb-1">Nom (optionnel)</label>
+                <input type="text" name="nom" class="form-control form-control-sm" placeholder="Nom du document">
+            </div>
+            <div>
+                <label class="form-label form-label-sm mb-1">Fichier</label>
+                <input type="file" name="fichier" class="form-control form-control-sm" required>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-upload"></i> Ajouter
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
 <div style="position:sticky;bottom:0;background:var(--theme-body-bg);padding:.75rem 0;border-top:1px solid var(--theme-card-border);z-index:10">
     <button type="submit" class="btn btn-primary btn-sm px-4">
         <i class="bi bi-floppy"></i> Enregistrer
@@ -136,4 +199,34 @@
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ permis.id) }}">
 </form>
 {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+<script>
+(function () {
+    var fn = '{{ form.vars.name }}';
+    var autoPairs = {};
+    autoPairs[fn + '[fimoObtention]'] = fn + '[fimoProchaine]';
+    autoPairs[fn + '[fcoObtention]']  = fn + '[fcoProchaine]';
+
+    var instances = {};
+
+    document.querySelectorAll('.month-picker').forEach(function (el) {
+        instances[el.name] = flatpickr(el, {
+            locale: 'fr',
+            plugins: [new monthSelectPlugin({ dateFormat: 'm/Y', shorthand: false })],
+            onChange: function (dates, dateStr, fp) {
+                var tgtName = autoPairs[fp.element.name];
+                if (tgtName && dates.length > 0 && instances[tgtName]) {
+                    var d = new Date(dates[0]);
+                    d.setFullYear(d.getFullYear() + 5);
+                    instances[tgtName].setDate(d, true);
+                }
+            }
+        });
+    });
+}());
+</script>
 {% endblock %}
