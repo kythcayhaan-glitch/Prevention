@@ -167,6 +167,7 @@
                 <td>
                     <a href="{{ path('app_permis_doc_download', {id: doc.id}) }}" target="_blank">
                         <i class="bi {{ iconClass }}"></i> {{ doc.nom }}
+                        <span class="text-muted small">.{{ ext }}</span>
                     </a>
                 </td>
                 <td>{{ doc.taille ? (doc.taille / 1024)|round ~ ' Ko' : '—' }}</td>
