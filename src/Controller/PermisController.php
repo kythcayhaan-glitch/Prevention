@@ -120,7 +120,7 @@ class PermisController extends AbstractController
         // TypePermis : types cochés dans la modale, filtrés aux valeurs valides
         $selected = array_values(array_filter(
             $request->request->all('types') ?: [],
-            fn($t) => in_array($t, ['C', 'D', 'E', 'FIMO', 'FCO'], true)
+            fn($t) => in_array($t, ['C', 'D', 'E', 'FIMO', 'FCO', 'Poids lourd'], true)
         ));
         $nb = count($selected);
         $typePermis = match ($nb) {
